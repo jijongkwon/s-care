@@ -1,0 +1,39 @@
+spring:
+  config:
+    import: optional:file:.env[.properties]
+  datasource:
+    url: ${LOCAL_MYSQL_URL}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${LOCAL_MYSQL_USER}
+    password: ${LOCAL_MYSQL_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    database-platform: org.hibernate.dialect.MySQLDialect
+    open-in-view: false
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+logging:
+  level:
+    org:
+      springframework:
+        web: DEBUG
+
+jwt:
+  secret:
+    key: ${JWT_SECRET_KEY}
+  issuer: ${JWT_ISSUER}
+  salt: ${JWT_SALT}
+  access-token:
+    expiretime: ${JWT_ACCESS_TOKEN_EXPIRETIME}
+  refresh-token:
+    expiretime: ${JWT_REFRESH_TOKEN_EXPIRETIME}
