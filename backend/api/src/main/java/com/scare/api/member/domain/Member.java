@@ -1,9 +1,14 @@
 package com.scare.api.member.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.hibernate.annotations.SQLRestriction;
 
 import com.scare.api.core.domain.BaseTimeEntity;
+import com.scare.api.pet.domain.PetCollection;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -11,6 +16,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -45,6 +51,9 @@ public class Member extends BaseTimeEntity {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status", nullable = false)
 	private MemberStatus status;
+
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+	private List<PetCollection> collection = new ArrayList<>();
 
 	private Member(String email, String nickname, Provider provider, String profileUrl, MemberStatus status) {
 		this.email = email;
