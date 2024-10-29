@@ -6,7 +6,7 @@ from models.request_models import HeartRateRequest
 
 router = APIRouter()
 
-@router.post("/fast/hr")
+@router.post("/fast/stress/calc")
 def get_stress_index(data: HeartRateRequest):
     try:
         stress_index = calculate_stress_index(data.hr_data)
