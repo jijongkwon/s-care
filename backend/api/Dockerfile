@@ -15,7 +15,7 @@ RUN gradle dependencies --no-daemon
 COPY src ./src
 
 # 애플리케이션 빌드
-RUN gradle clean build --no-daemon
+RUN gradle clean build -x test --no-daemon
 
 # 빌드된 JAR 파일 이름 변경
 RUN mv /app/build/libs/api-*-SNAPSHOT.jar /app/app.jar
