@@ -8,6 +8,7 @@ val DarkNavy = Color(39, 35, 58)
 
 val Green = Color(110, 223, 11)
 
-//val Purple40 = Color(0xFF6650a4)
-//val PurpleGrey40 = Color(0xFF625b71)
-//val Pink40 = Color(0xFF7D5260)
+//스트레스 지수
+val low = Color(255, 148, 103)
+val medium = Color(255, 240, 103)
+val high = Color(172, 255, 95)

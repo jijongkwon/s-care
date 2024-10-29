@@ -11,6 +11,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.work.Configuration
+
+import com.scare.ui.mobile.main.MainPage
+import com.scare.ui.mobile.main.StartPage
 import com.scare.ui.theme.ScareTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,29 +26,22 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ScareTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                val navController = androidx.navigation.compose.rememberNavController()
+
+                NavHost(navController = navController, startDestination = "start") {
+                    composable("start") { StartPage(navController) }
+                    composable("main") { MainPage() } // 다른 화면을 위한 Composable 함수
                 }
             }
         }
     }
 }
 
+@Preview(showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
+fun ScarePreview() {
     ScareTheme {
-        Greeting("Android")
+//        StartPage(rememberNavController())
+        MainPage()
     }
 }

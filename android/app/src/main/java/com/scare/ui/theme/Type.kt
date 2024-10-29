@@ -8,27 +8,30 @@ import androidx.compose.ui.unit.sp
 
 // Set of Material typography styles to start with
 val Typography = Typography(
+    //본문
     bodyLarge = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.5.sp
-    )
-    /* Other default text styles to override
+    ),
+    
+    //제목
     titleLarge = TextStyle(
         fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.Bold,
         fontSize = 22.sp,
         lineHeight = 28.sp,
         letterSpacing = 0.sp
     ),
+    
+    //작은 태그
     labelSmall = TextStyle(
         fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
+        fontWeight = FontWeight.Thin,
+        fontSize = 12.sp,
+        lineHeight = 18.sp,
+        letterSpacing = 0.sp
     )
-    */
 )

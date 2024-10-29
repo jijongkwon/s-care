@@ -4,6 +4,7 @@ import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
@@ -12,15 +13,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = DarkNavy,
-    secondary = White,
-    tertiary = NeonYellow
+    background = DarkNavy,
+    tertiary = NeonYellow,
+    onSurface = White,
+
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = White,
-    secondary = DarkNavy,
-    tertiary = Green
+    background = White,
+    tertiary = Green,
+    onSurface = DarkNavy,
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -52,7 +54,10 @@ fun ScareTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
-        content = content
-    )
+        typography = Typography
+    ) {
+        Surface(color = MaterialTheme.colorScheme.background) { // Surface 추가
+            content()
+        }
+    }
 }
