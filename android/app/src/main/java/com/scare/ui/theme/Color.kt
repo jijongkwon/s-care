@@ -9,6 +9,6 @@ val DarkNavy = Color(39, 35, 58)
 val Green = Color(110, 223, 11)
 
 //스트레스 지수
-val low = Color(255, 148, 103)
+val low = Color(172, 255, 95)
 val medium = Color(255, 240, 103)
-val high = Color(172, 255, 95)
+val high = Color(255, 148, 103)

@@ -11,10 +11,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import androidx.work.Configuration
+import com.scare.ui.mobile.calender.MyCalender
+import com.scare.ui.mobile.course.MyCourse
 
 import com.scare.ui.mobile.main.MainPage
 import com.scare.ui.mobile.main.StartPage
@@ -28,9 +32,19 @@ class MainActivity : ComponentActivity() {
             ScareTheme {
                 val navController = androidx.navigation.compose.rememberNavController()
 
-                NavHost(navController = navController, startDestination = "start") {
+                NavHost(navController = navController, startDestination = "main") {
                     composable("start") { StartPage(navController) }
-                    composable("main") { MainPage() } // 다른 화면을 위한 Composable 함수
+                    composable("main",
+                        arguments = listOf(
+                        navArgument("imageUrl") { type = NavType.StringType },
+                        navArgument("accessToken") { type = NavType.StringType }
+                    )) { backStackEntry ->
+                        val imageUrl = backStackEntry.arguments?.getString("imageUrl")
+                        val accessToken = backStackEntry.arguments?.getString("accessToken")
+                        MainPage(imageUrl, accessToken)
+                    }
+                    composable("statistics") { MyCalender() } // "statistics" 경로 추가
+                    composable("walk") { MyCourse() } // "walk" 경로 추가
                 }
             }
         }
@@ -41,7 +55,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun ScarePreview() {
     ScareTheme {
-//        StartPage(rememberNavController())
-        MainPage()
+        StartPage(navController = rememberNavController())
     }
 }

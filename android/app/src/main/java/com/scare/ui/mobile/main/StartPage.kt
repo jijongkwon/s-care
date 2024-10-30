@@ -16,6 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.offset
+import androidx.core.os.bundleOf
 import androidx.navigation.NavHostController
 import com.scare.R
 
@@ -25,11 +26,16 @@ fun StartPage(navController: NavHostController) {
         StartImage(modifier = Modifier.fillMaxSize())
         Button(
             onClick = {
-                println("Navigating to Main Page")
-                navController.navigate("main")
+                // 로그인 로직 실행
+                val imageUrl = "로그인 후 받은 imageUrl"
+                val accessToken = "로그인 후 받은 accessToken"
+
+                // NavController를 이용해 인수를 URI로 전달
+                navController.navigate("main?imageUrl=$imageUrl&accessToken=$accessToken")
             },
-            modifier = Modifier.align(Alignment.Center)
-                                .offset(y = LocalConfiguration.current.screenHeightDp.dp * 0.25f) // 세로 위치 조정
+            modifier = Modifier
+                .align(Alignment.Center)
+                .offset(y = LocalConfiguration.current.screenHeightDp.dp * 0.25f) // 세로 위치 조정
         ) {
             Text("구글 계정으로 가입")
         }
