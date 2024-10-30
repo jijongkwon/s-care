@@ -27,7 +27,6 @@ import com.scare.ui.theme.White
 fun PetSentence() {
     Box(
         modifier = Modifier,
-        contentAlignment = Alignment.Center // Box 내용을 중앙 정렬
     ) {
         Image(
             painter = painterResource(R.drawable.pet_talk),

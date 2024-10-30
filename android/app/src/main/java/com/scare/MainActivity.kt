@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
                     )) { backStackEntry ->
                         val imageUrl = backStackEntry.arguments?.getString("imageUrl")
                         val accessToken = backStackEntry.arguments?.getString("accessToken")
-                        MainPage(imageUrl, accessToken)
+                        MainPage(imageUrl, accessToken, navController)
                     }
                     composable("statistics") { MyCalender() } // "statistics" 경로 추가
                     composable("walk") { MyCourse() } // "walk" 경로 추가

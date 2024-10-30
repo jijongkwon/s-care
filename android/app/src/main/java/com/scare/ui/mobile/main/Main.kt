@@ -42,6 +42,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import androidx.work.Configuration
 import com.scare.R
 import com.scare.ui.mobile.common.TheHeader
@@ -58,7 +60,7 @@ import com.scare.ui.theme.medium
 import com.scare.ui.theme.Typography // Typography import 추가
 
 @Composable
-fun MainPage(imageUrl: String?, accessToken: String?) {
+fun MainPage(imageUrl: String?, accessToken: String?, navController: NavHostController) {
     Scaffold(
         topBar = { TheHeader(imageUrl, accessToken, isMainPage = true) }
     ) { innerPadding ->
@@ -74,7 +76,7 @@ fun MainPage(imageUrl: String?, accessToken: String?) {
             PetSentence()
             MyPetImage(60)
             MyStressRate(60)
-            ButtonContainer()
+            ButtonContainer(navController)
             SolutionCardList(solutions)
         }
     }
@@ -85,6 +87,6 @@ fun MainPage(imageUrl: String?, accessToken: String?) {
 @Composable
 fun StartPagePreview() {
     ScareTheme {
-        MainPage(imageUrl = null, accessToken = null) // 빈 콜백 함수 전달
+        MainPage(imageUrl = null, accessToken = null, navController = rememberNavController()) // 빈 콜백 함수 전달
     }
 }
