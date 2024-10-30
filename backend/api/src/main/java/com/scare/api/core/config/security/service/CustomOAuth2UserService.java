@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.scare.api.core.config.security.service.dto.CustomOAuth2User;
 import com.scare.api.core.config.security.service.dto.GoogleResponse;
 import com.scare.api.core.config.security.service.dto.OAuth2Response;
-import com.scare.api.core.config.security.service.dto.UserInfo;
 import com.scare.api.member.domain.Member;
 import com.scare.api.member.domain.Provider;
 import com.scare.api.member.repository.MemberRepository;
@@ -35,24 +34,19 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 		OAuth2Response oAuth2Response = getOAuth2Response(oAuth2User, userRequest.getClientRegistration().getRegistrationId());
 
 		// 넘어온 회원정보가 이미 우리 DB 테이블에 존재하는지 확인
-		UserInfo userInfo = UserInfo.builder()
-			.email(oAuth2Response.getEmail())
-			.nickname(oAuth2Response.getNickname())
-			.profileUrl(oAuth2Response.getProfileImage())
-			.build();
 		Provider provider = oAuth2Response.getProvider();
-		Member member = memberRepository.findByEmailAndProvider(userInfo.getEmail(), provider).orElse(null);
+		Member member = memberRepository.findByEmailAndProvider(oAuth2Response.getEmail(), provider).orElse(null);
 
 		if (member == null) {
-			log.info("회원 없음 (회원가입 진행) -> email: {}, provider: {}", userInfo.getEmail(), provider.name());
+			log.info("회원 없음 (회원가입 진행) -> email: {}, provider: {}", oAuth2Response.getEmail(), provider.name());
 
-			member = saveMember(userInfo, provider);
+			member = saveMember(oAuth2Response, provider);
 
 		} else {
-			log.info("회원 있음 (회원정보 업데이트) -> email: {}, provider: {}", userInfo.getEmail(), provider.name());
+			log.info("회원 있음 (회원정보 업데이트) -> email: {}, provider: {}", oAuth2Response.getEmail(), provider.name());
 
 			// 멤버 정보 업데이트
-			member.updateNicknameAndProfileUrl(userInfo.getNickname(), userInfo.getProfileUrl());
+			member.updateNicknameAndProfileUrl(oAuth2Response.getNickname(), oAuth2Response.getProfileImage());
 		}
 
 		return CustomOAuth2User.from(member);
@@ -72,11 +66,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 		return oAuth2Response;
 	}
 
-	private Member saveMember(UserInfo userInfo, Provider provider) {
+	private Member saveMember(OAuth2Response oAuth2Response, Provider provider) {
 		Member member = Member.builder()
-			.email(userInfo.getEmail())
-			.profileUrl(userInfo.getProfileUrl())
-			.nickname(userInfo.getNickname())
+			.email(oAuth2Response.getEmail())
+			.profileUrl(oAuth2Response.getProfileImage())
+			.nickname(oAuth2Response.getNickname())
 			.provider(provider)
 			.build();
 

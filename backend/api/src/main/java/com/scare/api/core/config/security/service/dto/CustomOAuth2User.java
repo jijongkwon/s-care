@@ -10,11 +10,15 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import com.scare.api.member.domain.Member;
 
 import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 @Builder
 public class CustomOAuth2User implements OAuth2User {
 
-	private final UserInfo userInfo;
+	private Long memberId;
+	private String email;
+	private String role;
 
 	@Override
 	public Map<String, Object> getAttributes() {
@@ -29,7 +33,7 @@ public class CustomOAuth2User implements OAuth2User {
 		collection.add(new GrantedAuthority() {
 			@Override
 			public String getAuthority() {
-				return userInfo.getRole();
+				return role;
 			}
 		});
 
@@ -38,38 +42,14 @@ public class CustomOAuth2User implements OAuth2User {
 
 	@Override
 	public String getName() {
-		return userInfo.getEmail();
-	}
-
-	public Long getMemberId() {
-		return userInfo.getMemberId();
-	}
-
-	public String getEmail() {
-		return userInfo.getEmail();
-	}
-
-	public String getProfileUrl() {
-		return userInfo.getProfileUrl();
-	}
-
-	public String getNickname() {
-		return userInfo.getNickname();
-	}
-
-	public String getRole() {
-		return userInfo.getRole();
+		return email;
 	}
 
 	public static CustomOAuth2User from(Member member) {
 		return CustomOAuth2User.builder()
-			.userInfo(UserInfo.builder()
-				.memberId(member.getId())
-				.email(member.getEmail())
-				.profileUrl(member.getProfileUrl())
-				.nickname(member.getNickname())
-				.role(member.getRole().name())
-				.build())
+			.memberId(member.getId())
+			.email(member.getEmail())
+			.role(member.getRole().name())
 			.build();
 	}
 
