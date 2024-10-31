@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.scare.api.core.template.response.BaseResponse;
 import com.scare.api.solution.walk.controller.docs.WalkingControllerDocs;
-import com.scare.api.solution.walk.service.WalkingService;
-import com.scare.api.solution.walk.service.dto.WalkingCourseDto;
+import com.scare.api.solution.walk.service.query.WalkingQueryService;
+import com.scare.api.solution.walk.service.query.dto.WalkingCourseDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/walking")
 public class WalkingController implements WalkingControllerDocs {
 
-	private final WalkingService walkingService;
+	private final WalkingQueryService walkingQueryService;
 
 	@Override
 	public ResponseEntity<BaseResponse<?>> saveWalkingCourse() {
@@ -29,7 +29,7 @@ public class WalkingController implements WalkingControllerDocs {
 	@Override
 	public ResponseEntity<BaseResponse<WalkingCourseDto>> getWalkingCourse(
 		@PathVariable("course-id") Long courseId) {
-		return ResponseEntity.ok(BaseResponse.ofSuccess(walkingService.getWalkingCourse(courseId)));
+		return ResponseEntity.ok(BaseResponse.ofSuccess(walkingQueryService.getWalkingCourse(courseId)));
 	}
 
 }

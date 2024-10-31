@@ -1,4 +1,4 @@
-package com.scare.api.solution.walk.service;
+package com.scare.api.solution.walk.service.query;
 
 import org.springframework.stereotype.Service;
 
@@ -8,13 +8,13 @@ import com.scare.api.solution.walk.exception.NoWalkingCourseException;
 import com.scare.api.solution.walk.exception.NoWalkingDetailException;
 import com.scare.api.solution.walk.repository.WalkingCourseRepository;
 import com.scare.api.solution.walk.repository.WalkingDetailRepository;
-import com.scare.api.solution.walk.service.dto.WalkingCourseDto;
+import com.scare.api.solution.walk.service.query.dto.WalkingCourseDto;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class WalkingService {
+public class WalkingQueryService {
 
 	private final WalkingCourseRepository walkingCourseRepository;
 	private final WalkingDetailRepository walkingDetailRepository;

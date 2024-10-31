@@ -1,4 +1,4 @@
-package com.scare.api.solution.walk.service.dto;
+package com.scare.api.solution.walk.service.query.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;

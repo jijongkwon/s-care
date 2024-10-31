@@ -3,7 +3,7 @@ package com.scare.api.solution.walk.controller.docs;
 import org.springframework.http.ResponseEntity;
 
 import com.scare.api.core.template.response.BaseResponse;
-import com.scare.api.solution.walk.service.dto.WalkingCourseDto;
+import com.scare.api.solution.walk.service.query.dto.WalkingCourseDto;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
