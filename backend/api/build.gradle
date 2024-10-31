@@ -49,6 +49,9 @@ dependencies {
 	// Monitoring & Logging
 	implementation 'io.sentry:sentry-spring-boot-starter-jakarta'
 
+	// Open api (swagger)
+	implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.6.0'
+
 	// Testing
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
