@@ -4,6 +4,7 @@ package com.scare.api.solution.walk.controller.docs;
 import com.scare.api.member.domain.Member;
 import com.scare.api.solution.walk.controller.request.WalkingLogReq;
 import com.scare.api.solution.walk.controller.response.WalkingDetailRes;
+import com.scare.api.solution.walk.controller.response.WalkingLogListRes;
 import com.scare.api.solution.walk.controller.response.WeeklyWalkingReportRes;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -44,10 +45,17 @@ public interface WalkingControllerDocs {
 
     @Operation(
             summary = "걷기 운동 기록 목록 조회",
-            description = "사용자의 걷기 운동 기록 목록을 조회합니다."
+            description = "사용자의 걷기 운동 기록 목록을 조회합니다"
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "조회 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = WalkingLogListRes.class)
+                    )
+            ),
             @ApiResponse(responseCode = "401", description = "인증 실패"),
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
@@ -62,10 +70,10 @@ public interface WalkingControllerDocs {
     @Operation(
             summary = "걷기 운동 상세 정보 조회",
             description = """
-        특정 걷기 운동의 상세 정보를 조회합니다.
-        - 회원의 특정 시점 걷기 운동 기록을 상세 조회
-        - 시작 시간을 기준으로 해당 운동 기록을 식별
-        """
+                특정 걷기 운동의 상세 정보를 조회합니다.
+                - 회원의 특정 시점 걷기 운동 기록을 상세 조회
+                - 시작 시간을 기준으로 해당 운동 기록을 식별
+            """
     )
     @ApiResponses(value = {
             @ApiResponse(
