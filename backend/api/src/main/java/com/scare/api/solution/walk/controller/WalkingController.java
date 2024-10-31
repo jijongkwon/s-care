@@ -3,11 +3,14 @@ package com.scare.api.solution.walk.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.scare.api.core.template.response.BaseResponse;
 import com.scare.api.solution.walk.controller.docs.WalkingControllerDocs;
+import com.scare.api.solution.walk.controller.request.command.WalkingCourseReq;
+import com.scare.api.solution.walk.service.command.WalkingCommandService;
 import com.scare.api.solution.walk.service.query.WalkingQueryService;
 import com.scare.api.solution.walk.service.query.dto.WalkingCourseDto;
 
@@ -18,10 +21,12 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/walking")
 public class WalkingController implements WalkingControllerDocs {
 
+	private final WalkingCommandService walkingCommandService;
 	private final WalkingQueryService walkingQueryService;
 
 	@Override
-	public ResponseEntity<BaseResponse<?>> saveWalkingCourse() {
+	@PostMapping("/")
+	public ResponseEntity<BaseResponse<?>> saveWalkingCourse(WalkingCourseReq walkingCourseReq) {
 		return null;
 	}
 

@@ -3,6 +3,7 @@ package com.scare.api.solution.walk.controller.docs;
 import org.springframework.http.ResponseEntity;
 
 import com.scare.api.core.template.response.BaseResponse;
+import com.scare.api.solution.walk.controller.request.command.WalkingCourseReq;
 import com.scare.api.solution.walk.service.query.dto.WalkingCourseDto;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,7 +16,7 @@ public interface WalkingControllerDocs {
 
 	@Operation(
 		summary = "걷기 운동 기록 저장",
-		description = "사용자의 걷기 운동 기록을 저장합니다."
+		description = "사용자의 걷기 운동 기록을 저장합니다. (10분 이상 시 기록)"
 	)
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "201", description = "걷기 운동 기록 저장 성공"),
@@ -23,7 +24,9 @@ public interface WalkingControllerDocs {
 		@ApiResponse(responseCode = "401", description = "인증 실패"),
 		@ApiResponse(responseCode = "500", description = "서버 오류")
 	})
-	ResponseEntity<BaseResponse<?>> saveWalkingCourse();
+	ResponseEntity<BaseResponse<?>> saveWalkingCourse(
+		WalkingCourseReq walkingCourseReq
+	);
 
 	@Operation(
 		summary = "산책 코스 상세조회",
