@@ -27,11 +27,17 @@ public class WalkingCourse {
 	@Column(name = "distance", nullable = false)
 	private double distance;
 
-	@Column(name = "min_stress_idx", nullable = false)
-	private double minStressIdx;
+	@Column(name = "min_stress", nullable = false)
+	private double minStress;
 
-	@Column(name = "max_stress_idx", nullable = false)
-	private double maxStressIdx;
+	@Column(name = "max_stress", nullable = false)
+	private double maxStress;
+
+	@Column(name = "start_idx")
+	private Integer startIdx;
+
+	@Column(name = "end_idx")
+	private Integer endIdx;
 
 	@Column(name = "started_at", nullable = false)
 	private LocalDateTime startedAt;
@@ -40,11 +46,13 @@ public class WalkingCourse {
 	private LocalDateTime finishedAt;
 
 	@Builder
-	public WalkingCourse(double distance, double minStressIdx, double maxStressIdx, LocalDateTime startedAt,
-		LocalDateTime finishedAt) {
+	public WalkingCourse(double distance, double minStress, double maxStress, int startIdx, int endIdx,
+		LocalDateTime startedAt, LocalDateTime finishedAt) {
 		this.distance = distance;
-		this.minStressIdx = minStressIdx;
-		this.maxStressIdx = maxStressIdx;
+		this.minStress = minStress;
+		this.maxStress = maxStress;
+		this.startIdx = startIdx;
+		this.endIdx = endIdx;
 		this.startedAt = startedAt;
 		this.finishedAt = finishedAt;
 	}
