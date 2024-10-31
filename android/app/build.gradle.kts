@@ -1,4 +1,6 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 import java.util.Properties
+
 
 plugins {
     alias(libs.plugins.android.application)
@@ -21,6 +23,8 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+//        resValue("string", "client_id", getApiKey("CLIENT_ID"))
     }
 
     buildTypes {
@@ -47,6 +51,10 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+}
+
+fun getApiKey(key: String): String {
+    return gradleLocalProperties(rootDir).getProperty(key)
 }
 
 dependencies {

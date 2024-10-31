@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -16,19 +16,15 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.scare.R
 import com.scare.ui.mobile.login.LoginViewModel
+import androidx.compose.runtime.getValue
 
 @Composable
-fun StartPage(navController: NavHostController, loginViewModel: LoginViewModel) {
-    val loginResult by loginViewModel.loginResult.observeAsState()
+fun StartPage(navController: NavHostController, loginViewModel: LoginViewModel, onSignInClick: () -> Unit) {
+    val profileUrl by loginViewModel.profileUrl.collectAsState()
 
-    // 로그인 성공 시 MainPage로 이동
-    loginResult?.let { account ->
-        val email by loginViewModel.email.observeAsState()
-        val nickName by loginViewModel.nickName.observeAsState()
-        val profileUrl by loginViewModel.profileUrl.observeAsState()
-
-        if (email != null && nickName != null) {
-            navController.navigate("main")
+    if (profileUrl != null) {
+        navController.navigate("main") {
+            popUpTo("start") { inclusive = true }
         }
     }
 
@@ -36,16 +32,10 @@ fun StartPage(navController: NavHostController, loginViewModel: LoginViewModel) 
         StartImage(modifier = Modifier.fillMaxSize())
 
         GoogleLoginButton(
-            onClick = {
-                // 로그인 로직 실행
-                val imageUrl = "로그인 후 받은 imageUrl"
-                val accessToken = "로그인 후 받은 accessToken"
-
-                navController.navigate("main")
-            },
+            onClick = onSignInClick,
             modifier = Modifier
                 .align(Alignment.Center)
-                .offset(y = LocalConfiguration.current.screenHeightDp.dp * 0.25f) // 세로 위치 조정
+                .offset(y = LocalConfiguration.current.screenHeightDp.dp * 0.25f)
         )
     }
 }

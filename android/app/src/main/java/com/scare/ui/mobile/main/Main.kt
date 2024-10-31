@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,13 +23,13 @@ import com.scare.ui.mobile.main.component.MyStressRate
 import com.scare.ui.mobile.main.component.PetSentence
 import com.scare.ui.mobile.main.component.SolutionCardList
 import com.scare.ui.theme.ScareTheme
+import androidx.compose.runtime.getValue
+
 
 @Composable
 fun MainPage(loginViewModel: LoginViewModel, navController: NavHostController) {
 
-    val email by loginViewModel.email.observeAsState()
-    val nickName by loginViewModel.nickName.observeAsState()
-    val profileUrl by loginViewModel.profileUrl.observeAsState()
+    val profileUrl by loginViewModel.profileUrl.collectAsState()
 
     Scaffold(
         topBar = { TheHeader(profileUrl, isMainPage = true) }
@@ -51,11 +52,11 @@ fun MainPage(loginViewModel: LoginViewModel, navController: NavHostController) {
     }
 }
 
-///////////////프리뷰 확인
-@Preview(showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun StartPagePreview() {
-    ScareTheme {
-        MainPage(loginViewModel = LoginViewModel(GoogleLoginRepository(LocalContext.current)), navController = rememberNavController()) // 빈 콜백 함수 전달
-    }
-}
+/////////////////프리뷰 확인
+//@Preview(showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+//@Composable
+//fun StartPagePreview() {
+//    ScareTheme {
+//        MainPage(loginViewModel = LoginViewModel(GoogleLoginRepository(LocalContext.current)), navController = rememberNavController()) // 빈 콜백 함수 전달
+//    }
+//}

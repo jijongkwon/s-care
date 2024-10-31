@@ -1,20 +1,24 @@
 import android.content.Context
 import android.content.Intent
+import android.provider.Settings.Global.getString
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.tasks.Task
+import com.google.firebase.BuildConfig
 import com.scare.R
 
 class GoogleLoginRepository(context: Context) {
     private val googleLoginClient: GoogleSignInClient
+    private val clientId: String = context.getString(R.string.client_id)
+    //나중에 local에서 불러오기
 
     init {
         // Google Sign-In 옵션 설정
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail() // 사용자 이메일 요청
-            .requestIdToken(context.getString(R.string.client_id)) // 인증 토큰 요청
+            .requestIdToken(clientId) // 인증 토큰 요청
             .build()
 
         // GoogleSignInClient 초기화
