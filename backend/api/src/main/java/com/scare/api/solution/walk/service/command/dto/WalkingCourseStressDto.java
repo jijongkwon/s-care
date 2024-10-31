@@ -1,4 +1,4 @@
-package com.scare.api.solution.walk.service.dto;
+package com.scare.api.solution.walk.service.command.dto;
 
 import java.util.List;
 

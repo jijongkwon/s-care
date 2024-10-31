@@ -1,4 +1,4 @@
-package com.scare.api.solution.walk.controller.request;
+package com.scare.api.solution.walk.controller.request.command;
 
 import java.time.LocalDateTime;
 import java.util.List;

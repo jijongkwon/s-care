@@ -1,10 +1,10 @@
-package com.scare.api.solution.walk.service.dto;
+package com.scare.api.solution.walk.service.command.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.scare.api.solution.walk.controller.request.WalkingCourseReq;
+import com.scare.api.solution.walk.controller.request.command.WalkingCourseReq;
 
 import lombok.Builder;
 import lombok.Getter;
