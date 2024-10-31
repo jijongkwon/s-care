@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.scare.api.core.jwt.util.JWTUtil;
+import com.scare.api.core.template.response.BaseResponse;
+import com.scare.api.core.template.response.ResponseCode;
 import com.scare.api.member.controller.dto.request.LoginReq;
 import com.scare.api.member.service.MemberService;
 import com.scare.api.member.service.dto.LoginDto;
@@ -41,16 +43,17 @@ public class MemberController {
 		response.addCookie(jwtUtil.createCookie("refreshToken", refreshToken));
 		response.setStatus(HttpStatus.OK.value());
 
-		return ResponseEntity.ok(result);
+		return ResponseEntity.ok(BaseResponse.ofSuccess(result));
 	}
 
 	@PostMapping("/reissue")
 	public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) {
 		String refreshToken = jwtUtil.getCookieValue(request.getCookies(), "refreshToken");
 
-		if (!jwtUtil.validateToken(refreshToken, false)) {
-			// Custom Exception 으로 변경하기
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		ResponseCode errorResponseCode = jwtUtil.validateToken(refreshToken);
+
+		if (errorResponseCode != null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(BaseResponse.ofFail(errorResponseCode));
 		}
 
 		// 토큰 생성
@@ -65,7 +68,7 @@ public class MemberController {
 		// 1. 로그아웃 시 블랙아웃 고려?
 		// 2. RTR 구현해볼까
 
-		return ResponseEntity.ok("재발급은 되는데 redis가 구현이 안 됐음!");
+		return ResponseEntity.ok(BaseResponse.ofSuccess("재발급은 되는데 redis가 구현이 안 됐음!"));
 	}
 
 }

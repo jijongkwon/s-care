@@ -10,9 +10,12 @@ import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.scare.api.core.template.response.ResponseCode;
+
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.UnsupportedJwtException;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
@@ -60,22 +63,23 @@ public class JWTUtil {
 			.get("role", String.class);
 	}
 
-	public Boolean validateToken(String token, boolean isAccessToken) {
+	public ResponseCode validateToken(String token) {
+		ResponseCode responseCode = null;
+
 		try {
 			Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration();
 
 		} catch (ExpiredJwtException e) {
-			log.info("{} Token Expired", isAccessToken ? "Access" : "Refresh");
-			// Custom Exception 으로 나중에 변경
-			return false;
+			responseCode = ResponseCode.EXPIRED_JWT_EXCEPTION;
 
-		} catch (JwtException je) {
-			log.info("{} Invalid", isAccessToken ? "Access" : "Refresh");
-			// Custom Exception 으로 나중에 변경
-			return false;
+		} catch (UnsupportedJwtException e) {
+			responseCode = ResponseCode.UNSUPPORTED_JWT_EXCEPTION;
+
+		} catch (JwtException | IllegalArgumentException e) {
+			responseCode = ResponseCode.UNAUTHORIZED_EXCEPTION;
 		}
 
-		return true;
+		return responseCode;
 	}
 
 	public String createAccessToken(Long memberId, String role) {

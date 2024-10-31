@@ -7,8 +7,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.scare.api.core.jwt.dto.CustomUserDetails;
 import com.scare.api.core.jwt.util.JWTUtil;
+import com.scare.api.core.template.response.BaseResponse;
+import com.scare.api.core.template.response.ResponseCode;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -39,8 +42,9 @@ public class JWTFilter extends OncePerRequestFilter {
 		String accessToken = authorizationHeader.substring(7);
 
 		// 토큰 만료 여부 확인, 만료시 다음 필터로 넘기지 않음
-		if (!jwtUtil.validateToken(accessToken, true)) {
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		ResponseCode errorResponseCode = jwtUtil.validateToken(accessToken);
+		if (errorResponseCode != null) {
+			setErrorResponse(response, errorResponseCode);
 			return;
 		}
 
@@ -61,6 +65,15 @@ public class JWTFilter extends OncePerRequestFilter {
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 
 		filterChain.doFilter(request, response);
+	}
+
+	private void setErrorResponse(HttpServletResponse response, ResponseCode errorResponseCode) throws IOException {
+		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+
+		// JSON 형태의 오류 응답 작성
+		response.getWriter().write(new ObjectMapper().writeValueAsString(BaseResponse.ofFail(errorResponseCode)));
 	}
 
 }
