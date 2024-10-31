@@ -1,15 +1,15 @@
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
-from services.calculate_service import calculate_stress_index
+from services.calculate_service import calc_stress_index
 from exceptions.custom_exceptions import CalculateFailedException
 from models.request_models import HeartRateRequest
 
 router = APIRouter()
 
-@router.post("/fast/stress/calc")
-def get_stress_index(data: HeartRateRequest):
+@router.post("/fast/stress/calc/single")
+def calc_stress_index(data: HeartRateRequest):
     try:
-        stress_index = calculate_stress_index(data.hr_data)
+        stress_index = calc_stress_index(data.hr_data)
         if stress_index is None:
             raise CalculateFailedException()
         content = {"code": "2000", "message": "SUCCESS", "data": {"stressIndex": stress_index}}

@@ -3,7 +3,7 @@ import pyhrv.time_domain as td
 import pyhrv.frequency_domain as fd
 from exceptions.custom_exceptions import CalculateFailedException
 
-def calculate_stress_index(hr_data):
+def calc_stress_index(hr_data):
     try:
         # NN 간격 계산
         nn_intervals = 60000 / np.array(hr_data)
