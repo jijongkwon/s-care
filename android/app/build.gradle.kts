@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -18,6 +20,7 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        resValue("string", "map_api_key", getApiKey("MAP_API_KEY"))
     }
 
     buildTypes {
@@ -46,6 +49,10 @@ android {
     }
 }
 
+fun getApiKey(key: String): String {
+    return gradleLocalProperties(rootDir).getProperty(key)
+}
+
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -62,6 +69,11 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.8.3")
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.work.runtime.ktx)
+
+    implementation("com.naver.maps:map-sdk:3.19.1")
+    implementation("io.github.fornewid:naver-map-compose:1.5.1")
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+    implementation("io.github.fornewid:naver-map-location:21.0.2")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
