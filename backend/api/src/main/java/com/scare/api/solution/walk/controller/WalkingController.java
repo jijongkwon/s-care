@@ -1,6 +1,7 @@
 package com.scare.api.solution.walk.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,7 +25,7 @@ public class WalkingController implements WalkingControllerDocs {
 		return null;
 	}
 
-	@RequestMapping("/detail/{course-id}")
+	@GetMapping("/detail/{course-id}")
 	@Override
 	public ResponseEntity<BaseResponse<WalkingCourseDto>> getWalkingCourse(
 		@PathVariable("course-id") Long courseId) {
