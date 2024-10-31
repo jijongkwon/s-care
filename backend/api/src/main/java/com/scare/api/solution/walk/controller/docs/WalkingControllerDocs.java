@@ -3,6 +3,7 @@ package com.scare.api.solution.walk.controller.docs;
 import org.springframework.http.ResponseEntity;
 
 import com.scare.api.core.template.response.BaseResponse;
+import com.scare.api.solution.walk.service.dto.WalkingCourseDto;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -23,5 +24,18 @@ public interface WalkingControllerDocs {
 		@ApiResponse(responseCode = "500", description = "서버 오류")
 	})
 	ResponseEntity<BaseResponse<?>> saveWalkingCourse();
+
+	@Operation(
+		summary = "산책 코스 상세조회",
+		description = "특정 산책 코스의 상세정보를 조회합니다."
+	)
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "201", description = "산책 코스 상세조회 성공"),
+		@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+		@ApiResponse(responseCode = "401", description = "인증 실패"),
+		@ApiResponse(responseCode = "500", description = "서버 오류"),
+
+	})
+	ResponseEntity<BaseResponse<WalkingCourseDto>> getWalkingCourse(Long courseId);
 
 }
