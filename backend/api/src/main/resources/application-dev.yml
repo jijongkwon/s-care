@@ -41,7 +41,7 @@ jwt:
     key: ${JWT_SECRET_KEY}
   issuer: ${JWT_ISSUER}
   salt: ${JWT_SALT}
-  access-token:
-    expiretime: ${DEV_JWT_ACCESS_TOKEN_EXPIRETIME}
-  refresh-token:
-    expiretime: ${DEV_JWT_REFRESH_TOKEN_EXPIRETIME}
+  access:
+    expiration: ${JWT_ACCESS_TOKEN_EXPIRATION}
+  refresh:
+    expiration: ${JWT_REFRESH_TOKEN_EXPIRATION}
