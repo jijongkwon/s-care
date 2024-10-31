@@ -7,9 +7,9 @@ from models.request_models import HeartRateRequest
 router = APIRouter()
 
 @router.post("/fast/stress/calc/single")
-def calc_stress_index(data: HeartRateRequest):
+def calc_single_stress_index(data: HeartRateRequest):
     try:
-        stress_index = calc_stress_index(data.hr_data)
+        stress_index = calc_single_stress_index(data.hr_data)
         if stress_index is None:
             raise CalculateFailedException()
         content = {"code": "2000", "message": "SUCCESS", "data": {"stressIndex": stress_index}}
