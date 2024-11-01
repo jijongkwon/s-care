@@ -33,8 +33,6 @@ public class JWTUtil {
 	@Value("${jwt.access.expiration}")
 	private Long accessExpiration;
 
-	// 테스트용
-	// private Long accessExpiration = 10000L; // 10초
 
 	@Value("${jwt.refresh.expiration}")
 	private Long refreshExpiration;
