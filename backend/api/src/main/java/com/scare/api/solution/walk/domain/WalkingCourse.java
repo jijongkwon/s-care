@@ -2,6 +2,7 @@ package com.scare.api.solution.walk.domain;
 
 import java.time.LocalDateTime;
 
+import com.scare.api.core.domain.BaseTimeEntity;
 import com.scare.api.member.domain.Member;
 
 import jakarta.persistence.Column;
@@ -22,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class WalkingCourse {
+public class WalkingCourse extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
