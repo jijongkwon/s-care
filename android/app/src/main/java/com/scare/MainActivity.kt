@@ -4,6 +4,7 @@ import GoogleLoginRepository
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -26,6 +27,9 @@ import com.scare.ui.mobile.login.LoginViewModelFactory
 import com.scare.ui.mobile.main.MainPage
 import com.scare.ui.mobile.main.StartPage
 import com.scare.ui.theme.ScareTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     private lateinit var loginViewModel: LoginViewModel
@@ -40,17 +44,30 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // TokenRepository를 초기화하여 Context 전달
+        TokenRepository.init(this)
+
         val googleLoginRepository = GoogleLoginRepository(this) // GoogleLoginRepository 초기화
-        val sharedPreferences = getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
-        val tokenRepository = TokenRepository(sharedPreferences)
+        loginViewModel = ViewModelProvider(
+            this, LoginViewModelFactory(googleLoginRepository, TokenRepository)
+        )[LoginViewModel::class.java]
 
-        loginViewModel = ViewModelProvider(this, LoginViewModelFactory(googleLoginRepository, tokenRepository))[LoginViewModel::class.java]
+        // accessToken 확인 후 시작 화면 설정
+        CoroutineScope(Dispatchers.Main).launch {
+            val startDestination = if (TokenRepository.getAccessToken() != null) {
+                "main"
+            } else {
+                "start"
+            }
 
-        setContent {
-            val navController = rememberNavController()
-            NavHost(navController = navController, startDestination = "start") {
-                composable("start") { StartPage(navController, loginViewModel) { launchLogin() } }
-                composable("main") { MainPage(loginViewModel, navController) }
+            setContent {
+                ScareTheme {
+                    val navController = rememberNavController()
+                    NavHost(navController = navController, startDestination = startDestination) {
+                        composable("start") { StartPage(navController, loginViewModel) { launchLogin() } }
+                        composable("main") { MainPage(loginViewModel, navController) }
+                    }
+                }
             }
         }
     }

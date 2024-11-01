@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,10 +22,13 @@ import androidx.compose.runtime.getValue
 @Composable
 fun StartPage(navController: NavHostController, loginViewModel: LoginViewModel, onSignInClick: () -> Unit) {
     val profileUrl by loginViewModel.profileUrl.collectAsState()
-
-    if (profileUrl != null) {
-        navController.navigate("main") {
-            popUpTo("start") { inclusive = true }
+    
+    //변경될때만 네비게이션이 트리거
+    LaunchedEffect(profileUrl) {
+        if (profileUrl != null) {
+            navController.navigate("main") {
+                popUpTo("start") { inclusive = true }
+            }
         }
     }
 

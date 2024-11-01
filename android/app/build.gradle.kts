@@ -68,16 +68,27 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
-    implementation("io.coil-kt:coil-compose:2.0.0")
+    implementation(libs.coil.compose)
 
-    implementation("androidx.navigation:navigation-compose:2.8.3")
+    implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.work.runtime.ktx)
 
-    implementation(platform("com.google.firebase:firebase-bom:32.0.0")) // Firebase BOM을 사용하여 버전 관리
-    implementation("com.google.firebase:firebase-auth-ktx") // Kotlin 확장 프로그램 사용
-    implementation("com.google.android.gms:play-services-auth:20.5.0")
+    implementation(platform(libs.firebase.bom)) // Firebase BOM을 사용하여 버전 관리
+    implementation(libs.firebase.auth.ktx) // Kotlin 확장 프로그램 사용
+    implementation(libs.play.services.auth)
     implementation(libs.androidx.runtime.livedata)
+
+    // Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson) // Gson 변환기
+
+    // OkHttp
+    implementation(libs.okhttp)
+    implementation(libs.logging.interceptor) // 로깅 인터셉터 (디버깅용)
+
+    //dataStore
+    implementation(libs.androidx.datastore.preferences)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
