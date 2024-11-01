@@ -1,5 +1,6 @@
 package com.scare.api.core.config.security;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,6 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.scare.api.core.jwt.filter.JWTFilter;
 import com.scare.api.core.jwt.util.JWTUtil;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -23,6 +25,23 @@ public class SecurityConfig {
 	private final JWTUtil jwtUtil;
 	private final ObjectMapper objectMapper;
 
+	@Value("${springdoc.swagger-ui.path}")
+	private String swaggerPath;
+	private String fullSwaggerPath;
+
+	@Value("${springdoc.api-docs.path}")
+	private String apiDocsPath;
+	private String fullApiDocsPath;
+
+	@PostConstruct
+	private void init() {
+		this.fullSwaggerPath = swaggerPath + "/**";
+		this.fullApiDocsPath = apiDocsPath + "/**";
+
+		System.out.println(fullSwaggerPath);
+		System.out.println(fullApiDocsPath);
+	}
+
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		// CSRF 보호 비활성화
@@ -32,7 +51,8 @@ public class SecurityConfig {
 		http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
 		http.authorizeHttpRequests(auth -> auth
-			.requestMatchers("/api/v*/members/auth/login", "/s-care/swagger-ui/**", "/v*/api-docs/**").permitAll()
+			.requestMatchers("/api/v1/members/auth/login", "/api/v1/members/auth/reissue").permitAll()
+			.requestMatchers(fullSwaggerPath, fullApiDocsPath).permitAll()
 			.anyRequest().authenticated());
 
 		http.addFilterBefore(new JWTFilter(jwtUtil, objectMapper), UsernamePasswordAuthenticationFilter.class);

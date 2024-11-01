@@ -47,6 +47,8 @@ jwt:
 springdoc:
   swagger-ui:
     path: ${SWAGGER_UI_PATH}  # Swagger UI에 접근할 URL 경로
+  api-docs:
+    path: ${SWAGGER_API_DOCS_PATH}
 
 ## fast API 주소
 fast:

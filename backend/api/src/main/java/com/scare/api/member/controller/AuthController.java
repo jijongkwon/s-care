@@ -1,8 +1,6 @@
 package com.scare.api.member.controller;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.scare.api.core.jwt.util.JWTUtil;
 import com.scare.api.core.template.response.BaseResponse;
-import com.scare.api.core.template.response.ResponseCode;
 import com.scare.api.member.controller.docs.AuthControllerDocs;
 import com.scare.api.member.controller.dto.request.LoginReq;
 import com.scare.api.member.service.MemberService;
@@ -44,15 +41,14 @@ public class AuthController implements AuthControllerDocs {
 
 	@Override
 	@PostMapping("/reissue")
-	public ResponseEntity<BaseResponse<?>> reissue(@CookieValue("refreshToken") String refreshToken,
-		HttpServletRequest request,
-		HttpServletResponse response) {
+	public ResponseEntity<BaseResponse<?>> reissue(HttpServletRequest request, HttpServletResponse response) {
 
-		ResponseCode errorResponseCode = jwtUtil.validateToken(refreshToken);
+		String refreshToken = request.getHeader("refreshToken");
 
-		if (errorResponseCode != null) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(BaseResponse.ofFail(errorResponseCode));
-		}
+		// ResponseCode errorResponseCode = jwtUtil.validateToken(refreshToken);
+		// if (errorResponseCode != null) {
+		// 	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(BaseResponse.ofFail(errorResponseCode));
+		// }
 
 		// 토큰 생성
 		// String accessToken = jwtUtil.createAccessToken(jwt, result.getRole());
