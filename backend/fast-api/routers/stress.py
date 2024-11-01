@@ -13,10 +13,10 @@ router = APIRouter()
 @router.post("/fast/stress/single")
 def calc_single_stress_index(data: SingleStressRequest):
     try:
-        stress_idx = get_single_stress(data.hr_data)
-        if stress_idx is None:
+        stress = get_single_stress(data.hr_data)
+        if stress is None:
             raise CalculateFailedException()
-        response = StressData(stress=stress_idx)
+        response = StressData(stress=stress)
         return JSONResponse(content=SuccessResponse(data=response.model_dump()).model_dump(), status_code=200)
     except CalculateFailedException as e:
         return JSONResponse(content=ErrorResponse(code="5000", message=str(e)), status_code=500)
@@ -25,17 +25,17 @@ def calc_single_stress_index(data: SingleStressRequest):
 @router.post("/fast/stress/overview")
 def calc_multiple_stress_index(data: StressOverviewRequest):
     try:
-        stress_idx_arr = get_multiple_stress_index(data.hr_data)
-        if stress_idx_arr is None:
+        stress_arr = get_multiple_stress_index(data.hr_data)
+        if stress_arr is None:
             raise CalculateFailedException()
-        avg_arr, start_idx, end_idx = find_healing_course_idx(stress_idx_arr) if data.walking_time >= 300 else None
+        avg_arr, start_idx, end_idx = find_healing_course_idx(stress_arr) if data.walking_time >= 300 else None
         response = StressOverview(
             max_stress=max(avg_arr),
             min_stress=min(avg_arr),
             healing_stress_avg=min(avg_arr),
             start_idx=start_idx,
             end_idx=end_idx,
-            stress_indices=stress_idx_arr
+            stress_indices=stress_arr
         )
         return JSONResponse(content=SuccessResponse(data=response.model_dump()).model_dump(), status_code=200)
     except CalculateFailedException as e:
