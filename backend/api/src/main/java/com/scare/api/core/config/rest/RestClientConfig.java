@@ -11,12 +11,12 @@ import org.springframework.web.client.RestClient;
 public class RestClientConfig {
 
 	@Value("${fast.api.base-url}")
-	private String fastAPiURL;
+	private String fastAPIURL;
 
 	@Bean
-	public RestClient restClient(RestClient.Builder builder) {
-		return builder
-			.baseUrl(fastAPiURL)
+	public RestClient restFastAPIClient() {
+		return RestClient.builder()
+			.baseUrl(fastAPIURL)
 			.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 			.build();
 	}
