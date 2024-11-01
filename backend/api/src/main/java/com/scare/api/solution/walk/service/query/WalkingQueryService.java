@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.scare.api.member.domain.Member;
 import com.scare.api.member.repository.MemberRepository;
@@ -21,6 +22,7 @@ import com.scare.api.solution.walk.service.query.dto.WalkingCourseDto;
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class WalkingQueryService {
 
