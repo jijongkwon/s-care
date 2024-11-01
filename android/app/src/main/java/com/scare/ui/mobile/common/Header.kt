@@ -34,7 +34,6 @@ import com.scare.R
 @Composable
 fun TheHeader (
     imageUrl: String? = null,
-    accessToken: String? = null,
     isMainPage: Boolean = false,
     onBackClick: () -> Unit = {}
 ) {

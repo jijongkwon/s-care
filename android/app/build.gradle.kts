@@ -17,9 +17,11 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
         vectorDrawables {
             useSupportLibrary = true
         }
+
         resValue("string", "map_api_key", getApiKey("MAP_API_KEY"))
     }
 
@@ -64,16 +66,33 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
-    implementation("io.coil-kt:coil-compose:2.0.0")
+    implementation(libs.coil.compose.v200)
 
-    implementation("androidx.navigation:navigation-compose:2.8.3")
+    implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.work.runtime.ktx)
 
-    implementation("com.naver.maps:map-sdk:3.19.1")
-    implementation("io.github.fornewid:naver-map-compose:1.5.1")
-    implementation("com.google.android.gms:play-services-location:21.0.1")
-    implementation("io.github.fornewid:naver-map-location:21.0.2")
+    //Naver Map
+    implementation(libs.map.sdk)
+    implementation(libs.naver.map.compose)
+    implementation(libs.play.services.location)
+    implementation(libs.naver.map.location)
+
+    implementation(platform(libs.firebase.bom)) // Firebase BOM을 사용하여 버전 관리
+    implementation(libs.firebase.auth.ktx) // Kotlin 확장 프로그램 사용
+    implementation(libs.play.services.auth)
+    implementation(libs.androidx.runtime.livedata)
+
+    // Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson) // Gson 변환기
+
+    // OkHttp
+    implementation(libs.okhttp)
+    implementation(libs.logging.interceptor) // 로깅 인터셉터 (디버깅용)
+
+    //dataStore
+    implementation(libs.androidx.datastore.preferences)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
