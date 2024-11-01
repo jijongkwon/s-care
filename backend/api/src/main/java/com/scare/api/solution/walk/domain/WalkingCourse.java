@@ -2,11 +2,16 @@ package com.scare.api.solution.walk.domain;
 
 import java.time.LocalDateTime;
 
+import com.scare.api.member.domain.Member;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -33,6 +38,9 @@ public class WalkingCourse {
 	@Column(name = "max_stress", nullable = false)
 	private double maxStress;
 
+	@Column(name = "healing_stress_avg", nullable = false)
+	private double healingStressAvg;
+
 	@Column(name = "start_idx")
 	private Integer startIdx;
 
@@ -45,15 +53,21 @@ public class WalkingCourse {
 	@Column(name = "finished_at", nullable = false)
 	private LocalDateTime finishedAt;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "member_id")
+	Member member;
+
 	@Builder
-	public WalkingCourse(double distance, double minStress, double maxStress, int startIdx, int endIdx,
-		LocalDateTime startedAt, LocalDateTime finishedAt) {
+	public WalkingCourse(double distance, double minStress, double maxStress, double healingStressAvg, Integer startIdx,
+		Integer endIdx, LocalDateTime startedAt, LocalDateTime finishedAt, Member member) {
 		this.distance = distance;
 		this.minStress = minStress;
 		this.maxStress = maxStress;
+		this.healingStressAvg = healingStressAvg;
 		this.startIdx = startIdx;
 		this.endIdx = endIdx;
 		this.startedAt = startedAt;
 		this.finishedAt = finishedAt;
+		this.member = member;
 	}
 }

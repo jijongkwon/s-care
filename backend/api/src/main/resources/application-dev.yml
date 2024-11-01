@@ -45,3 +45,9 @@ jwt:
     expiration: ${JWT_ACCESS_TOKEN_EXPIRATION}
   refresh:
     expiration: ${JWT_REFRESH_TOKEN_EXPIRATION}
+
+## fast API 주소
+fast:
+  api:
+    base-url: ${FAST_API_BASE_URL}
+    stress-endpoint: ${STRESS_ENDPOINT}
