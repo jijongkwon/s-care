@@ -1,20 +1,22 @@
 package com.scare.api.solution.walk.service.command;
 
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClient;
-import org.springframework.web.client.RestClientException;
 
+import com.scare.api.core.jwt.dto.CustomUserDetails;
+import com.scare.api.infrastructure.external.stress.StressApiClient;
 import com.scare.api.member.domain.Member;
+import com.scare.api.member.repository.MemberRepository;
+import com.scare.api.member.service.helper.MemberServiceHelper;
+import com.scare.api.solution.walk.domain.WalkingDetail;
 import com.scare.api.solution.walk.repository.WalkingCourseRepository;
 import com.scare.api.solution.walk.repository.WalkingDetailRepository;
-import com.scare.api.solution.walk.service.command.dto.WalkingCourseDto;
-import com.scare.api.solution.walk.service.command.dto.WalkingCourseStressDto;
+import com.scare.api.solution.walk.service.command.dto.SaveWalkingCourseDto;
+import com.scare.api.solution.walk.service.command.dto.SaveWalkingCourseLocationDto;
+import com.scare.api.solution.walk.service.command.dto.SaveWalkingCourseStressDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,48 +24,43 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class WalkingCommandService {
 
-	@Value("${fast.api.stress-endpoint}")
-	private String stressEndpoint;
-
-	private final RestClient restClient;
-
+	private final StressApiClient stressApiClient;
+	private final MemberRepository memberRepository;
 	private final WalkingCourseRepository walkingCourseRepository;
 	private final WalkingDetailRepository walkingDetailRepository;
 
-	// TODO: 산책 코스 저장
-	public Long saveWalkingCourse(Member member, WalkingCourseDto walkingCourseDto) {
-		long walkingTime = getWalkingTime(walkingCourseDto);
+	public Long saveWalkingCourse(CustomUserDetails customUserDetails, SaveWalkingCourseDto walkingCourseSaveDto) {
+		long walkingTime = getWalkingTime(walkingCourseSaveDto);
+		SaveWalkingCourseStressDto stressData = stressApiClient.getStressData(walkingCourseSaveDto, walkingTime);
 
-		WalkingCourseStressDto stressData = getStressData(walkingCourseDto, walkingTime);
-		WalkingCourseDto enrichedDto = walkingCourseDto.withStressData(stressData);
-		Long walkingCourseId = walkingCourseRepository.save(enrichedDto.toWalkingCourse()).getId();
-		walkingDetailRepository.save(enrichedDto.toWalkingDetail(walkingCourseId));
+		SaveWalkingCourseDto enrichedDto = walkingCourseSaveDto.withStressData(stressData);
+		List<WalkingDetail.LocationPoint> locationPoints = processLocationData(enrichedDto.getLocations());
+		Member existingMember = MemberServiceHelper.findExistingMember(memberRepository,
+			customUserDetails.getMemberId());
+
+		Long walkingCourseId = walkingCourseRepository.save(enrichedDto.toWalkingCourse(existingMember)).getId();
+		walkingDetailRepository.save(enrichedDto.toWalkingDetail(walkingCourseId, locationPoints));
 		return walkingCourseId;
 	}
 
-	// TODO: 총 산책 시간 반환
-	private long getWalkingTime(WalkingCourseDto walkingCourseDto) {
+	private long getWalkingTime(SaveWalkingCourseDto walkingCourseSaveDto) {
 		return ChronoUnit.SECONDS.between(
-			walkingCourseDto.getStartedAt(),
-			walkingCourseDto.getFinishedAt()
+			walkingCourseSaveDto.getStartedAt(),
+			walkingCourseSaveDto.getFinishedAt()
 		);
 	}
 
-	//TODO: Fast API 호출
-	public WalkingCourseStressDto getStressData(WalkingCourseDto walkingCourseDto, long walkingTime) throws
-		RestClientException {
-		return restClient.post()
-			.uri(stressEndpoint)
-			.contentType(MediaType.APPLICATION_JSON)
-			.body(createRequestBody(walkingCourseDto, walkingTime))
-			.retrieve()
-			.body(WalkingCourseStressDto.class);
-	}
+	private List<WalkingDetail.LocationPoint> processLocationData(List<SaveWalkingCourseLocationDto> locationPoints) {
+		List<WalkingDetail.LocationPoint> newLocationPoints = new ArrayList<>();
+		for (int i = 3; i < locationPoints.size(); i++) {
+			SaveWalkingCourseLocationDto location = locationPoints.get(i);
+			newLocationPoints.add(WalkingDetail.LocationPoint.builder()
+				.latitude(location.getLatitude())
+				.longitude(location.getLongitude())
+				.createdAt(location.getCreatedAt())
+				.build());
+		}
 
-	private Map<String, Object> createRequestBody(WalkingCourseDto dto, long walkingTime) {
-		Map<String, Object> requestBody = new HashMap<>();
-		requestBody.put("hr_data", dto.getHeartRates());
-		requestBody.put("walking_time", walkingTime);
-		return requestBody;
+		return newLocationPoints;
 	}
 }
