@@ -39,10 +39,10 @@ public class WalkingCourseReq {
 	private LocalDateTime finishedAt;
 
 	@Schema(
-		description = "스트레스 지수 배열",
+		description = "심박수 목록",
 		example = "[25.5, 30.2, 28.7, 27.8, 32.1]"
 	)
-	private List<Double> stressIndices;
+	private List<Double> heartRates;
 
 	@Schema(description = "위치 데이터 목록")
 	private List<LocationData> locations;

@@ -22,5 +22,4 @@ public class WalkingCourseLocationDto {
 			.createdAt(location.getCreatedAt())
 			.build();
 	}
-
 }
