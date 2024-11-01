@@ -37,12 +37,6 @@ public class SecurityConfig {
 
 		http.addFilterBefore(new JWTFilter(jwtUtil, objectMapper), UsernamePasswordAuthenticationFilter.class);
 
-		// http.formLogin(AbstractHttpConfigurer::disable); // formLogin 사용 비활성화
-
-		// http.formLogin(form ->
-		// 	form.loginPage("/login").permitAll()
-		// );
-
 		return http.build();
 	}
 
