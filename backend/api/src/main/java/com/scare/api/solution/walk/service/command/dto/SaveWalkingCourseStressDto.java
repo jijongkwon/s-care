@@ -9,7 +9,7 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class WalkingCourseStressDto {
+public class SaveWalkingCourseStressDto {
 	@JsonProperty("max_stress")
 	private double maxStress;
 

@@ -1,11 +1,11 @@
 package com.scare.api.solution.walk.service.command.dto;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.scare.api.solution.walk.controller.request.command.WalkingCourseReq;
+import com.scare.api.member.domain.Member;
+import com.scare.api.solution.walk.controller.request.command.SaveWalkingCourseReq;
 import com.scare.api.solution.walk.domain.WalkingCourse;
 import com.scare.api.solution.walk.domain.WalkingDetail;
 
@@ -14,7 +14,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class WalkingCourseDto {
+public class SaveWalkingCourseDto {
 
 	private double distance;
 	private double minStress;
@@ -25,24 +25,24 @@ public class WalkingCourseDto {
 	private LocalDateTime startedAt;
 	private LocalDateTime finishedAt;
 	private List<Double> heartRates;
-	private WalkingCourseStressDto stressData;
-	private List<WalkingCourseLocationDto> locations;
+	private SaveWalkingCourseStressDto stressData;
+	private List<SaveWalkingCourseLocationDto> locations;
 
-	public static WalkingCourseDto from(WalkingCourseReq request) {
-		return WalkingCourseDto.builder()
+	public static SaveWalkingCourseDto from(SaveWalkingCourseReq request) {
+		return SaveWalkingCourseDto.builder()
 			.distance(request.getDistance())
 			.startedAt(request.getStartedAt())
 			.finishedAt(request.getFinishedAt())
 			.heartRates(request.getHeartRates())
 			.locations(request.getLocations().stream()
-				.map(WalkingCourseLocationDto::from)
+				.map(SaveWalkingCourseLocationDto::from)
 				.collect(Collectors.toList()))
 			.build();
 	}
 
 	// to WalkingCourse
-	public WalkingCourseDto withStressData(WalkingCourseStressDto stressData) {
-		return WalkingCourseDto.builder()
+	public SaveWalkingCourseDto withStressData(SaveWalkingCourseStressDto stressData) {
+		return SaveWalkingCourseDto.builder()
 			.distance(this.distance)
 			.minStress(stressData.getMinStress())
 			.maxStress(stressData.getMaxStress())
@@ -58,7 +58,7 @@ public class WalkingCourseDto {
 	}
 
 	// to WalkingDetail
-	public WalkingCourse toWalkingCourse() {
+	public WalkingCourse toWalkingCourse(Member member) {
 		return WalkingCourse.builder()
 			.distance(this.distance)
 			.minStress(this.stressData.getMinStress())
@@ -67,25 +67,11 @@ public class WalkingCourseDto {
 			.endIdx(this.stressData.getEndIdx())
 			.startedAt(this.startedAt)
 			.finishedAt(this.finishedAt)
+			.member(member)
 			.build();
 	}
 
-	public WalkingDetail toWalkingDetail(Long walkingCourseId) {
-		List<WalkingDetail.LocationPoint> locationPoints = new ArrayList<>();
-		List<Double> stressIndices = this.stressData.getStressIndices();
-
-		for (int i = 3; i < this.locations.size(); i++) {
-			WalkingCourseLocationDto location = this.locations.get(i);
-			double stressIndex = stressIndices.get(i);
-
-			locationPoints.add(WalkingDetail.LocationPoint.builder()
-				.latitude(location.getLatitude())
-				.longitude(location.getLongitude())
-				.stressIndex(stressIndex)
-				.createdAt(location.getCreatedAt())
-				.build());
-		}
-
+	public WalkingDetail toWalkingDetail(Long walkingCourseId, List<WalkingDetail.LocationPoint> locationPoints) {
 		return WalkingDetail.builder()
 			.id(walkingCourseId)
 			.locationData(locationPoints)

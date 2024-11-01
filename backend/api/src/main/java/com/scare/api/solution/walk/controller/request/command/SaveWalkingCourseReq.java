@@ -12,7 +12,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @Schema(description = "걷기 운동 코스 기록 정보")
-public class WalkingCourseReq {
+public class SaveWalkingCourseReq {
 
 	@Schema(
 		description = "걷기 운동 거리(km)",
