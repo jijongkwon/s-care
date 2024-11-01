@@ -33,6 +33,9 @@ public class WalkingCourse {
 	@Column(name = "max_stress", nullable = false)
 	private double maxStress;
 
+	@Column(name = "healing_stress_avg", nullable = false)
+	private double healingStressAvg;
+
 	@Column(name = "start_idx")
 	private Integer startIdx;
 
@@ -46,11 +49,12 @@ public class WalkingCourse {
 	private LocalDateTime finishedAt;
 
 	@Builder
-	public WalkingCourse(double distance, double minStress, double maxStress, int startIdx, int endIdx,
-		LocalDateTime startedAt, LocalDateTime finishedAt) {
+	public WalkingCourse(double distance, double minStress, double maxStress, double healingStressAvg, Integer startIdx,
+		Integer endIdx, LocalDateTime startedAt, LocalDateTime finishedAt) {
 		this.distance = distance;
 		this.minStress = minStress;
 		this.maxStress = maxStress;
+		this.healingStressAvg = healingStressAvg;
 		this.startIdx = startIdx;
 		this.endIdx = endIdx;
 		this.startedAt = startedAt;
