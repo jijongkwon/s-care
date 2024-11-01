@@ -1,6 +1,7 @@
 package com.scare.api.core.jwt.filter;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,11 +27,13 @@ public class JWTFilter extends OncePerRequestFilter {
 
 	private final JWTUtil jwtUtil;
 	private final ObjectMapper objectMapper;
+	private static final List<String> EXCLUDED_URIS = List.of("/api/v1/members/auth/login",
+		"/api/v1/members/auth/reissue"
+	);
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-		FilterChain filterChain) throws
-		ServletException, IOException {
+		FilterChain filterChain) throws ServletException, IOException {
 
 		String authorizationHeader = request.getHeader("Authorization");
 
@@ -49,6 +52,27 @@ public class JWTFilter extends OncePerRequestFilter {
 			return;
 		}
 
+		// Authentication 저장
+		setAuthentication(accessToken);
+
+		filterChain.doFilter(request, response);
+	}
+
+	@Override
+	protected boolean shouldNotFilter(HttpServletRequest request) {
+		return EXCLUDED_URIS.contains(request.getRequestURI());
+	}
+
+	private void setErrorResponse(HttpServletResponse response, ResponseCode errorResponseCode) throws IOException {
+		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+
+		// JSON 형태의 오류 응답 작성
+		response.getWriter().write(objectMapper.writeValueAsString(BaseResponse.ofFail(errorResponseCode)));
+	}
+
+	private void setAuthentication(String accessToken) {
 		// memberId, role 값을 획득
 		Long memberId = jwtUtil.getMemberId(accessToken);
 		String role = jwtUtil.getRole(accessToken);
@@ -64,17 +88,6 @@ public class JWTFilter extends OncePerRequestFilter {
 
 		// 강제로 시큐리티의 세션에 접근하여 값 저장
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-
-		filterChain.doFilter(request, response);
-	}
-
-	private void setErrorResponse(HttpServletResponse response, ResponseCode errorResponseCode) throws IOException {
-		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-		response.setContentType("application/json");
-		response.setCharacterEncoding("UTF-8");
-
-		// JSON 형태의 오류 응답 작성
-		response.getWriter().write(objectMapper.writeValueAsString(BaseResponse.ofFail(errorResponseCode)));
 	}
 
 }
