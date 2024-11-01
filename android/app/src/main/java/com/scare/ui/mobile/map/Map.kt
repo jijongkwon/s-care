@@ -2,15 +2,35 @@ package com.scare.ui.mobile.map
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import com.naver.maps.map.compose.ExperimentalNaverMapApi
-import com.naver.maps.map.compose.NaverMap
+import com.naver.maps.map.compose.*
+import com.scare.ui.mobile.common.TheHeader
 
 @ExperimentalNaverMapApi
 @Composable
 fun Map(modifier: Modifier = Modifier) {
-    Box(modifier = modifier) {
-        NaverMap(modifier = Modifier.fillMaxSize()) {}
+    Scaffold(
+        topBar = { TheHeader { } }
+    ) {
+        Box(Modifier.fillMaxSize()) {
+            var mapProperties by remember {
+                mutableStateOf(
+                    MapProperties(maxZoom = 20.0, minZoom = 5.0, locationTrackingMode = LocationTrackingMode.Follow)
+                )
+            }
+            var mapUiSettings by remember {
+                mutableStateOf(
+                    MapUiSettings(isLocationButtonEnabled = true)
+                )
+            }
+            NaverMap(
+                locationSource = rememberFusedLocationSource(),
+                properties = mapProperties,
+                uiSettings = mapUiSettings
+            )
+        }
+
     }
 }
