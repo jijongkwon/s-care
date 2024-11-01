@@ -3,6 +3,7 @@ package com.scare.api.solution.walk.controller.docs;
 import org.springframework.http.ResponseEntity;
 
 import com.scare.api.core.template.response.BaseResponse;
+import com.scare.api.member.domain.Member;
 import com.scare.api.solution.walk.controller.request.command.WalkingCourseReq;
 import com.scare.api.solution.walk.service.query.dto.WalkingCourseDto;
 
@@ -25,6 +26,7 @@ public interface WalkingControllerDocs {
 		@ApiResponse(responseCode = "500", description = "서버 오류")
 	})
 	ResponseEntity<BaseResponse<?>> saveWalkingCourse(
+		Member member,
 		WalkingCourseReq walkingCourseReq
 	);
 

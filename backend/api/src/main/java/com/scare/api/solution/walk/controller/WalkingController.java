@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.scare.api.core.template.response.BaseResponse;
+import com.scare.api.member.domain.Member;
 import com.scare.api.solution.walk.controller.docs.WalkingControllerDocs;
 import com.scare.api.solution.walk.controller.request.command.WalkingCourseReq;
 import com.scare.api.solution.walk.service.command.WalkingCommandService;
@@ -26,8 +27,9 @@ public class WalkingController implements WalkingControllerDocs {
 
 	@Override
 	@PostMapping("/")
-	public ResponseEntity<BaseResponse<?>> saveWalkingCourse(WalkingCourseReq walkingCourseReq) {
-		return null;
+	public ResponseEntity<BaseResponse<?>> saveWalkingCourse(Member member, WalkingCourseReq walkingCourseReq) {
+		return ResponseEntity.ok(BaseResponse.ofSuccess(walkingCommandService.saveWalkingCourse(member,
+			com.scare.api.solution.walk.service.command.dto.WalkingCourseDto.from(walkingCourseReq))));
 	}
 
 	@GetMapping("/detail/{course-id}")
