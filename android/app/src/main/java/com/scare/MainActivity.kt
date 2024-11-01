@@ -34,7 +34,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
-    @OptIn(ExperimentalNaverMapApi::class)
     private lateinit var loginViewModel: LoginViewModel
 
     private val signInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -46,21 +45,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            ScareTheme {
-                val navController = androidx.navigation.compose.rememberNavController()
-
-                NavHost(navController = navController, startDestination = "main") {
-                    composable("start") { StartPage(navController) }
-                    composable("main",
-                        arguments = listOf(
-                            navArgument("imageUrl") { type = NavType.StringType },
-                            navArgument("accessToken") { type = NavType.StringType }
-                        )) { backStackEntry ->
-                        val imageUrl = backStackEntry.arguments?.getString("imageUrl")
-                        val accessToken = backStackEntry.arguments?.getString("accessToken")
-                        MainPage(imageUrl, accessToken, navController)
 
         // TokenRepository를 초기화하여 Context 전달
         TokenRepository.init(this)
@@ -81,13 +65,15 @@ class MainActivity : ComponentActivity() {
             setContent {
                 ScareTheme {
                     val navController = rememberNavController()
+
+                    @OptIn(ExperimentalNaverMapApi::class)
                     NavHost(navController = navController, startDestination = startDestination) {
                         composable("start") { StartPage(navController, loginViewModel) { launchLogin() } }
                         composable("main") { MainPage(loginViewModel, navController) }
+                        composable("statistics") { MyCalender() } // "statistics" 경로 추가
+                        composable("walk") { MyCourse() } // "walk" 경로 추가
+                        composable("map") { Map() } // "map" 경로 추가
                     }
-                    composable("statistics") { MyCalender() } // "statistics" 경로 추가
-                    composable("walk") { MyCourse() } // "walk" 경로 추가
-                    composable("map") { Map() } // "map" 경로 추가
                 }
             }
         }
