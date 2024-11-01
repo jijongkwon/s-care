@@ -29,7 +29,7 @@ def calc_multiple_stress_index(data: StressOverviewRequest):
         if stress_arr is None:
             raise CalculateFailedException()
         healing_stress_avg, start_idx, end_idx = find_healing_course_idx(
-            stress_arr) if data.walking_time >= 300 else None
+            stress_arr) if data.walking_time >= 300 else (None, None, None)
         response = StressOverview(
             max_stress=max(stress_arr),
             min_stress=min(stress_arr),
