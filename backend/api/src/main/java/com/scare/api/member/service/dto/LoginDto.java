@@ -11,16 +11,22 @@ import lombok.Getter;
 @Builder(access = AccessLevel.PRIVATE)
 public class LoginDto {
 
-	@JsonIgnore
-	private Long memberId;
-
 	private String email;
 	private String profileUrl;
 	private String nickname;
 	private String provider;
 	private String role;
 
-	public static LoginDto from(Member member) {
+	@JsonIgnore
+	private Long memberId;
+
+	@JsonIgnore
+	private String accessToken;
+
+	@JsonIgnore
+	private String refreshToken;
+
+	public static LoginDto from(Member member, String accessToken, String refreshToken) {
 		return LoginDto.builder()
 			.memberId(member.getId())
 			.email(member.getEmail())
@@ -28,6 +34,8 @@ public class LoginDto {
 			.nickname(member.getNickname())
 			.provider(member.getProvider().name())
 			.role(member.getRole().name())
+			.accessToken(accessToken)
+			.refreshToken(refreshToken)
 			.build();
 	}
 

@@ -35,15 +35,9 @@ public class AuthController implements AuthControllerDocs {
 	public ResponseEntity<BaseResponse<LoginDto>> login(@RequestBody LoginReq loginReq, HttpServletResponse response) {
 		LoginDto result = memberService.login(loginReq);
 
-		// 토큰 생성
-		String accessToken = jwtUtil.createAccessToken(result.getMemberId(), result.getRole());
-		log.info("AccessToken 토큰 발급 완료: {}", accessToken);
-		String refreshToken = jwtUtil.createRefreshToken();
-		log.info("RefreshToken 토큰 발급 완료: {}", refreshToken);
-
-		// 클라이언트에게 JWT 전달 (예: 응답 헤더에 추가)
-		response.setHeader("Authorization", "Bearer " + accessToken);
-		response.addCookie(jwtUtil.createCookie("refreshToken", refreshToken));
+		// 클라이언트에게 JWT 전달
+		response.setHeader("Authorization", "Bearer " + result.getAccessToken());
+		response.addCookie(jwtUtil.createCookie("refreshToken", result.getRefreshToken()));
 
 		return ResponseEntity.ok(BaseResponse.ofSuccess(result));
 	}

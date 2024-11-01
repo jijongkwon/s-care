@@ -26,11 +26,17 @@ public class MemberService {
 		// 회원가입 or 로그인 진행
 		Member member = processLogin(loginReq);
 
+		// 토큰 생성
+		String accessToken = jwtUtil.createAccessToken(member.getId(), member.getRole().name());
+		log.info("AccessToken 토큰 발급 완료: {}", accessToken);
+		String refreshToken = jwtUtil.createRefreshToken();
+		log.info("RefreshToken 토큰 발급 완료: {}", refreshToken);
+
 		// refreshToken 레디스에 저장
 		// 1. 로그아웃 시 블랙아웃 고려?
 		// 2. RTR 구현해볼까
 
-		return LoginDto.from(member);
+		return LoginDto.from(member, accessToken, refreshToken);
 	}
 
 	private Member processLogin(LoginReq loginReq) {
