@@ -1,10 +1,11 @@
 package com.scare.api.solution.walk.controller.docs;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
+import com.scare.api.core.jwt.dto.CustomUserDetails;
 import com.scare.api.core.template.response.BaseResponse;
-import com.scare.api.member.domain.Member;
-import com.scare.api.solution.walk.controller.request.command.WalkingCourseReq;
+import com.scare.api.solution.walk.controller.request.command.SaveWalkingCourseReq;
 import com.scare.api.solution.walk.service.query.dto.WalkingCourseDto;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,8 +27,8 @@ public interface WalkingControllerDocs {
 		@ApiResponse(responseCode = "500", description = "서버 오류")
 	})
 	ResponseEntity<BaseResponse<?>> saveWalkingCourse(
-		Member member,
-		WalkingCourseReq walkingCourseReq
+		@AuthenticationPrincipal CustomUserDetails customUserDetails,
+		SaveWalkingCourseReq saveWalkingCourseReq
 	);
 
 	@Operation(
