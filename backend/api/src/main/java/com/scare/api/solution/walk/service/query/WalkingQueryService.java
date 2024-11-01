@@ -43,15 +43,7 @@ public class WalkingQueryService {
 		return courses.getContent()
 			.stream()
 			.map(
-				course -> WalkingCourseDto.builder()
-					.distance(course.getDistance())
-					.startedAt(course.getStartedAt())
-					.finishedAt(course.getFinishedAt())
-					.startIdx(course.getStartIdx())
-					.endIdx(course.getEndIdx())
-					.maxStress(course.getMaxStress())
-					.minStress(course.getMinStress())
-					.build()
+				course -> WalkingCourseDto.from(course)
 			).collect(Collectors.toList());
 	}
 
