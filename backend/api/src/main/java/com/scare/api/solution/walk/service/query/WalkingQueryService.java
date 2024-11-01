@@ -36,7 +36,7 @@ public class WalkingQueryService {
 		return WalkingCourseDto.from(walkingCourse, walkingDetail);
 	}
 
-	public List<WalkingCourseDto> getWalkingCourses(Long memberId, int page, int size) {
+	public List<WalkingCourseDto> getWalkingCourseList(Long memberId, int page, int size) {
 		Member member = MemberServiceHelper.findExistingMember(memberRepository, memberId);
 		Page<WalkingCourse> courses = walkingCourseRepository.findAllByMemberOrderByCreatedAtDesc(member,
 			PageRequest.of(page, size));
