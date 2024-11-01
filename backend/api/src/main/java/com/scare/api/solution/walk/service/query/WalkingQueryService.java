@@ -1,5 +1,7 @@
 package com.scare.api.solution.walk.service.query;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.scare.api.solution.walk.domain.WalkingCourse;
@@ -25,6 +27,15 @@ public class WalkingQueryService {
 		WalkingDetail walkingDetail = walkingDetailRepository.findById(walkingCourse.getId())
 			.orElseThrow(() -> new NoWalkingDetailException());
 		return WalkingCourseDto.from(walkingCourse, walkingDetail);
+	}
+
+	public List<WalkingCourseDto> getWalkingCourses() {
+		// TODO: memberId 조회
+
+		// TODO: member.getCourses();
+
+		// TODO: convert to DTO
+		return null;
 	}
 
 }

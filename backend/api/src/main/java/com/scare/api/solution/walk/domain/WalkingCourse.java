@@ -29,10 +29,6 @@ public class WalkingCourse {
 	@Column(name = "walking_course_id")
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "member_id")
-	private Member member;
-
 	@Column(name = "distance", nullable = false)
 	private double distance;
 
@@ -59,7 +55,7 @@ public class WalkingCourse {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
-	Member member;
+	private Member member;
 
 	@Builder
 	public WalkingCourse(double distance, double minStress, double maxStress, double healingStressAvg, Integer startIdx,
@@ -74,4 +70,5 @@ public class WalkingCourse {
 		this.finishedAt = finishedAt;
 		this.member = member;
 	}
+
 }
