@@ -1,9 +1,15 @@
 package com.scare.api.solution.walk.service.query;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import com.scare.api.member.domain.Member;
+import com.scare.api.member.repository.MemberRepository;
+import com.scare.api.member.service.helper.MemberServiceHelper;
 import com.scare.api.solution.walk.domain.WalkingCourse;
 import com.scare.api.solution.walk.domain.WalkingDetail;
 import com.scare.api.solution.walk.exception.NoWalkingCourseException;
@@ -18,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class WalkingQueryService {
 
+	private final MemberRepository memberRepository;
 	private final WalkingCourseRepository walkingCourseRepository;
 	private final WalkingDetailRepository walkingDetailRepository;
 
@@ -29,13 +36,23 @@ public class WalkingQueryService {
 		return WalkingCourseDto.from(walkingCourse, walkingDetail);
 	}
 
-	public List<WalkingCourseDto> getWalkingCourses() {
-		// TODO: memberId 조회
-
-		// TODO: member.getCourses();
-
-		// TODO: convert to DTO
-		return null;
+	public List<WalkingCourseDto> getWalkingCourses(Long memberId, int page, int size) {
+		Member member = MemberServiceHelper.findExistingMember(memberRepository, memberId);
+		Page<WalkingCourse> courses = walkingCourseRepository.findAllByMemberOrderByCreatedAtDesc(member,
+			PageRequest.of(page, size));
+		return courses.getContent()
+			.stream()
+			.map(
+				course -> WalkingCourseDto.builder()
+					.distance(course.getDistance())
+					.startedAt(course.getStartedAt())
+					.finishedAt(course.getFinishedAt())
+					.startIdx(course.getStartIdx())
+					.endIdx(course.getEndIdx())
+					.maxStress(course.getMaxStress())
+					.minStress(course.getMinStress())
+					.build()
+			).collect(Collectors.toList());
 	}
 
 }
