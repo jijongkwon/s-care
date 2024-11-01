@@ -1,0 +1,65 @@
+package com.scare.api.member.service;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.scare.api.core.jwt.util.JWTUtil;
+import com.scare.api.member.domain.Member;
+import com.scare.api.member.domain.Provider;
+import com.scare.api.member.repository.MemberRepository;
+import com.scare.api.member.service.dto.LoginDto;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class MemberService {
+
+	private final MemberRepository memberRepository;
+	private final JWTUtil jwtUtil;
+
+	@Transactional
+	public LoginDto login(LoginDto loginDto) {
+		// 회원가입 or 로그인 진행
+		Member member = processLogin(loginDto);
+
+		// 토큰 생성
+		String accessToken = jwtUtil.createAccessToken(member.getId(), member.getRole().name());
+		log.info("AccessToken 토큰 발급 완료: {}", accessToken);
+		String refreshToken = jwtUtil.createRefreshToken();
+		log.info("RefreshToken 토큰 발급 완료: {}", refreshToken);
+
+		// refreshToken 레디스에 저장
+		// 1. 로그아웃 시 블랙아웃 고려?
+		// 2. RTR 구현해볼까
+
+		return LoginDto.from(member, accessToken, refreshToken);
+	}
+
+	private Member processLogin(LoginDto loginDto) {
+		Provider provider = Provider.valueOf(loginDto.getProvider().toUpperCase());
+
+		Member member = memberRepository.findByEmailAndProvider(loginDto.getEmail(), provider).orElse(null);
+
+		if (member == null) {
+			log.info("회원 없음 (회원가입 진행) -> email: {}, provider: {}", loginDto.getEmail(), provider.name());
+
+			member = memberRepository.save(Member.builder()
+				.email(loginDto.getEmail())
+				.profileUrl(loginDto.getProfileUrl())
+				.nickname(loginDto.getNickname())
+				.provider(provider)
+				.build());
+
+		} else {
+			log.info("회원 있음 (회원정보 업데이트) -> email: {}, provider: {}", loginDto.getEmail(), provider.name());
+
+			member.updateNicknameAndProfileUrl(loginDto.getNickname(), loginDto.getProfileUrl());
+		}
+
+		return member;
+	}
+
+}

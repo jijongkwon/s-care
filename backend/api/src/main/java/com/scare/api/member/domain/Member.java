@@ -52,20 +52,30 @@ public class Member extends BaseTimeEntity {
 	@Column(name = "status", nullable = false)
 	private MemberStatus status;
 
+	@Enumerated(EnumType.STRING)
+	@Column(name = "role", nullable = false)
+	private MemberRole role;
+
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 	private List<PetCollection> collection = new ArrayList<>();
 
-	private Member(String email, String nickname, Provider provider, String profileUrl, MemberStatus status) {
+	private Member(String email, String nickname, Provider provider, String profileUrl, MemberStatus status, MemberRole role) {
 		this.email = email;
 		this.nickname = nickname;
 		this.provider = provider;
 		this.profileUrl = profileUrl;
 		this.status = status;
+		this.role = role;
 	}
 
 	@Builder
 	public Member(String email, String nickname, Provider provider, String profileUrl) {
-		this(email, nickname, provider, profileUrl, MemberStatus.ACTIVE);
+		this(email, nickname, provider, profileUrl, MemberStatus.ACTIVE, MemberRole.ROLE_USER);
+	}
+
+	public void updateNicknameAndProfileUrl(String nickname, String profileUrl) {
+		this.nickname = nickname;
+		this.profileUrl = profileUrl;
 	}
 
 }

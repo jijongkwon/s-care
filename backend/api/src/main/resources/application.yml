@@ -39,7 +39,11 @@ jwt:
     key: ${JWT_SECRET_KEY}
   issuer: ${JWT_ISSUER}
   salt: ${JWT_SALT}
-  access-token:
-    expiretime: ${JWT_ACCESS_TOKEN_EXPIRETIME}
-  refresh-token:
-    expiretime: ${JWT_REFRESH_TOKEN_EXPIRETIME}
+  access:
+    expiration: ${JWT_ACCESS_TOKEN_EXPIRATION}
+  refresh:
+    expiration: ${JWT_REFRESH_TOKEN_EXPIRATION}
+
+springdoc:
+  swagger-ui:
+    path: ${SWAGGER_UI_PATH}  # Swagger UI에 접근할 URL 경로
