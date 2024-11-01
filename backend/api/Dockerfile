@@ -11,6 +11,9 @@ COPY gradle ./gradle
 # 의존성 다운로드
 RUN gradle dependencies --no-daemon
 
+# env 복사
+COPY .env ./
+
 # 소스 코드 복사
 COPY src ./src
 
@@ -26,8 +29,9 @@ FROM openjdk:21-jdk-slim
 # 컨테이너 내부 /app 디렉토리 기준
 WORKDIR /app
 
-# 빌드 스테이지에서 생성된 jar 파일 복사
+# 빌드 스테이지에서 생성된 jar 파일과 .env 파일 복사
 COPY --from=build /app/app.jar ./app.jar
+COPY --from=build /app/.env ./.env
 
 EXPOSE 8080
 
