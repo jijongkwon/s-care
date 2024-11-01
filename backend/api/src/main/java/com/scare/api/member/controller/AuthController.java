@@ -21,9 +21,9 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/members")
+@RequestMapping("/api/v1/members/auth")
 @RequiredArgsConstructor
-public class MemberController {
+public class AuthController {
 
 	private final MemberService memberService;
 	private final JWTUtil jwtUtil;
