@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.scare.api.core.jwt.util.JWTUtil;
 import com.scare.api.core.template.response.BaseResponse;
 import com.scare.api.core.template.response.ResponseCode;
+import com.scare.api.member.controller.docs.AuthControllerDocs;
 import com.scare.api.member.controller.dto.request.LoginReq;
 import com.scare.api.member.service.MemberService;
 import com.scare.api.member.service.dto.LoginDto;
@@ -23,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/v1/members/auth")
 @RequiredArgsConstructor
-public class AuthController {
+public class AuthController implements AuthControllerDocs {
 
 	private final MemberService memberService;
 	private final JWTUtil jwtUtil;
@@ -41,7 +42,6 @@ public class AuthController {
 		// 클라이언트에게 JWT 전달 (예: 응답 헤더에 추가)
 		response.setHeader("Authorization", "Bearer " + accessToken);
 		response.addCookie(jwtUtil.createCookie("refreshToken", refreshToken));
-		response.setStatus(HttpStatus.OK.value());
 
 		return ResponseEntity.ok(BaseResponse.ofSuccess(result));
 	}
