@@ -33,7 +33,7 @@ public class AuthController implements AuthControllerDocs {
 	@Override
 	@PostMapping("/login")
 	public ResponseEntity<BaseResponse<LoginDto>> login(@RequestBody LoginReq loginReq, HttpServletResponse response) {
-		LoginDto result = memberService.login(loginReq);
+		LoginDto result = memberService.login(LoginDto.from(loginReq));
 
 		// 클라이언트에게 JWT 전달
 		response.setHeader("Authorization", "Bearer " + result.getAccessToken());

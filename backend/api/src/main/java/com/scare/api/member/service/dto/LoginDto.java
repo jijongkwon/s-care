@@ -1,6 +1,7 @@
 package com.scare.api.member.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.scare.api.member.controller.dto.request.LoginReq;
 import com.scare.api.member.domain.Member;
 
 import lombok.AccessLevel;
@@ -25,6 +26,15 @@ public class LoginDto {
 
 	@JsonIgnore
 	private String refreshToken;
+
+	public static LoginDto from(LoginReq loginReq) {
+		return LoginDto.builder()
+			.email(loginReq.getEmail())
+			.profileUrl(loginReq.getProfileUrl())
+			.nickname(loginReq.getNickname())
+			.provider(loginReq.getProvider())
+			.build();
+	}
 
 	public static LoginDto from(Member member, String accessToken, String refreshToken) {
 		return LoginDto.builder()

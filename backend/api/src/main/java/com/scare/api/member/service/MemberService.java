@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.scare.api.core.jwt.util.JWTUtil;
-import com.scare.api.member.controller.dto.request.LoginReq;
 import com.scare.api.member.domain.Member;
 import com.scare.api.member.domain.Provider;
 import com.scare.api.member.repository.MemberRepository;
@@ -22,9 +21,9 @@ public class MemberService {
 	private final JWTUtil jwtUtil;
 
 	@Transactional
-	public LoginDto login(LoginReq loginReq) {
+	public LoginDto login(LoginDto loginDto) {
 		// 회원가입 or 로그인 진행
-		Member member = processLogin(loginReq);
+		Member member = processLogin(loginDto);
 
 		// 토큰 생성
 		String accessToken = jwtUtil.createAccessToken(member.getId(), member.getRole().name());
@@ -39,25 +38,25 @@ public class MemberService {
 		return LoginDto.from(member, accessToken, refreshToken);
 	}
 
-	private Member processLogin(LoginReq loginReq) {
-		Provider provider = Provider.valueOf(loginReq.getProvider().toUpperCase());
+	private Member processLogin(LoginDto loginDto) {
+		Provider provider = Provider.valueOf(loginDto.getProvider().toUpperCase());
 
-		Member member = memberRepository.findByEmailAndProvider(loginReq.getEmail(), provider).orElse(null);
+		Member member = memberRepository.findByEmailAndProvider(loginDto.getEmail(), provider).orElse(null);
 
 		if (member == null) {
-			log.info("회원 없음 (회원가입 진행) -> email: {}, provider: {}", loginReq.getEmail(), provider.name());
+			log.info("회원 없음 (회원가입 진행) -> email: {}, provider: {}", loginDto.getEmail(), provider.name());
 
 			member = memberRepository.save(Member.builder()
-				.email(loginReq.getEmail())
-				.profileUrl(loginReq.getProfileUrl())
-				.nickname(loginReq.getNickname())
+				.email(loginDto.getEmail())
+				.profileUrl(loginDto.getProfileUrl())
+				.nickname(loginDto.getNickname())
 				.provider(provider)
 				.build());
 
 		} else {
-			log.info("회원 있음 (회원정보 업데이트) -> email: {}, provider: {}", loginReq.getEmail(), provider.name());
+			log.info("회원 있음 (회원정보 업데이트) -> email: {}, provider: {}", loginDto.getEmail(), provider.name());
 
-			member.updateNicknameAndProfileUrl(loginReq.getNickname(), loginReq.getProfileUrl());
+			member.updateNicknameAndProfileUrl(loginDto.getNickname(), loginDto.getProfileUrl());
 		}
 
 		return member;
