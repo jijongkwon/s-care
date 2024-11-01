@@ -43,3 +43,7 @@ jwt:
     expiration: ${JWT_ACCESS_TOKEN_EXPIRATION}
   refresh:
     expiration: ${JWT_REFRESH_TOKEN_EXPIRATION}
+
+springdoc:
+  swagger-ui:
+    path: ${SWAGGER_UI_PATH}  # Swagger UI에 접근할 URL 경로
