@@ -1,38 +1,44 @@
 package com.scare.api.member.controller.docs;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import com.scare.api.core.template.response.BaseResponse;
+import com.scare.api.member.controller.dto.request.LoginReq;
+import com.scare.api.member.service.dto.LoginDto;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Tag(name = "Auth Member", description = "Auth API")
 public interface AuthControllerDocs {
 
 	@Operation(
-		summary = "걷기 운동 기록 저장",
-		description = "사용자의 걷기 운동 기록을 저장합니다."
+		summary = "소셜 로그인",
+		description = "소셜 로그인을 통한 회원가입 또는 로그인을 진행합니다."
 	)
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "회원가입 또는 로그인 성공"),
-		@ApiResponse(responseCode = "400", description = "잘못된 요청"),
-		@ApiResponse(responseCode = "401", description = "인증 실패"),
 		@ApiResponse(responseCode = "500", description = "서버 오류")
 	})
-	ResponseEntity<?> login();
+	ResponseEntity<BaseResponse<LoginDto>> login(@RequestBody LoginReq loginReq, HttpServletResponse response);
 
 	@Operation(
-		summary = "산책 코스 상세조회",
-		description = "특정 산책 코스의 상세정보를 조회합니다."
+		summary = "AccessToken 재발급",
+		description = "RefreshToken을 이용하여 AccessToken을 재발급 받습니다."
 	)
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "201", description = "산책 코스 상세조회 성공"),
-		@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+		@ApiResponse(responseCode = "200", description = "AccessToken 재발급 성공"),
 		@ApiResponse(responseCode = "401", description = "인증 실패"),
 		@ApiResponse(responseCode = "500", description = "서버 오류"),
-
 	})
-	ResponseEntity<?> reissue(Long courseId);
+	ResponseEntity<BaseResponse<?>> reissue(@CookieValue(value = "refreshToken") String refreshToken,
+		HttpServletRequest request,
+		HttpServletResponse response);
 
 }

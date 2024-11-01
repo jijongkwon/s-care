@@ -2,6 +2,7 @@ package com.scare.api.member.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,8 +30,9 @@ public class AuthController implements AuthControllerDocs {
 	private final MemberService memberService;
 	private final JWTUtil jwtUtil;
 
+	@Override
 	@PostMapping("/login")
-	public ResponseEntity<?> login(@RequestBody LoginReq loginReq, HttpServletResponse response) {
+	public ResponseEntity<BaseResponse<LoginDto>> login(@RequestBody LoginReq loginReq, HttpServletResponse response) {
 		LoginDto result = memberService.login(loginReq);
 
 		// 토큰 생성
@@ -46,9 +48,11 @@ public class AuthController implements AuthControllerDocs {
 		return ResponseEntity.ok(BaseResponse.ofSuccess(result));
 	}
 
+	@Override
 	@PostMapping("/reissue")
-	public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) {
-		String refreshToken = jwtUtil.getCookieValue(request.getCookies(), "refreshToken");
+	public ResponseEntity<BaseResponse<?>> reissue(@CookieValue("refreshToken") String refreshToken,
+		HttpServletRequest request,
+		HttpServletResponse response) {
 
 		ResponseCode errorResponseCode = jwtUtil.validateToken(refreshToken);
 
