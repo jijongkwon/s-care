@@ -7,7 +7,6 @@ import org.hibernate.annotations.SQLRestriction;
 
 import com.scare.api.core.domain.BaseTimeEntity;
 import com.scare.api.pet.domain.PetCollection;
-import com.scare.api.solution.walk.domain.WalkingCourse;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -60,10 +59,8 @@ public class Member extends BaseTimeEntity {
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 	private List<PetCollection> collection = new ArrayList<>();
 
-	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-	private List<WalkingCourse> courses = new ArrayList<>();
-
-	private Member(String email, String nickname, Provider provider, String profileUrl, MemberStatus status, MemberRole role) {
+	private Member(String email, String nickname, Provider provider, String profileUrl, MemberStatus status,
+		MemberRole role) {
 		this.email = email;
 		this.nickname = nickname;
 		this.provider = provider;
