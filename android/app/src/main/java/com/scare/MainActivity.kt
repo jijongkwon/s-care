@@ -18,6 +18,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.scare.data.repository.Auth.TokenRepository
+import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.scare.ui.mobile.calender.MyCalender
 import com.scare.ui.mobile.course.MyCourse
 import com.scare.ui.mobile.login.LoginActivity
@@ -26,12 +27,14 @@ import com.scare.ui.mobile.login.LoginViewModelFactory
 
 import com.scare.ui.mobile.main.MainPage
 import com.scare.ui.mobile.main.StartPage
+import com.scare.ui.mobile.map.Map
 import com.scare.ui.theme.ScareTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalNaverMapApi::class)
     private lateinit var loginViewModel: LoginViewModel
 
     private val signInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -43,6 +46,21 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContent {
+            ScareTheme {
+                val navController = androidx.navigation.compose.rememberNavController()
+
+                NavHost(navController = navController, startDestination = "main") {
+                    composable("start") { StartPage(navController) }
+                    composable("main",
+                        arguments = listOf(
+                            navArgument("imageUrl") { type = NavType.StringType },
+                            navArgument("accessToken") { type = NavType.StringType }
+                        )) { backStackEntry ->
+                        val imageUrl = backStackEntry.arguments?.getString("imageUrl")
+                        val accessToken = backStackEntry.arguments?.getString("accessToken")
+                        MainPage(imageUrl, accessToken, navController)
 
         // TokenRepository를 초기화하여 Context 전달
         TokenRepository.init(this)
@@ -67,6 +85,9 @@ class MainActivity : ComponentActivity() {
                         composable("start") { StartPage(navController, loginViewModel) { launchLogin() } }
                         composable("main") { MainPage(loginViewModel, navController) }
                     }
+                    composable("statistics") { MyCalender() } // "statistics" 경로 추가
+                    composable("walk") { MyCourse() } // "walk" 경로 추가
+                    composable("map") { Map() } // "map" 경로 추가
                 }
             }
         }
