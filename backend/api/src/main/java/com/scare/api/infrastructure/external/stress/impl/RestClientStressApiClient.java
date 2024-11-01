@@ -38,7 +38,7 @@ public class RestClientStressApiClient implements StressApiClient {
 			.body(SaveWalkingCourseStressDto.class);
 	}
 
-	public Map<String, Object> createBody(SaveWalkingCourseDto walkingCourseSaveDto, long walkingTime) {
+	private Map<String, Object> createBody(SaveWalkingCourseDto walkingCourseSaveDto, long walkingTime) {
 		Map<String, Object> requestMap = new HashMap<>();
 		requestMap.put("hr_data", walkingCourseSaveDto.getHeartRates());
 		requestMap.put("walking_time", walkingTime);
