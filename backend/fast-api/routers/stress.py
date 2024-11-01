@@ -28,14 +28,15 @@ def calc_multiple_stress_index(data: StressOverviewRequest):
         stress_arr = get_multiple_stress_index(data.hr_data)
         if stress_arr is None:
             raise CalculateFailedException()
-        avg_arr, start_idx, end_idx = find_healing_course_idx(stress_arr) if data.walking_time >= 300 else None
+        healing_stress_avg, start_idx, end_idx = find_healing_course_idx(
+            stress_arr) if data.walking_time >= 300 else None
         response = StressOverview(
-            max_stress=max(avg_arr),
-            min_stress=min(avg_arr),
-            healing_stress_avg=min(avg_arr),
+            max_stress=max(stress_arr),
+            min_stress=min(stress_arr),
+            stress_indices=stress_arr,
+            healing_stress_avg=healing_stress_avg,
             start_idx=start_idx,
-            end_idx=end_idx,
-            stress_indices=stress_arr
+            end_idx=end_idx
         )
         return JSONResponse(content=SuccessResponse(data=response.model_dump()).model_dump(), status_code=200)
     except CalculateFailedException as e:
