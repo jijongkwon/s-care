@@ -25,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 public class JWTFilter extends OncePerRequestFilter {
 
 	private final JWTUtil jwtUtil;
+	private final ObjectMapper objectMapper;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -73,7 +74,7 @@ public class JWTFilter extends OncePerRequestFilter {
 		response.setCharacterEncoding("UTF-8");
 
 		// JSON 형태의 오류 응답 작성
-		response.getWriter().write(new ObjectMapper().writeValueAsString(BaseResponse.ofFail(errorResponseCode)));
+		response.getWriter().write(objectMapper.writeValueAsString(BaseResponse.ofFail(errorResponseCode)));
 	}
 
 }
