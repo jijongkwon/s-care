@@ -37,9 +37,6 @@ public class SecurityConfig {
 	private void init() {
 		this.fullSwaggerPath = swaggerPath + "/**";
 		this.fullApiDocsPath = apiDocsPath + "/**";
-
-		System.out.println(fullSwaggerPath);
-		System.out.println(fullApiDocsPath);
 	}
 
 	@Bean
