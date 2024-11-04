@@ -13,6 +13,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.scare.api.core.jwt.filter.JWTFilter;
 import com.scare.api.core.jwt.util.JWTUtil;
+import com.scare.api.member.domain.MemberRole;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +51,8 @@ public class SecurityConfig {
 		http.authorizeHttpRequests(auth -> auth
 			.requestMatchers("/api/v1/members/auth/login", "/api/v1/members/auth/reissue").permitAll()
 			.requestMatchers(fullSwaggerPath, fullApiDocsPath).permitAll()
+			.requestMatchers("/api/v*/**").hasAuthority(MemberRole.ROLE_USER.name())
+			.requestMatchers("/error").permitAll()
 			.anyRequest().authenticated());
 
 		http.addFilterBefore(new JWTFilter(jwtUtil, objectMapper), UsernamePasswordAuthenticationFilter.class);
