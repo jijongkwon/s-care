@@ -1,5 +1,7 @@
 package com.scare.api.report.facade;
 
+import static com.scare.api.report.util.DateConverter.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,7 +21,7 @@ public final class ReportFacade {
 
 	public List<ReportDto> getReports(Long memberId, String from, String to) {
 		return reportServices.stream()
-			.map(reportService -> reportService.getReport(memberId, from, to))
+			.map(reportService -> reportService.getReport(memberId, convertToStartOfDay(from), convertToEndOfDay(to)))
 			.collect(Collectors.toList());
 	}
 

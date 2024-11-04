@@ -1,7 +1,6 @@
 package com.scare.api.report.service.walk;
 
 import static com.scare.api.member.service.helper.MemberServiceHelper.*;
-import static com.scare.api.report.util.DateConverter.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,10 +34,8 @@ public class WalkingReportQueryService implements ReportService {
 	private final WalkingDetailRepository walkingDetailRepository;
 
 	@Override
-	public ReportDto getReport(Long memberId, String startDate, String endDate) {
+	public ReportDto getReport(Long memberId, LocalDateTime from, LocalDateTime to) {
 		Member member = findExistingMember(memberRepository, memberId);
-		LocalDateTime from = convertToStartOfDay(startDate);
-		LocalDateTime to = convertToEndOfDay(endDate);
 		WalkingCourse course = walkingReportCustomRepository.getMyBestWalkingCourseBetween(member, from, to);
 		WalkingOverviewProjection overview = walkingReportCustomRepository.getMyWalkingOverviewBetween(member, from,
 			to);
