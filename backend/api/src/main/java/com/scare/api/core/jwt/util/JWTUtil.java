@@ -1,6 +1,8 @@
 package com.scare.api.core.jwt.util;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.UUID;
 
@@ -32,7 +34,6 @@ public class JWTUtil {
 
 	@Value("${jwt.access.expiration}")
 	private Long accessExpiration;
-
 
 	@Value("${jwt.refresh.expiration}")
 	private Long refreshExpiration;
@@ -91,7 +92,8 @@ public class JWTUtil {
 	}
 
 	public String createRefreshToken() {
-		return UUID.randomUUID().toString() + "-" + System.currentTimeMillis();
+		return UUID.randomUUID().toString() + "-" + LocalDateTime.now()
+			.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
 	}
 
 	public Cookie createCookie(String key, String value) {
