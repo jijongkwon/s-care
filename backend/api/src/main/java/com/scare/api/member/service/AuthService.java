@@ -53,7 +53,7 @@ public class AuthService {
 	}
 
 	@Transactional
-	public String reissue(Cookie[] cookies) {
+	public Map<String, String> reissue(Cookie[] cookies) {
 		String refreshTokenKey = "refreshToken:" + jwtUtil.getCookieValue(cookies, "refreshToken");
 
 		Map<Object, Object> refreshTokenDetails = findRefreshToken(refreshTokenKey);
@@ -68,7 +68,12 @@ public class AuthService {
 
 		deleteRefreshToken(refreshTokenKey);
 
-		return jwtUtil.createAccessToken(memberId, role);
+		String accessToken = jwtUtil.createAccessToken(memberId, role);
+		log.info("AccessToken 토큰 재발급 완료: {}", accessToken);
+		String refreshToken = jwtUtil.createRefreshToken();
+		log.info("RefreshToken 토큰 재발급 완료: {}", refreshToken);
+
+		return Map.of("accessToken", accessToken, "refreshToken", refreshToken);
 	}
 
 	public void logout(Cookie[] cookies) {
