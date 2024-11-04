@@ -17,14 +17,9 @@ import lombok.Getter;
 public class SaveWalkingCourseDto {
 
 	private double distance;
-	private double minStress;
-	private double maxStress;
-	private double healingStressAvg;
-	private int startIdx;
-	private int endIdx;
 	private LocalDateTime startedAt;
 	private LocalDateTime finishedAt;
-	private List<Double> heartRates;
+	private List<Integer> heartRates;
 	private SaveWalkingCourseStressDto stressData;
 	private List<SaveWalkingCourseLocationDto> locations;
 
@@ -40,15 +35,9 @@ public class SaveWalkingCourseDto {
 			.build();
 	}
 
-	// to WalkingCourse
 	public SaveWalkingCourseDto withStressData(SaveWalkingCourseStressDto stressData) {
 		return SaveWalkingCourseDto.builder()
 			.distance(this.distance)
-			.minStress(stressData.getMinStress())
-			.maxStress(stressData.getMaxStress())
-			.healingStressAvg(stressData.getHealingStressAvg())
-			.startIdx(stressData.getStartIdx())
-			.endIdx(stressData.getEndIdx())
 			.startedAt(this.startedAt)
 			.finishedAt(this.finishedAt)
 			.heartRates(this.heartRates)
@@ -57,14 +46,23 @@ public class SaveWalkingCourseDto {
 			.build();
 	}
 
-	// to WalkingDetail
-	public WalkingCourse toWalkingCourse(Member member) {
+	public WalkingCourse toWalkingCourseWithFastApi(Member member) {
 		return WalkingCourse.builder()
 			.distance(this.distance)
 			.minStress(this.stressData.getMinStress())
 			.maxStress(this.stressData.getMaxStress())
 			.startIdx(this.stressData.getStartIdx())
 			.endIdx(this.stressData.getEndIdx())
+			.healingStressAvg(this.stressData.getHealingStressAvg())
+			.startedAt(this.startedAt)
+			.finishedAt(this.finishedAt)
+			.member(member)
+			.build();
+	}
+
+	public WalkingCourse toWalkingCourseDefault(Member member) {
+		return WalkingCourse.builder()
+			.distance(this.distance)
 			.startedAt(this.startedAt)
 			.finishedAt(this.finishedAt)
 			.member(member)
