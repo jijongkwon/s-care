@@ -72,4 +72,8 @@ public class WalkingCourse extends BaseTimeEntity {
 		this.member = member;
 	}
 
+	public boolean hasHealingSection() {
+		return this.healingStressAvg != 0.0;
+	}
+
 }
