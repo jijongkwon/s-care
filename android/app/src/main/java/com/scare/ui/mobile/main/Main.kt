@@ -1,41 +1,30 @@
 package com.scare.ui.mobile.main
 
-import GoogleLoginRepository
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.scare.ui.mobile.common.TheHeader
+import com.scare.ui.mobile.main.component.*
 import com.scare.ui.mobile.viewmodel.login.LoginViewModel
-import com.scare.ui.mobile.main.component.ButtonContainer
-import com.scare.ui.mobile.main.component.MyPetImage
-import com.scare.ui.mobile.main.component.MyStressRate
-import com.scare.ui.mobile.main.component.PetSentence
-import com.scare.ui.mobile.main.component.SolutionCardList
-import com.scare.ui.theme.ScareTheme
-import androidx.compose.runtime.getValue
 
 
 @Composable
-fun MainPage(loginViewModel: LoginViewModel, navController: NavHostController) {
+fun MainPage(loginViewModel: LoginViewModel) {
 
     val profileUrl by loginViewModel.profileUrl.collectAsState()
 
     Scaffold(
-        topBar = { TheHeader(profileUrl, isMainPage = true, navController) }
+        topBar = { TheHeader(profileUrl, isMainPage = true) }
     ) { innerPadding ->
         val solutions = listOf("산책하기", "ASMR", "펫과 대화하기")
-        
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -46,7 +35,7 @@ fun MainPage(loginViewModel: LoginViewModel, navController: NavHostController) {
             PetSentence()
             MyPetImage(60)
             MyStressRate(60)
-            ButtonContainer(navController)
+            ButtonContainer()
             SolutionCardList(solutions)
         }
     }
