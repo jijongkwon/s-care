@@ -60,7 +60,7 @@ public class WalkingReportCustomRepository {
 		);
 	}
 
-	private static BooleanExpression isBefore(LocalDateTime to) {
+	private BooleanExpression isBefore(LocalDateTime to) {
 		return walkingCourse.finishedAt.loe(to);
 	}
 
