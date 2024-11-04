@@ -29,9 +29,9 @@ import kotlin.math.roundToInt
 
 @Composable
 fun HomeScreen(
-    stressValue: Double
+    hrValue: Double
 ) {
-    val stressState: StressState = getStressStatus(stressValue)
+    val stressState: StressState = getStressStatus(hrValue)
 
     ScareTheme {
         Box(
@@ -61,22 +61,22 @@ fun HomeScreen(
                 ) {
                     Text (
                         text = stringResource(R.string.stress),
-                        fontSize = 9.sp,
+                        fontSize = 15.sp,
                     )
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(3.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        val stressValueText = if (stressValue.isNaN()) "--" else stressValue.roundToInt().toString()
+                        val stressValueText = if (hrValue.isNaN()) "--" else hrValue.roundToInt().toString()
 
                         Text(
                             text = stressValueText,
-                            fontSize = 16.sp,
+                            fontSize = 24.sp,
                             color = stressState.color
                         )
                         Text(
-                            text = if (stressValue.isNaN()) "--" else stressState.text,
-                            fontSize = 11.sp,
+                            text = if (hrValue.isNaN()) "--" else stressState.text,
+                            fontSize = 16.sp,
                             color = stressState.color
                         )
                     }
@@ -112,5 +112,5 @@ fun getStressStatus(stressValue: Double): StressState {
 @Preview(device = WearDevices.SMALL_ROUND, showSystemUi = true)
 @Composable
 fun HomeScreenPreview() {
-    HomeScreen(stressValue = 67.0)
+    HomeScreen(hrValue = 130.0)
 }

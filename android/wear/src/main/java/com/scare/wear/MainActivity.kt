@@ -4,24 +4,25 @@
  * changes to the libraries and their usages.
  */
 
-package com.scare.wear.presentation
+package com.scare.wear
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.scare.wear.presentation.home.HomeScreen
+import com.scare.wear.presentation.home.HomeApp
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        installSplashScreen()
-
         super.onCreate(savedInstanceState)
 
-        setTheme(android.R.style.Theme_DeviceDefault)
+        val healthServicesRepository = (application as MainApplication).healthServicesRepository
+        val sensorRepository = (application as MainApplication).sensorRepository
 
         setContent {
-            HomeScreen(stressValue = 100.0)
+            HomeApp(
+                healthServicesRepository = healthServicesRepository,
+                sensorRepository = sensorRepository
+            )
         }
     }
 }

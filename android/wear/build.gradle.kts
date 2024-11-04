@@ -46,23 +46,38 @@ android {
 }
 
 dependencies {
+    // https://developer.android.com/jetpack/androidx/releases/concurrent?hl=ko
+    implementation(libs.androidx.concurrent.futures.ktx)
+    // https://developer.android.com/jetpack/androidx/releases/health?hl=ko
+    implementation(libs.androidx.health.services.client)
+    // https://developer.android.com/kotlin/coroutines?hl=ko
+    implementation(libs.kotlinx.coroutines.android)
+    // https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-guava
+    implementation(libs.kotlinx.coroutines.guava)
+    // https://developer.android.com/jetpack/androidx/releases/datastore?hl=ko
+    implementation(libs.androidx.datastore.preferences)
 
-    implementation(libs.play.services.wearable)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.compose.material)
-    implementation(libs.androidx.compose.foundation)
+    // https://developer.android.com/jetpack/androidx/releases/lifecycle?hl=ko
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    // https://mvnrepository.com/artifact/com.google.accompanist/accompanist-permissions
+    implementation(libs.accompanist.permissions)
+    implementation(libs.androidx.ui.tooling.preview.android)
+    implementation(libs.androidx.material.icons.core.android)
+    debugImplementation(libs.ui.tooling)
+    // https://mvnrepository.com/artifact/androidx.compose.ui/ui-tooling-preview
+    runtimeOnly(libs.ui.tooling.preview)
+    // https://developer.android.com/jetpack/androidx/releases/compose-ui?hl=ko
+    implementation(libs.ui)
+
     implementation(libs.androidx.wear.tooling.preview)
-    implementation(libs.androidx.activity.compose)
+    // https://developer.android.com/jetpack/androidx/releases/activity?hl=ko
+    implementation(libs.androidx.activity.ktx)
+
     implementation(libs.androidx.core.splashscreen)
-    implementation(libs.androidx.tiles)
-    implementation(libs.androidx.tiles.material)
-    implementation(libs.horologist.compose.tools)
-    implementation(libs.horologist.tiles)
-    implementation(libs.androidx.watchface.complications.data.source.ktx)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(libs.androidx.activity.compose)
+    // https://developer.android.com/jetpack/androidx/releases/work?hl=ko
+    implementation(libs.work.runtime.ktx)
+
+    implementation(libs.accompanist.permissions)
 }
