@@ -38,12 +38,12 @@ public class WalkingReportQueryService {
 		LocalDateTime from = convertToStartOfDay(startDate);
 		LocalDateTime to = convertToEndOfDay(endDate);
 		WalkingCourse course = walkingReportCustomRepository.getMyBestWalkingCourseBetween(member, from, to);
-		WalkingOverviewProjection dto = walkingReportCustomRepository.getMyWalkingOverviewBetween(member, from, to);
+		WalkingOverviewProjection overview = walkingReportCustomRepository.getMyWalkingOverviewBetween(member, from, to);
 
 		WalkingReportDto.WalkingReportDtoBuilder builder = WalkingReportDto.builder()
-			.walkingCnt(dto.getTotalWalkingCnt())
-			.totalWalkingTime(dto.getTotalWalkingTime())
-			.avgStressChange(dto.getAvgStressChange());
+			.walkingCnt(overview.getTotalWalkingCnt())
+			.totalWalkingTime(overview.getTotalWalkingTime())
+			.avgStressChange(overview.getAvgStressChange());
 
 		if (course.hasHealingSection()) {
 			WalkingDetail walkingDetail = walkingDetailRepository.findById(course.getId())
