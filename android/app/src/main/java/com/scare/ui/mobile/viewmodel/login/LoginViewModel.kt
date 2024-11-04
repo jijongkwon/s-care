@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.awaitResponse
 
 class LoginViewModel(
     private val googleLoginRepository: GoogleLoginRepository,
@@ -24,6 +25,15 @@ class LoginViewModel(
 
     private val _profileUrl = MutableStateFlow<String?>(null)
     val profileUrl: StateFlow<String?> get() = _profileUrl
+
+    init {
+        // DataStore에서 profileUrl을 불러오는 로직 추가
+        viewModelScope.launch {
+            tokenRepository.profileUrlFlow.collect { url ->
+                _profileUrl.value = url
+            }
+        }
+    }
 
     // Google Login Intent 제공
     fun getSignInIntent(): Intent {
@@ -42,55 +52,51 @@ class LoginViewModel(
 
                 Log.d("LoginViewModel", "Email: $email, Nickname: $nickname, Profile URL: $profileUrl")
 
-                // 서버로 사용자 정보 전송
-//                sendUserAPI(email, nickname, profileUrl)
+                // 프로필사진 저장
+                viewModelScope.launch {
+                    tokenRepository.saveProfileUrl(profileUrl)
+                }
+
+                // LoginRequestDTO 객체 생성 후 서버로 전송
+                val loginRequestDTO = LoginRequestDTO(email, nickname, profileUrl)
+
+                viewModelScope.launch { // viewModelScope 내에서 호출
+                    sendUserAPI(loginRequestDTO)
+                }
 
                 // 실제 서버에서 토큰을 받아 저장하는 로직을 구현
                 val accessToken = "서버에서 받은 accessToken" // 실제 서버에서 받은 값으로 대체
-                val refreshToken = "서버에서 받은 refreshToken" // 실제 서버에서 받은 값으로 대체
 
                 // suspend 함수를 viewModelScope 내에서 호출
                 viewModelScope.launch {
                     tokenRepository.saveAccessToken(accessToken)
-                    tokenRepository.saveRefreshToken(refreshToken)
                 }
             } else {
                 // account가 null일 경우 로그 출력
-                println("GoogleSignInAccount is null")
+                Log.e("LoginViewModel", "GoogleSignInAccount is null")
             }
         }
     }
 
     //유저 정보 보내는 api
-    private fun sendUserAPI(email: String, nickname: String, profileUrl: String) {
-        // LoginRequestDTO 객체 생성
-        val loginRequestDTO = LoginRequestDTO(email, nickname, profileUrl)
+    private suspend fun sendUserAPI(loginRequestDTO: LoginRequestDTO) {
+        try {
+            val response = RetrofitClient.apiService.login(loginRequestDTO).awaitResponse() // awaitResponse 사용
 
-        val call = RetrofitClient.apiService.login(loginRequestDTO)
-        call.enqueue(object : Callback<LoginResponseDTO> {
-            override fun onResponse(call: Call<LoginResponseDTO>, response: Response<LoginResponseDTO>) {
+            if (response.isSuccessful) {
+                // Header에서 Access Token 꺼내오기
+                val accessToken = response.headers()["Authorization"] ?: ""
 
-                Log.d("Reponse", response.toString())
+                Log.d("LoginViewModel", "Access Token: $accessToken")
 
-//                if (response.isSuccessful) {
-//                    //여기에서 Header에서 꺼내오기
-//
-//
-//                    val accessToken = response.body()?.accessToken ?: ""
-//                    val refreshToken = response.body()?.refreshToken ?: ""
-//
-//                    // suspend 함수를 viewModelScope 내에서 호출
-//                    viewModelScope.launch {
-//                        tokenRepository.saveAccessToken(accessToken)
-//                        tokenRepository.saveRefreshToken(refreshToken)
-//                    }
-//                }
+                // Token 저장 로직 (DataStore 등에 저장)
+                tokenRepository.saveAccessToken(accessToken) // viewModelScope 필요 없음
+            } else {
+                Log.e("LoginViewModel", "응답 실패: ${response.code()}")
             }
-
-            override fun onFailure(call: Call<LoginResponseDTO>, t: Throwable) {
-                // 실패 처리
-            }
-        })
+        } catch (e: Exception) {
+            Log.e("LoginViewModel", "API 호출 실패: ${e.message}")
+        }
     }
 
     // 로그아웃 처리

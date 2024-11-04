@@ -19,6 +19,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.scare.data.repository.Auth.TokenRepository
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
+import com.scare.data.network.RetrofitClient
 import com.scare.ui.mobile.calender.MyCalender
 import com.scare.ui.mobile.course.MyCourse
 import com.scare.ui.mobile.viewmodel.login.LoginActivity
@@ -37,27 +38,23 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
     private lateinit var loginViewModel: LoginViewModel
 
-    private val signInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == RESULT_OK) {
-            val data = result.data
-            loginViewModel.handleSignInResult(data) // 로그인 결과 처리
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // TokenRepository를 초기화하여 Context 전달
+        // TokenRepository 초기화
         TokenRepository.init(this)
+
+        // RetrofitClient 초기화 (TokenRepository가 초기화된 후에만)
+        RetrofitClient.init(TokenRepository.getInstance())
 
         val googleLoginRepository = GoogleLoginRepository(this) // GoogleLoginRepository 초기화
         loginViewModel = ViewModelProvider(
-            this, LoginViewModelFactory(googleLoginRepository, TokenRepository)
+            this, LoginViewModelFactory(googleLoginRepository, TokenRepository.getInstance())
         )[LoginViewModel::class.java]
 
         // accessToken 확인 후 시작 화면 설정
         CoroutineScope(Dispatchers.Main).launch {
-            val startDestination = if (TokenRepository.getAccessToken() != null) {
+            val startDestination = if (TokenRepository.getInstance().getAccessToken() != null) {
                 "main"
             } else {
                 "start"
@@ -79,6 +76,13 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+        }
+    }
+
+    private val signInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == RESULT_OK) {
+            val data = result.data
+            loginViewModel.handleSignInResult(data) // 로그인 결과 처리
         }
     }
 
