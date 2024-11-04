@@ -114,6 +114,7 @@ fun MyAuthInfo (
     }
 }
 
+////////////////////아래 주석은 더미데이터
 @Preview(showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun MyAuthPagePreview() {
