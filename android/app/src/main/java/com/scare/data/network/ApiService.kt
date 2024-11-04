@@ -1,5 +1,6 @@
 package com.scare.data.network
 
+import com.google.android.gms.common.api.Response
 import com.scare.data.dto.Auth.LoginRequestDTO
 import com.scare.data.dto.Auth.LoginResponseDTO
 import com.scare.data.dto.Auth.RefreshRequestDTO
@@ -17,13 +18,22 @@ object RetrofitClient {
     private const val BASE_URL = "https://k11a408.p.ssafy.io"
 
     private lateinit var tokenRepository: TokenRepository
+    private lateinit var tokenInterceptor: TokenInterceptor
 
-    // OkHttpClient에 TokenInterceptor 추가
-    private val okHttpClient by lazy {
-        OkHttpClient.Builder()
-            .addInterceptor(TokenInterceptor(tokenRepository, apiService))
-            .build()
+    fun init(tokenRepo: TokenRepository) {
+        tokenRepository = tokenRepo
+        // TokenInterceptor를 tokenRepository 초기화 후 생성
+        tokenInterceptor = TokenInterceptor(tokenRepository) { apiService } // apiService 제공
     }
+
+    // OkHttpClient에 TokenInterceptor 추가 (tokenRepository 초기화 이후에만 접근 가능)
+    private val okHttpClient: OkHttpClient
+        get() {
+            checkInitialized() // tokenRepository 초기화 확인
+            return OkHttpClient.Builder()
+                .addInterceptor(tokenInterceptor) // TokenInterceptor에 tokenRepository 주입
+                .build()
+        }
 
     private val retrofit by lazy {
         Retrofit.Builder()
@@ -33,8 +43,16 @@ object RetrofitClient {
             .build()
     }
 
+    // ApiService 초기화
     val apiService: ApiService by lazy {
         retrofit.create(ApiService::class.java)
+    }
+
+    // tokenRepository가 초기화되지 않았을 경우 예외 처리
+    private fun checkInitialized() {
+        if (!::tokenRepository.isInitialized) {
+            throw IllegalStateException("TokenRepository must be initialized before using RetrofitClient")
+        }
     }
 }
 
@@ -42,11 +60,11 @@ interface ApiService {
 
     //로그인
     @POST("/api/v1/members/auth/login")
-    fun login(@Body loginRequestDTO: LoginRequestDTO): Call<LoginResponseDTO>
+    fun login(@Body loginRequestDTO: LoginRequestDTO): Call<Unit>
 
     //토큰재발급
-    @POST("auth/refresh")
-    fun refreshToken(@Body refreshToken: RefreshRequestDTO): Call<LoginResponseDTO>
+    @POST("/api/v1/members/auth/reissue")
+    fun refreshToken(@Body refreshToken: RefreshRequestDTO): Call<Unit>
 
     //회원정보조회
     @GET("user/info") // 실제 API 엔드포인트에 맞게 수정

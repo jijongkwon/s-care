@@ -86,6 +86,12 @@ dependencies {
     // Retrofit
     implementation(libs.retrofit)
     implementation(libs.converter.gson) // Gson 변환기
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.retrofit2.kotlin.coroutines.adapter)
+
+    implementation(libs.accompanist.permissions)
+
 
     // OkHttp
     implementation(libs.okhttp)
