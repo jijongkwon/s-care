@@ -6,23 +6,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.navigation.compose.rememberNavController
 import com.naver.maps.map.compose.*
 import com.scare.ui.mobile.common.TheHeader
 
 @ExperimentalNaverMapApi
 @Composable
-fun Map(modifier: Modifier = Modifier) {
-
-    val navController = rememberNavController()
+fun Map() {
 
     Scaffold(
         topBar = {
-            TheHeader(
-                imageUrl = null,  // 메인 페이지가 아니므로 프로필 이미지는 null
-                isMainPage = false,  // 뒤로 가기 버튼을 표시할지 결정
-                navController = navController,  // NavController 전달
-            )
+            TheHeader(isMainPage = false)
         }
     ) { innerPadding ->
         Box(
