@@ -4,32 +4,26 @@ import GoogleLoginRepository
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import com.scare.data.repository.Auth.TokenRepository
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.scare.data.network.RetrofitClient
+import com.scare.data.repository.Auth.TokenRepository
 import com.scare.ui.mobile.calender.MyCalender
+import com.scare.ui.mobile.common.LocalNavController
 import com.scare.ui.mobile.course.MyCourse
-import com.scare.ui.mobile.viewmodel.login.LoginActivity
-import com.scare.ui.mobile.viewmodel.login.LoginViewModel
-import com.scare.ui.mobile.viewmodel.login.LoginViewModelFactory
-
 import com.scare.ui.mobile.main.MainPage
 import com.scare.ui.mobile.main.MyAuthPage
 import com.scare.ui.mobile.main.StartPage
 import com.scare.ui.mobile.map.Map
+import com.scare.ui.mobile.viewmodel.login.LoginViewModel
+import com.scare.ui.mobile.viewmodel.login.LoginViewModelFactory
 import com.scare.ui.theme.ScareTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -59,20 +53,19 @@ class MainActivity : ComponentActivity() {
             } else {
                 "start"
             }
-
             setContent {
-                ScareTheme {
-                    val navController = rememberNavController()
-
-                    @OptIn(ExperimentalNaverMapApi::class)
-                    NavHost(navController = navController, startDestination = startDestination) {
-                        composable("start") { StartPage(navController, loginViewModel) { launchLogin() } }
-                        composable("main") { MainPage(loginViewModel, navController) }
-                        composable("statistics") { MyCalender() } // "statistics" 경로 추가
-                        composable("walk") { MyCourse() } // "walk" 경로 추가
-                        composable("map") { Map() } // "map" 경로 추가
-                        composable("mypage") { MyAuthPage(navController) } // "map" 경로 추가
-
+                val navController = rememberNavController()
+                CompositionLocalProvider(LocalNavController provides navController) {
+                    ScareTheme {
+                        @OptIn(ExperimentalNaverMapApi::class)
+                        NavHost(navController = navController, startDestination = startDestination) {
+                            composable("start") { StartPage(loginViewModel) { launchLogin() } }
+                            composable("main") { MainPage(loginViewModel) }
+                            composable("statistics") { MyCalender() } // "statistics" 경로 추가
+                            composable("walk") { MyCourse() } // "walk" 경로 추가
+                            composable("map") { Map() } // "map" 경로 추가
+                            composable("mypage") { MyAuthPage() } // "map" 경로 추가
+                        }
                     }
                 }
             }

@@ -8,16 +8,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.scare.ui.mobile.common.LocalNavController
 import com.scare.ui.theme.DarkNavy
 import com.scare.ui.theme.NeonYellow
 import com.scare.ui.theme.White
@@ -35,22 +33,25 @@ fun SolutionCardList(solutions: List<String>) {
 }
 
 @Composable
-fun SolutionCard (solution: String) {
+fun SolutionCard(solution: String) {
+    val navController = LocalNavController.current
     val cardColor = if (isSystemInDarkTheme()) {
         DarkNavy
     } else {
         White
     }
 
-    OutlinedCard (
+    OutlinedCard(
         colors = CardDefaults.cardColors(
             containerColor = cardColor,
         ),
         border = BorderStroke(1.dp, NeonYellow),
         modifier = Modifier
-            .size(width = 150.dp, height = 200.dp)
+            .size(width = 150.dp, height = 200.dp),
+        // TODO : 솔루션에 맞는 경로 연결
+        onClick = { navController?.navigate("map") },
     ) {
-        Text (
+        Text(
             text = solution,
             modifier = Modifier
                 .padding(16.dp),

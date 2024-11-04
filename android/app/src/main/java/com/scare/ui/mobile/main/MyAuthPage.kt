@@ -1,12 +1,6 @@
 package com.scare.ui.mobile.main
 
-import android.media.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -22,19 +16,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.scare.data.dto.User.UserInfoResponseDTO
 import com.scare.ui.mobile.common.TheHeader
 import com.scare.ui.mobile.viewmodel.user.UserInfoViewModel
 import com.scare.ui.theme.ScareTheme
 import com.scare.ui.theme.Typography
-import com.scare.ui.theme.White
 
 @Composable
 fun MyAuthPage(
-    navController: NavController,
     userInfoViewModel: UserInfoViewModel = viewModel() // ViewModel 인스턴스 주입
 ) {
 
@@ -46,18 +36,18 @@ fun MyAuthPage(
     }
 
     Scaffold(
-        topBar = { TheHeader(null, isMainPage = false, navController) }
+        topBar = { TheHeader(null, isMainPage = false) }
     ) { innerPadding ->
 
         // userInfo를 사용해 UI 표시
         userInfo?.let {
             MyAuthInfo(it, modifier = Modifier.padding(innerPadding)) // MyAuthInfo에 데이터 전달
-        }?: Text("Loading...") // 데이터 로딩 중 표시
+        } ?: Text("Loading...") // 데이터 로딩 중 표시
     }
 }
 
 @Composable
-fun MyAuthInfo (
+fun MyAuthInfo(
     userInfo: UserInfoResponseDTO,
     modifier: Modifier = Modifier,
 ) {
@@ -66,14 +56,14 @@ fun MyAuthInfo (
     val nickname = userInfo.nickname
     val email = userInfo.email
 
-    Column (
+    Column(
         modifier = modifier
             .fillMaxWidth() // 가로를 꽉 채움
             .fillMaxHeight(), // 세로를 꽉 채움
         verticalArrangement = Arrangement.spacedBy(21.dp, Alignment.CenterVertically), // 수직 방향 가운데 정렬
         horizontalAlignment = Alignment.CenterHorizontally // 수평 방향 가운데 정렬
     ) {
-        AsyncImage (
+        AsyncImage(
             model = profileUrl,
             contentDescription = "User Image",
             modifier = Modifier
@@ -82,22 +72,22 @@ fun MyAuthInfo (
 
         )
 
-        Text (
-            text="$nickname 님",
+        Text(
+            text = "$nickname 님",
             style = Typography.titleLarge.copy( // TextStyle 적용
                 fontSize = 24.sp, // 크기 변경
                 fontWeight = FontWeight.Bold // 굵기 변경
             )
         )
 
-        Text ("$email")
+        Text("$email")
 
         Column(
             modifier = modifier.padding(top = 28.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically), // 수직 방향 가운데 정렬
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Button (
+            Button(
                 onClick = { /*TODO*/ },
             ) {
                 Text(
@@ -125,11 +115,9 @@ fun MyAuthPagePreview() {
         nickname = "Tester"
     )
 
-    val navController = rememberNavController() // Preview용 NavController 생성
-
     ScareTheme {
         Scaffold(
-            topBar = { TheHeader(null, isMainPage = false, navController = navController) }
+            topBar = { TheHeader(null, isMainPage = false) }
         ) { innerPadding ->
             MyAuthInfo(
                 userInfo = sampleUserInfo,

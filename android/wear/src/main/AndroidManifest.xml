@@ -1,68 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.scare.wear">
 
-    <uses-feature android:name="android.hardware.type.watch"/>
+    <!-- Required for HR sensor -->
+    <uses-permission android:name="android.permission.BODY_SENSORS" />
+    <uses-permission android:name="android.permission.BODY_SENSORS_BACKGROUND" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_HEALTH" />
+    <!-- Needed in order to re-register for data on device startup. -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-feature
+        android:name="android.hardware.type.watch"
+        android:required="true" />
 
     <application
-            android:allowBackup="true"
-            android:icon="@mipmap/ic_launcher"
-            android:label="@string/app_name"
-            android:supportsRtl="true"
-            android:theme="@android:style/Theme.DeviceDefault">
-        <service
-                android:name=".complication.MainComplicationService"
-                android:exported="true"
-                android:label="@string/complication_label"
-                android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
-            <intent-filter>
-                <action android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST"/>
-            </intent-filter>
+        android:name=".MainApplication"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@android:style/Theme.DeviceDefault"
+        tools:ignore="GoogleAppIndexingWarning">
 
-            <meta-data
-                    android:name="android.support.wearable.complications.SUPPORTED_TYPES"
-                    android:value="SHORT_TEXT"/>
-            <meta-data
-                    android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
-                    android:value="0"/>
-        </service>
-        <service
-                android:name=".tile.MainTileService"
-                android:exported="true"
-                android:label="@string/tile_label"
-                android:permission="com.google.android.wearable.permission.BIND_TILE_PROVIDER">
-            <intent-filter>
-                <action android:name="androidx.wear.tiles.action.BIND_TILE_PROVIDER"/>
-            </intent-filter>
-
-            <meta-data
-                    android:name="androidx.wear.tiles.PREVIEW"
-                    android:resource="@drawable/tile_preview"/>
-        </service>
-
-        <uses-library
-                android:name="com.google.android.wearable"
-                android:required="true"/>
-        <!--
-               Set to true if your app is Standalone, that is, it does not require the handheld
-               app to run.
-        -->
         <meta-data
-                android:name="com.google.android.wearable.standalone"
-                android:value="true"/>
+            android:name="com.google.android.wearable.standalone"
+            android:value="true" />
 
         <activity
-                android:name=".presentation.MainActivity"
-                android:exported="true"
-                android:taskAffinity=""
-                android:theme="@style/MainActivityTheme.Starting">
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:taskAffinity=".main">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    </application>
 
+        <service android:name=".service.sensor.SensorService"
+            android:permission="com.google.android.wearable.healthservices.permission.PASSIVE_DATA_BINDING"
+            android:foregroundServiceType="health"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </service>
+
+        <!-- Receiver that re-registers for background data after a device restart. -->
+        <receiver
+            android:name=".service.sensor.StartupReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+    </application>
+    <queries>
+        <package android:name="com.google.android.wearable.healthservices" />
+    </queries>
 </manifest>

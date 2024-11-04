@@ -8,25 +8,26 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import com.scare.R
+import com.scare.ui.mobile.common.LocalNavController
 import com.scare.ui.mobile.viewmodel.login.LoginViewModel
-import androidx.compose.runtime.getValue
 
 @Composable
-fun StartPage(navController: NavHostController, loginViewModel: LoginViewModel, onSignInClick: () -> Unit) {
+fun StartPage(loginViewModel: LoginViewModel, onSignInClick: () -> Unit) {
     val profileUrl by loginViewModel.profileUrl.collectAsState()
-    
+    val navController = LocalNavController.current
+
     //변경될때만 네비게이션이 트리거
     LaunchedEffect(profileUrl) {
         if (profileUrl != null) {
-            navController.navigate("main") {
+            navController?.navigate("main") {
                 popUpTo("start") { inclusive = true }
             }
         }
@@ -48,7 +49,7 @@ fun StartPage(navController: NavHostController, loginViewModel: LoginViewModel, 
 fun GoogleLoginButton(onClick: () -> Unit, modifier: Modifier) {
     val googleLoginButton = painterResource(R.drawable.google_login);
 
-    Image (
+    Image(
         painter = googleLoginButton,
         contentDescription = "구글 로그인",
         contentScale = ContentScale.Crop, // 이미지 화면 비율에 맞게 자르기
