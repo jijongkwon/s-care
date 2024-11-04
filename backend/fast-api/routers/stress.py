@@ -38,6 +38,6 @@ def calc_multiple_stress_index(data: StressOverviewRequest):
             start_idx=start_idx,
             end_idx=end_idx
         )
-        return JSONResponse(content=SuccessResponse(data=response.model_dump()).model_dump(), status_code=200)
+        return JSONResponse(content=response.model_dump(), status_code=200)
     except CalculateFailedException as e:
         return JSONResponse(content=ErrorResponse(code="5000", message=str(e)), status_code=500)

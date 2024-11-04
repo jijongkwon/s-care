@@ -22,7 +22,7 @@ class StressData(BaseModel):
 class StressOverview(BaseModel):
     max_stress: float
     min_stress: float
-    healing_stress_avg: float
+    healing_stress_avg: Union[float, None]
     start_idx: Union[int, None]
     end_idx: Union[int, None]
     stress_indices: List[float]
