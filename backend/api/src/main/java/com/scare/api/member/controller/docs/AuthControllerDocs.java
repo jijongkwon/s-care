@@ -1,7 +1,6 @@
 package com.scare.api.member.controller.docs;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.scare.api.core.template.response.BaseResponse;
@@ -37,8 +36,6 @@ public interface AuthControllerDocs {
 		@ApiResponse(responseCode = "401", description = "인증 실패"),
 		@ApiResponse(responseCode = "500", description = "서버 오류"),
 	})
-	ResponseEntity<BaseResponse<?>> reissue(@CookieValue(value = "refreshToken") String refreshToken,
-		HttpServletRequest request,
-		HttpServletResponse response);
+	ResponseEntity<BaseResponse<?>> reissue(HttpServletRequest request, HttpServletResponse response);
 
 }
