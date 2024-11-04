@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.Icon
@@ -13,6 +14,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,8 +39,9 @@ fun TheHeader(
             AsyncImage(
                 model = imageUrl,
                 contentDescription = "User Image",
-                modifier = Modifier.size(48.dp).fillMaxWidth()
-                    .clickable(onClick = { navController?.navigate("mypage") })
+                modifier = Modifier.size(48.dp).fillMaxWidth().clip(CircleShape) // 동그랗게 크롭
+                    .clickable(onClick = { navController?.navigate("mypage") }),
+                contentScale = ContentScale.Crop // 이미지가 원에 맞게 크롭되도록 설정
             )
         } else {
             IconButton(onClick = { navController?.popBackStack() }) {
