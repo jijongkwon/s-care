@@ -1,4 +1,4 @@
-package com.scare.ui.mobile.login
+package com.scare.ui.mobile.viewmodel.login
 
 import GoogleLoginRepository
 import android.content.Intent
@@ -43,7 +43,7 @@ class LoginViewModel(
                 Log.d("LoginViewModel", "Email: $email, Nickname: $nickname, Profile URL: $profileUrl")
 
                 // 서버로 사용자 정보 전송
-//                sendUserDataToApi(email, nickname, profileUrl)
+//                sendUserAPI(email, nickname, profileUrl)
 
                 // 실제 서버에서 토큰을 받아 저장하는 로직을 구현
                 val accessToken = "서버에서 받은 accessToken" // 실제 서버에서 받은 값으로 대체
@@ -69,16 +69,22 @@ class LoginViewModel(
         val call = RetrofitClient.apiService.login(loginRequestDTO)
         call.enqueue(object : Callback<LoginResponseDTO> {
             override fun onResponse(call: Call<LoginResponseDTO>, response: Response<LoginResponseDTO>) {
-                if (response.isSuccessful) {
-                    val accessToken = response.body()?.accessToken ?: ""
-                    val refreshToken = response.body()?.refreshToken ?: ""
 
-                    // suspend 함수를 viewModelScope 내에서 호출
-                    viewModelScope.launch {
-                        tokenRepository.saveAccessToken(accessToken)
-                        tokenRepository.saveRefreshToken(refreshToken)
-                    }
-                }
+                Log.d("Reponse", response.toString())
+
+//                if (response.isSuccessful) {
+//                    //여기에서 Header에서 꺼내오기
+//
+//
+//                    val accessToken = response.body()?.accessToken ?: ""
+//                    val refreshToken = response.body()?.refreshToken ?: ""
+//
+//                    // suspend 함수를 viewModelScope 내에서 호출
+//                    viewModelScope.launch {
+//                        tokenRepository.saveAccessToken(accessToken)
+//                        tokenRepository.saveRefreshToken(refreshToken)
+//                    }
+//                }
             }
 
             override fun onFailure(call: Call<LoginResponseDTO>, t: Throwable) {

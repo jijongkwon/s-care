@@ -1,6 +1,7 @@
 package com.scare.ui.mobile.common
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,6 +28,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.work.Configuration
 import coil.compose.AsyncImage
 import com.scare.R
@@ -35,7 +37,10 @@ import com.scare.R
 fun TheHeader (
     imageUrl: String? = null,
     isMainPage: Boolean = false,
-    onBackClick: () -> Unit = {}
+    navController: NavController,
+    onBackClick: () -> Unit = {},
+    onProfileClick: () -> Unit = { navController.navigate("mypage")},
+    onLogoClick: () -> Unit = { navController.navigate("main")}
 ) {
     Row (
         modifier = Modifier
@@ -49,7 +54,8 @@ fun TheHeader (
             AsyncImage(
                 model = imageUrl,
                 contentDescription = "User Image",
-                modifier = Modifier.size(48.dp).fillMaxWidth(), // 가로로만 꽉 차게 설정
+                modifier = Modifier.size(48.dp).fillMaxWidth()
+                                    .clickable(onClick = onProfileClick)
             )
         } else {
             IconButton(onClick = onBackClick) {
@@ -58,7 +64,7 @@ fun TheHeader (
         }
 
         Row {
-            Logo(modifier = Modifier.weight(1f))// 가로 공간 비율 할당
+            Logo(modifier = Modifier.weight(1f).clickable(onClick = onLogoClick))
             // 오른쪽에 비어있는 공간
             Spacer(modifier = Modifier.size(16.dp)) // 아이콘 크기와 동일한 크기의 Spacer
         }

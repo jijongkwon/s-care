@@ -1,15 +1,13 @@
-package com.scare.data.dto.Auth
+package com.scare.data.dto.User
 
-class LoginRequestDTO {
+class UserInfoResponseDTO{
     val email: String
-    val nickname: String
     val profileUrl: String
-    val provider: String
+    val nickname: String
 
     constructor(email: String, nickname: String, profileUrl: String) {
         this.email = email
         this.nickname = nickname
         this.profileUrl = profileUrl
-        this.provider= "Google"
     }
 }

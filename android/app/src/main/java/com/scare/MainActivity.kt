@@ -21,11 +21,12 @@ import com.scare.data.repository.Auth.TokenRepository
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.scare.ui.mobile.calender.MyCalender
 import com.scare.ui.mobile.course.MyCourse
-import com.scare.ui.mobile.login.LoginActivity
-import com.scare.ui.mobile.login.LoginViewModel
-import com.scare.ui.mobile.login.LoginViewModelFactory
+import com.scare.ui.mobile.viewmodel.login.LoginActivity
+import com.scare.ui.mobile.viewmodel.login.LoginViewModel
+import com.scare.ui.mobile.viewmodel.login.LoginViewModelFactory
 
 import com.scare.ui.mobile.main.MainPage
+import com.scare.ui.mobile.main.MyAuthPage
 import com.scare.ui.mobile.main.StartPage
 import com.scare.ui.mobile.map.Map
 import com.scare.ui.theme.ScareTheme
@@ -73,6 +74,8 @@ class MainActivity : ComponentActivity() {
                         composable("statistics") { MyCalender() } // "statistics" 경로 추가
                         composable("walk") { MyCourse() } // "walk" 경로 추가
                         composable("map") { Map() } // "map" 경로 추가
+                        composable("mypage") { MyAuthPage(navController) } // "map" 경로 추가
+
                     }
                 }
             }
