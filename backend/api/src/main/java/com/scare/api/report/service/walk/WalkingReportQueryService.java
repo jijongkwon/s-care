@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.scare.api.member.domain.Member;
 import com.scare.api.member.repository.MemberRepository;
 import com.scare.api.report.repository.custom.WalkingReportCustomRepository;
+import com.scare.api.report.service.ReportService;
 import com.scare.api.report.service.dto.ReportDto;
 import com.scare.api.report.service.walk.dto.WalkingOverviewProjection;
 import com.scare.api.report.service.walk.dto.WalkingReportDto;
@@ -27,18 +28,20 @@ import lombok.RequiredArgsConstructor;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class WalkingReportQueryService {
+public class WalkingReportQueryService implements ReportService {
 
 	private final MemberRepository memberRepository;
 	private final WalkingReportCustomRepository walkingReportCustomRepository;
 	private final WalkingDetailRepository walkingDetailRepository;
 
-	public ReportDto getWalkingReport(Long memberId, String startDate, String endDate) {
+	@Override
+	public ReportDto getReport(Long memberId, String startDate, String endDate) {
 		Member member = findExistingMember(memberRepository, memberId);
 		LocalDateTime from = convertToStartOfDay(startDate);
 		LocalDateTime to = convertToEndOfDay(endDate);
 		WalkingCourse course = walkingReportCustomRepository.getMyBestWalkingCourseBetween(member, from, to);
-		WalkingOverviewProjection overview = walkingReportCustomRepository.getMyWalkingOverviewBetween(member, from, to);
+		WalkingOverviewProjection overview = walkingReportCustomRepository.getMyWalkingOverviewBetween(member, from,
+			to);
 
 		WalkingReportDto.WalkingReportDtoBuilder builder = WalkingReportDto.builder()
 			.walkingCnt(overview.getTotalWalkingCnt())
