@@ -1,4 +1,4 @@
-package com.scare.api.report.repository;
+package com.scare.api.report.repository.custom;
 
 import static com.scare.api.solution.walk.domain.QWalkingCourse.*;
 

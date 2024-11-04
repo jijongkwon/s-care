@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.scare.api.member.domain.Member;
 import com.scare.api.member.repository.MemberRepository;
-import com.scare.api.report.repository.WalkingReportCustomRepository;
+import com.scare.api.report.repository.custom.WalkingReportCustomRepository;
 import com.scare.api.report.service.dto.ReportDto;
 import com.scare.api.report.service.walk.dto.WalkingOverviewProjection;
 import com.scare.api.report.service.walk.dto.WalkingReportDto;
