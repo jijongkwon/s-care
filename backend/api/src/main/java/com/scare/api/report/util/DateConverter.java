@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class DateConverter {
+public final class DateConverter {
 
 	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
 
@@ -17,5 +17,5 @@ public class DateConverter {
 		LocalDate date = LocalDate.parse(dateStr, FORMATTER);
 		return date.atTime(23, 59, 59); // 하루의 마지막 시간으로 설정
 	}
-	
+
 }
