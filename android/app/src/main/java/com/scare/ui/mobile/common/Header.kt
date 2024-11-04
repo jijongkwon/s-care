@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import androidx.work.Configuration
 import coil.compose.AsyncImage
 import com.scare.R
@@ -25,10 +26,8 @@ fun TheHeader(
     imageUrl: String? = null,
     isMainPage: Boolean = false,
     navController: NavController,
-    onBackClick: () -> Unit = {},
-    onProfileClick: () -> Unit = { navController.navigate("mypage")},
-    onLogoClick: () -> Unit = { navController.navigate("main")}
 ) {
+
     Row(
         modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.background).statusBarsPadding(),
         horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically
@@ -38,16 +37,16 @@ fun TheHeader(
                 model = imageUrl,
                 contentDescription = "User Image",
                 modifier = Modifier.size(48.dp).fillMaxWidth()
-                                    .clickable(onClick = onProfileClick)
+                                    .clickable(onClick = { navController.navigate("mypage")})
             )
         } else {
-            IconButton(onClick = onBackClick) {
+            IconButton(onClick = {}) {
                 Icon(Icons.Filled.KeyboardArrowLeft, contentDescription = "Back")
             }
         }
 
         Row {
-            Logo(modifier = Modifier.weight(1f).clickable(onClick = onLogoClick))
+            Logo(modifier = Modifier.weight(1f).clickable(onClick = {navController.navigate("main")}))
             // 오른쪽에 비어있는 공간
             Spacer(modifier = Modifier.size(16.dp)) // 아이콘 크기와 동일한 크기의 Spacer
         }

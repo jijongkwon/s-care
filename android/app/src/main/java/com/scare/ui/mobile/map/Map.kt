@@ -22,8 +22,7 @@ fun Map(modifier: Modifier = Modifier) {
                 imageUrl = null,  // 메인 페이지가 아니므로 프로필 이미지는 null
                 isMainPage = false,  // 뒤로 가기 버튼을 표시할지 결정
                 navController = navController,  // NavController 전달
-                onBackClick = { navController.popBackStack() } // 뒤로 가기 버튼 눌렀을 때의 동작
-            ) // 뒤로 가기 버튼 눌렀을 때의 동작
+            )
         }
     ) { innerPadding ->
         Box(
