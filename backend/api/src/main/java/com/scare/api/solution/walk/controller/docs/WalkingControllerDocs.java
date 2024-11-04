@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import com.scare.api.core.jwt.dto.CustomUserDetails;
 import com.scare.api.core.template.response.BaseResponse;
@@ -32,7 +33,7 @@ public interface WalkingControllerDocs {
 	})
 	ResponseEntity<BaseResponse<?>> saveWalkingCourse(
 		@AuthenticationPrincipal CustomUserDetails customUserDetails,
-		SaveWalkingCourseReq saveWalkingCourseReq
+		@RequestBody SaveWalkingCourseReq saveWalkingCourseReq
 	);
 
 	@Operation(

@@ -21,6 +21,10 @@ public enum ResponseCode {
 
 	// 4000 - FAST
 	FAIL_TO_GET_STRESS_DATE_FAST_API_SERVER("4000", "FAST API 에서 스트레스 데이터를 불러오지 못했습니다."),
+
+	// 5000 - WALKING
+	FAIL_TO_WALKING_COURSE("5000", "[ERROR] 산책 코스 서비스에서 예상치 못한 오류가 발생했습니다."),
+	FAIL_TO_SAVE_WALKING_COURSE("5001", "[ERROR] 산책 코스 저장에 실패했습니다."),
 	;
 
 	private String code;
