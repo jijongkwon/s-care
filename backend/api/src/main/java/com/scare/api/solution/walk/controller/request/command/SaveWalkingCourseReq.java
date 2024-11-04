@@ -6,6 +6,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,8 +14,8 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Schema(description = "걷기 운동 코스 기록 정보")
 public class SaveWalkingCourseReq {
 
@@ -51,8 +52,8 @@ public class SaveWalkingCourseReq {
 
 	@Getter
 	@Builder
-	@NoArgsConstructor
 	@AllArgsConstructor
+	@NoArgsConstructor(access = AccessLevel.PROTECTED)
 	@Schema(description = "위치 데이터")
 	public static class LocationData {
 		@Schema(
