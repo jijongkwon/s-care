@@ -4,10 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.scare.api.member.domain.Member;
 import com.scare.api.solution.walk.controller.request.command.SaveWalkingCourseReq;
-import com.scare.api.solution.walk.domain.WalkingCourse;
-import com.scare.api.solution.walk.domain.WalkingDetail;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -43,36 +40,6 @@ public class SaveWalkingCourseDto {
 			.heartRates(this.heartRates)
 			.locations(this.locations)
 			.stressData(stressData)
-			.build();
-	}
-
-	public WalkingCourse toWalkingCourseWithFastApi(Member member) {
-		return WalkingCourse.builder()
-			.distance(this.distance)
-			.minStress(this.stressData.getMinStress())
-			.maxStress(this.stressData.getMaxStress())
-			.startIdx(this.stressData.getStartIdx())
-			.endIdx(this.stressData.getEndIdx())
-			.healingStressAvg(this.stressData.getHealingStressAvg())
-			.startedAt(this.startedAt)
-			.finishedAt(this.finishedAt)
-			.member(member)
-			.build();
-	}
-
-	public WalkingCourse toWalkingCourseDefault(Member member) {
-		return WalkingCourse.builder()
-			.distance(this.distance)
-			.startedAt(this.startedAt)
-			.finishedAt(this.finishedAt)
-			.member(member)
-			.build();
-	}
-
-	public WalkingDetail toWalkingDetail(Long walkingCourseId, List<WalkingDetail.LocationPoint> locationPoints) {
-		return WalkingDetail.builder()
-			.id(walkingCourseId)
-			.locationData(locationPoints)
 			.build();
 	}
 }

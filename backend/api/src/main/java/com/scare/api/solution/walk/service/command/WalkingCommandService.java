@@ -13,6 +13,7 @@ import com.scare.api.infrastructure.external.stress.StressApiClient;
 import com.scare.api.member.domain.Member;
 import com.scare.api.member.repository.MemberRepository;
 import com.scare.api.member.service.helper.MemberServiceHelper;
+import com.scare.api.solution.walk.domain.WalkingCourse;
 import com.scare.api.solution.walk.domain.WalkingDetail;
 import com.scare.api.solution.walk.exception.WalkingCourseDataSaveException;
 import com.scare.api.solution.walk.repository.WalkingCourseRepository;
@@ -56,11 +57,11 @@ public class WalkingCommandService {
 	private Long saveWithStressData(SaveWalkingCourseDto walkingCourseSaveDto, long walkingTime,
 		Member existingMember, List<WalkingDetail.LocationPoint> locationPoints) {
 		SaveWalkingCourseStressDto stressData = stressApiClient.getStressData(walkingCourseSaveDto, walkingTime);
-		SaveWalkingCourseDto enrichedDto = walkingCourseSaveDto.withStressData(stressData);
+		SaveWalkingCourseDto walkingCourseWithStressDto = walkingCourseSaveDto.withStressData(stressData);
 
-		Long walkingCourseId = walkingCourseRepository.save(enrichedDto.toWalkingCourseWithFastApi(existingMember))
-			.getId();
-		walkingDetailRepository.save(enrichedDto.toWalkingDetail(walkingCourseId, locationPoints));
+		Long walkingCourseId = walkingCourseRepository.save(
+			createWalkingCourseWithStressData(walkingCourseWithStressDto, existingMember)).getId();
+		walkingDetailRepository.save(createWalkingCourseDetail(walkingCourseId, locationPoints));
 		log.info("[WalkingCommandService] 스트레스 데이터를 포함하여 산책 코스 저장 성공");
 
 		return walkingCourseId;
@@ -68,9 +69,9 @@ public class WalkingCommandService {
 
 	private Long saveWithoutStressData(SaveWalkingCourseDto walkingCourseSaveDto,
 		Member existingMember, List<WalkingDetail.LocationPoint> locationPoints) {
-		Long walkingCourseId = walkingCourseRepository.save(walkingCourseSaveDto.toWalkingCourseDefault(existingMember))
-			.getId();
-		walkingDetailRepository.save(walkingCourseSaveDto.toWalkingDetail(walkingCourseId, locationPoints));
+		Long walkingCourseId = walkingCourseRepository.save(
+			createWalkingCourseWthoutStressData(walkingCourseSaveDto, existingMember)).getId();
+		walkingDetailRepository.save(createWalkingCourseDetail(walkingCourseId, locationPoints));
 		log.info("[WalkingCommandService] 기본 데이터만 산책 코스 저장 성공");
 
 		return walkingCourseId;
@@ -95,5 +96,36 @@ public class WalkingCommandService {
 		}
 
 		return newLocationPoints;
+	}
+
+	private WalkingCourse createWalkingCourseWithStressData(SaveWalkingCourseDto dto, Member member) {
+		return WalkingCourse.builder()
+			.distance(dto.getDistance())
+			.minStress(dto.getStressData().getMinStress())
+			.maxStress(dto.getStressData().getMaxStress())
+			.startIdx(dto.getStressData().getStartIdx())
+			.endIdx(dto.getStressData().getEndIdx())
+			.healingStressAvg(dto.getStressData().getHealingStressAvg())
+			.startedAt(dto.getStartedAt())
+			.finishedAt(dto.getFinishedAt())
+			.member(member)
+			.build();
+	}
+
+	private WalkingCourse createWalkingCourseWthoutStressData(SaveWalkingCourseDto dto, Member member) {
+		return WalkingCourse.builder()
+			.distance(dto.getDistance())
+			.startedAt(dto.getStartedAt())
+			.finishedAt(dto.getFinishedAt())
+			.member(member)
+			.build();
+	}
+
+	private WalkingDetail createWalkingCourseDetail(Long walkingCourseId,
+		List<WalkingDetail.LocationPoint> locationPoints) {
+		return WalkingDetail.builder()
+			.id(walkingCourseId)
+			.locationData(locationPoints)
+			.build();
 	}
 }
