@@ -17,9 +17,9 @@ public final class ReportFacade {
 
 	private final List<ReportService> reportServices = new ArrayList<>();
 
-	public List<ReportDto> getReports(Long memberId, String startDate, String endDate) {
+	public List<ReportDto> getReports(Long memberId, String from, String to) {
 		return reportServices.stream()
-			.map(reportService -> reportService.getReport(memberId, startDate, endDate))
+			.map(reportService -> reportService.getReport(memberId, from, to))
 			.collect(Collectors.toList());
 	}
 
