@@ -12,6 +12,7 @@ import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.scare.api.core.jwt.dto.TokenPayloadDto;
 import com.scare.api.core.template.response.ResponseCode;
 
 import io.jsonwebtoken.ExpiredJwtException;
@@ -81,10 +82,10 @@ public class JWTUtil {
 		return responseCode;
 	}
 
-	public String createAccessToken(Long memberId, String role) {
+	public String createAccessToken(TokenPayloadDto tokenPayloadDto) {
 		return Jwts.builder()
-			.claim("memberId", memberId)
-			.claim("role", role)
+			.claim("memberId", tokenPayloadDto.getMemberId())
+			.claim("role", tokenPayloadDto.getRole())
 			.issuedAt(new Date(System.currentTimeMillis()))
 			.expiration(new Date(System.currentTimeMillis() + accessExpiration))
 			.signWith(secretKey)

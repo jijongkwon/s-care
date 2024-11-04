@@ -9,6 +9,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.scare.api.core.jwt.dto.TokenPayloadDto;
 import com.scare.api.core.jwt.util.JWTUtil;
 import com.scare.api.member.domain.Member;
 import com.scare.api.member.domain.Provider;
@@ -40,13 +41,18 @@ public class AuthService {
 		Member member = processLogin(loginDto);
 
 		// 토큰 생성
-		String accessToken = jwtUtil.createAccessToken(member.getId(), member.getRole().name());
+		TokenPayloadDto tokenPayloadDto = TokenPayloadDto.builder()
+			.memberId(member.getId())
+			.role(member.getRole().name())
+			.build();
+
+		String accessToken = jwtUtil.createAccessToken(tokenPayloadDto);
 		log.info("AccessToken 토큰 발급 완료: {}", accessToken);
 		String refreshToken = jwtUtil.createRefreshToken();
 		log.info("RefreshToken 토큰 발급 완료: {}", refreshToken);
 
 		// refreshToken 레디스에 저장
-		saveRefreshToken(member, refreshToken);
+		saveRefreshToken(tokenPayloadDto, refreshToken);
 		log.info("Redis에 Refresh Token 저장 완료");
 
 		return LoginDto.from(member, accessToken, refreshToken);
@@ -68,10 +74,19 @@ public class AuthService {
 
 		deleteRefreshToken(refreshTokenKey);
 
-		String accessToken = jwtUtil.createAccessToken(memberId, role);
+		TokenPayloadDto tokenPayloadDto = TokenPayloadDto.builder()
+			.memberId(memberId)
+			.role(role)
+			.build();
+
+		String accessToken = jwtUtil.createAccessToken(tokenPayloadDto);
 		log.info("AccessToken 토큰 재발급 완료: {}", accessToken);
 		String refreshToken = jwtUtil.createRefreshToken();
 		log.info("RefreshToken 토큰 재발급 완료: {}", refreshToken);
+
+		// refreshToken 레디스에 저장
+		saveRefreshToken(tokenPayloadDto, refreshToken);
+		log.info("Redis에 Refresh Token 저장 완료");
 
 		return Map.of("accessToken", accessToken, "refreshToken", refreshToken);
 	}
@@ -106,15 +121,15 @@ public class AuthService {
 		return member;
 	}
 
-	private void saveRefreshToken(Member member, String refreshToken) {
+	private void saveRefreshToken(TokenPayloadDto tokenPayloadDto, String refreshToken) {
 		String refreshTokenKey = "refreshToken:" + refreshToken;
 
 		try {
 			refreshTokenRedisTemplate.opsForHash().putAll(
 				refreshTokenKey,
 				Map.of(
-					"memberId", String.valueOf(member.getId()),
-					"role", member.getRole().name()
+					"memberId", String.valueOf(tokenPayloadDto.getMemberId()),
+					"role", tokenPayloadDto.getRole()
 				)
 			);
 			refreshTokenRedisTemplate.expire(refreshTokenKey, Duration.ofSeconds(refreshExpiration));
