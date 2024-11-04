@@ -10,7 +10,7 @@ import com.scare.api.core.jwt.util.JWTUtil;
 import com.scare.api.core.template.response.BaseResponse;
 import com.scare.api.member.controller.docs.AuthControllerDocs;
 import com.scare.api.member.controller.dto.request.LoginReq;
-import com.scare.api.member.service.MemberService;
+import com.scare.api.member.service.AuthService;
 import com.scare.api.member.service.dto.LoginDto;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,13 +24,13 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class AuthController implements AuthControllerDocs {
 
-	private final MemberService memberService;
+	private final AuthService authService;
 	private final JWTUtil jwtUtil;
 
 	@Override
 	@PostMapping("/login")
 	public ResponseEntity<BaseResponse<LoginDto>> login(@RequestBody LoginReq loginReq, HttpServletResponse response) {
-		LoginDto result = memberService.login(LoginDto.from(loginReq));
+		LoginDto result = authService.login(LoginDto.from(loginReq));
 
 		// 클라이언트에게 JWT 전달
 		response.setHeader("Authorization", "Bearer " + result.getAccessToken());
@@ -42,27 +42,16 @@ public class AuthController implements AuthControllerDocs {
 	@Override
 	@PostMapping("/reissue")
 	public ResponseEntity<BaseResponse<?>> reissue(HttpServletRequest request, HttpServletResponse response) {
+		response.setHeader("Authorization", "Bearer " + authService.reissue(request.getCookies()));
 
-		String refreshToken = request.getHeader("refreshToken");
-
-		// ResponseCode errorResponseCode = jwtUtil.validateToken(refreshToken);
-		// if (errorResponseCode != null) {
-		// 	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(BaseResponse.ofFail(errorResponseCode));
-		// }
-
-		// 토큰 생성
-		// String accessToken = jwtUtil.createAccessToken(jwt, result.getRole());
-		// log.info("AccessToken 토큰 발급 완료: {}", accessToken);
-		// String refreshToken = jwtUtil.createRefreshToken();
-		// log.info("RefreshToken 토큰 발급 완료: {}", refreshToken);
-
-		// redis에서 값을 가져와서 memberId와 role을 이용해서 토큰 다시 생성
-		// 그리고 redis에 다시 넣어야함
-		// refreshToken 레디스에 저장
-		// 1. 로그아웃 시 블랙아웃 고려?
-		// 2. RTR 구현해볼까
-
-		return ResponseEntity.ok(BaseResponse.ofSuccess("재발급은 되는데 redis가 구현이 안 됐음!"));
+		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}
 
+	@Override
+	@PostMapping("/logout")
+	public ResponseEntity<BaseResponse<?>> logout(HttpServletRequest request) {
+		authService.logout(request.getCookies());
+		
+		return ResponseEntity.ok(BaseResponse.ofSuccess());
+	}
 }

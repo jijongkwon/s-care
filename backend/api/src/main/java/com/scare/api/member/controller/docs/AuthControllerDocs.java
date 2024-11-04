@@ -34,8 +34,20 @@ public interface AuthControllerDocs {
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "AccessToken 재발급 성공"),
 		@ApiResponse(responseCode = "401", description = "인증 실패"),
+		@ApiResponse(responseCode = "404", description = "인증 실패"),
 		@ApiResponse(responseCode = "500", description = "서버 오류"),
 	})
 	ResponseEntity<BaseResponse<?>> reissue(HttpServletRequest request, HttpServletResponse response);
+
+	@Operation(
+		summary = "로그아웃",
+		description = "RefreshToken을 만료시킵니다."
+	)
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "RefreshToken 만료 성공"),
+		@ApiResponse(responseCode = "401", description = "인증 실패"),
+		@ApiResponse(responseCode = "500", description = "서버 오류"),
+	})
+	ResponseEntity<BaseResponse<?>> logout(HttpServletRequest request);
 
 }
