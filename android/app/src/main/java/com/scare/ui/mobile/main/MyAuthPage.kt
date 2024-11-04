@@ -1,0 +1,140 @@
+package com.scare.ui.mobile.main
+
+import android.media.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Button
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
+import com.scare.data.dto.User.UserInfoResponseDTO
+import com.scare.ui.mobile.common.TheHeader
+import com.scare.ui.mobile.viewmodel.user.UserInfoViewModel
+import com.scare.ui.theme.ScareTheme
+import com.scare.ui.theme.Typography
+import com.scare.ui.theme.White
+
+@Composable
+fun MyAuthPage(
+    navController: NavController,
+    userInfoViewModel: UserInfoViewModel = viewModel() // ViewModel 인스턴스 주입
+) {
+
+    // userInfo 데이터를 수집
+    val userInfo by userInfoViewModel.userInfo.collectAsState()
+
+    LaunchedEffect(Unit) {
+        userInfoViewModel.fetchUserInfo() // 페이지 진입 시 API 호출
+    }
+
+    Scaffold(
+        topBar = { TheHeader(null, isMainPage = false, navController) }
+    ) { innerPadding ->
+
+        // userInfo를 사용해 UI 표시
+        userInfo?.let {
+            MyAuthInfo(it, modifier = Modifier.padding(innerPadding)) // MyAuthInfo에 데이터 전달
+        }?: Text("Loading...") // 데이터 로딩 중 표시
+    }
+}
+
+@Composable
+fun MyAuthInfo (
+    userInfo: UserInfoResponseDTO,
+    modifier: Modifier = Modifier,
+) {
+
+    val profileUrl = userInfo.profileUrl
+    val nickname = userInfo.nickname
+    val email = userInfo.email
+
+    Column (
+        modifier = modifier
+            .fillMaxWidth() // 가로를 꽉 채움
+            .fillMaxHeight(), // 세로를 꽉 채움
+        verticalArrangement = Arrangement.spacedBy(21.dp, Alignment.CenterVertically), // 수직 방향 가운데 정렬
+        horizontalAlignment = Alignment.CenterHorizontally // 수평 방향 가운데 정렬
+    ) {
+        AsyncImage (
+            model = profileUrl,
+            contentDescription = "User Image",
+            modifier = Modifier
+                .size(100.dp),
+            contentScale = ContentScale.Crop
+
+        )
+
+        Text (
+            text="$nickname 님",
+            style = Typography.titleLarge.copy( // TextStyle 적용
+                fontSize = 24.sp, // 크기 변경
+                fontWeight = FontWeight.Bold // 굵기 변경
+            )
+        )
+
+        Text ("$email")
+
+        Column(
+            modifier = modifier.padding(top = 28.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically), // 수직 방향 가운데 정렬
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Button (
+                onClick = { /*TODO*/ },
+            ) {
+                Text(
+                    text = "로그아웃",
+                    style = Typography.titleLarge.copy( // TextStyle 적용
+                        fontSize = 18.sp, // 크기 변경
+                        fontWeight = FontWeight.Bold // 굵기 변경
+                    )
+                )
+            }
+
+            Text("탈퇴하기")
+        }
+    }
+}
+
+////////////////////아래 주석은 더미데이터
+@Preview(showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun MyAuthPagePreview() {
+    // 기본 데이터를 사용하여 Preview를 위한 MyAuthInfo 호출
+    val sampleUserInfo = UserInfoResponseDTO(
+        email = "test@example.com",
+        profileUrl = "https://img.freepik.com/free-photo/adorable-portrait-pomeranian-dog_23-2151771743.jpg",
+        nickname = "Tester"
+    )
+
+    val navController = rememberNavController() // Preview용 NavController 생성
+
+    ScareTheme {
+        Scaffold(
+            topBar = { TheHeader(null, isMainPage = false, navController = navController) }
+        ) { innerPadding ->
+            MyAuthInfo(
+                userInfo = sampleUserInfo,
+                modifier = Modifier.padding(innerPadding)
+            )
+        }
+    }
+}

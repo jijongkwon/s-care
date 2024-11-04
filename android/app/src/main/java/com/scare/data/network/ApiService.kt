@@ -3,12 +3,14 @@ package com.scare.data.network
 import com.scare.data.dto.Auth.LoginRequestDTO
 import com.scare.data.dto.Auth.LoginResponseDTO
 import com.scare.data.dto.Auth.RefreshRequestDTO
+import com.scare.data.dto.User.UserInfoResponseDTO
 import com.scare.data.repository.Auth.TokenRepository
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
 
 object RetrofitClient {
@@ -37,9 +39,16 @@ object RetrofitClient {
 }
 
 interface ApiService {
-    @POST("auth/login")
+
+    //로그인
+    @POST("/api/v1/members/auth/login")
     fun login(@Body loginRequestDTO: LoginRequestDTO): Call<LoginResponseDTO>
 
+    //토큰재발급
     @POST("auth/refresh")
     fun refreshToken(@Body refreshToken: RefreshRequestDTO): Call<LoginResponseDTO>
+
+    //회원정보조회
+    @GET("user/info") // 실제 API 엔드포인트에 맞게 수정
+    suspend fun getUserInfo(): UserInfoResponseDTO
 }

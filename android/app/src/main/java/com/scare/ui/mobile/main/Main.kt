@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.scare.ui.mobile.common.TheHeader
-import com.scare.ui.mobile.login.LoginViewModel
+import com.scare.ui.mobile.viewmodel.login.LoginViewModel
 import com.scare.ui.mobile.main.component.ButtonContainer
 import com.scare.ui.mobile.main.component.MyPetImage
 import com.scare.ui.mobile.main.component.MyStressRate
@@ -32,7 +32,7 @@ fun MainPage(loginViewModel: LoginViewModel, navController: NavHostController) {
     val profileUrl by loginViewModel.profileUrl.collectAsState()
 
     Scaffold(
-        topBar = { TheHeader(profileUrl, isMainPage = true) }
+        topBar = { TheHeader(profileUrl, isMainPage = true, navController) }
     ) { innerPadding ->
         val solutions = listOf("산책하기", "ASMR", "펫과 대화하기")
         

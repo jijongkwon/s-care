@@ -1,4 +1,4 @@
-package com.scare.ui.mobile.login
+package com.scare.ui.mobile.viewmodel.login
 
 import GoogleLoginRepository
 import android.content.Intent
