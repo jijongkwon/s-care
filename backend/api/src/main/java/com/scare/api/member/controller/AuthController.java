@@ -1,5 +1,7 @@
 package com.scare.api.member.controller;
 
+import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,7 +44,10 @@ public class AuthController implements AuthControllerDocs {
 	@Override
 	@PostMapping("/reissue")
 	public ResponseEntity<BaseResponse<?>> reissue(HttpServletRequest request, HttpServletResponse response) {
-		response.setHeader("Authorization", "Bearer " + authService.reissue(request.getCookies()));
+		Map<String, String> result = authService.reissue(request.getCookies());
+
+		response.setHeader("Authorization", "Bearer " + result.get("accessToken"));
+		response.addCookie(jwtUtil.createCookie("refreshToken", result.get("refreshToken")));
 
 		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}
@@ -51,7 +56,7 @@ public class AuthController implements AuthControllerDocs {
 	@PostMapping("/logout")
 	public ResponseEntity<BaseResponse<?>> logout(HttpServletRequest request) {
 		authService.logout(request.getCookies());
-		
+
 		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}
 }
