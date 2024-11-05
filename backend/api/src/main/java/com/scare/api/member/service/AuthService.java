@@ -156,9 +156,9 @@ public class AuthService {
 			Boolean result = tokenRedisTemplate.delete("refreshToken:" + memberId);
 
 			if (result == null || !result) {
-				log.info("Redis에 회원 ID: {}에 대한 Refresh Token이 존재하지 않습니다.", memberId);
+				log.info("Redis에 Key(refreshToken:{})에 대한 Value(Refresh Token)가 존재하지 않습니다.", memberId);
 			} else {
-				log.info("Redis에서 회원 ID: {}에 대한 Refresh Token이 성공적으로 제거되었습니다.", memberId);
+				log.info("Redis에서 Key(refreshToken:{})에 대한 Value(Refresh Token)가 성공적으로 제거되었습니다.", memberId);
 			}
 
 		} catch (Exception e) {
