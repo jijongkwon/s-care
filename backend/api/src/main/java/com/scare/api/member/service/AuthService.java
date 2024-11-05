@@ -1,5 +1,7 @@
 package com.scare.api.member.service;
 
+import static com.scare.api.member.service.helper.MemberServiceHelper.*;
+
 import java.time.Duration;
 import java.util.Map;
 
@@ -82,6 +84,20 @@ public class AuthService {
 		String refreshToken = jwtUtil.getCookieValue(cookies, "refreshToken");
 
 		validateRefreshToken(refreshToken);
+	}
+
+	@Transactional
+	public void withdraw(Long memberId, Cookie[] cookies) {
+		// refreshToken관련 오류가 있어도 회원 탈퇴는 진행하기 위함
+		try {
+			logout(cookies);
+		} catch (Exception e) {
+			log.error("회원 탈퇴 중 Refresh Token 관련 오류: {}", e.getMessage());
+		}
+
+		Member member = findExistingMember(authRepository, memberId);
+
+		member.withdraw();
 	}
 
 	private Member processLogin(LoginDto loginDto) {

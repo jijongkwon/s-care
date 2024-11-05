@@ -76,6 +76,10 @@ public class JWTUtil {
 		try {
 			Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration();
 
+			if (!getTokenType(token).equals(tokenType.getValue())) {
+				responseCode = ResponseCode.UNAUTHORIZED_EXCEPTION;
+			}
+
 		} catch (ExpiredJwtException e) {
 			responseCode = ResponseCode.EXPIRED_JWT_EXCEPTION;
 
@@ -83,10 +87,6 @@ public class JWTUtil {
 			responseCode = ResponseCode.UNSUPPORTED_JWT_EXCEPTION;
 
 		} catch (JwtException | IllegalArgumentException e) {
-			responseCode = ResponseCode.UNAUTHORIZED_EXCEPTION;
-		}
-
-		if (!getTokenType(token).equals(tokenType.getValue())) {
 			responseCode = ResponseCode.UNAUTHORIZED_EXCEPTION;
 		}
 

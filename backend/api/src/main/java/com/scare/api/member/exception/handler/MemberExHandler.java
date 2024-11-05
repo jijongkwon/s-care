@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.scare.api.core.template.response.BaseResponse;
 import com.scare.api.core.template.response.ResponseCode;
+import com.scare.api.member.exception.AlreadyWithdrawnMemberException;
 import com.scare.api.member.exception.InvalidCookieRefreshTokenException;
 import com.scare.api.member.exception.NoMemberException;
 import com.scare.api.member.exception.RedisTokenStoredException;
@@ -53,6 +54,13 @@ public class MemberExHandler {
 		log.error(e.getMessage());
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
 			.body(BaseResponse.ofFail(ResponseCode.UNAUTHORIZED_EXCEPTION));
+	}
+
+	@ExceptionHandler(AlreadyWithdrawnMemberException.class)
+	public ResponseEntity<BaseResponse<Object>> alreadyWithdrawnMemberException(AlreadyWithdrawnMemberException e) {
+		log.error(e.getMessage());
+		return ResponseEntity.status(HttpStatus.CONFLICT)
+			.body(BaseResponse.ofFail(ResponseCode.ALREADY_WITHDRAWN_MEMBER));
 	}
 
 }

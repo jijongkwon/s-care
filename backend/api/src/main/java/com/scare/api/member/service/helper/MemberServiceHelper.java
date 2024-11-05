@@ -1,14 +1,15 @@
 package com.scare.api.member.service.helper;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+
 import com.scare.api.member.domain.Member;
 import com.scare.api.member.exception.NoMemberException;
-import com.scare.api.member.repository.MemberRepository;
 
 public final class MemberServiceHelper {
 
-	public static Member findExistingMember(MemberRepository memberRepository, Long memberId) {
+	public static <T extends JpaRepository<Member, Long>> Member findExistingMember(T memberRepository, Long memberId) {
 		return memberRepository.findById(memberId)
-			.orElseThrow(() -> new NoMemberException());
+			.orElseThrow(() -> new NoMemberException("존재하지 않는 회원 memberId: " + memberId));
 	}
 
 }

@@ -1,8 +1,11 @@
 package com.scare.api.member.controller.docs;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import com.scare.api.core.jwt.dto.CustomUserDetails;
 import com.scare.api.core.template.response.BaseResponse;
 import com.scare.api.member.controller.dto.request.LoginReq;
 import com.scare.api.member.service.dto.LoginDto;
@@ -45,8 +48,24 @@ public interface AuthControllerDocs {
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "RefreshToken 만료 성공"),
 		@ApiResponse(responseCode = "401", description = "인증 실패"),
-		@ApiResponse(responseCode = "500", description = "서버 오류"),
+		@ApiResponse(responseCode = "500", description = "서버 오류")
 	})
 	ResponseEntity<BaseResponse<?>> logout(HttpServletRequest request);
+
+	@Operation(
+		summary = "회원 탈퇴",
+		description = "회원을 탈퇴합니다. (status 변경)"
+	)
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "회원 탈퇴 성공"),
+		@ApiResponse(responseCode = "401", description = "인증 실패"),
+		@ApiResponse(responseCode = "404", description = "존재하지 않는 회원"),
+		@ApiResponse(responseCode = "409", description = "이미 탈퇴된 회원"),
+		@ApiResponse(responseCode = "500", description = "서버 오류")
+	})
+	ResponseEntity<BaseResponse<?>> withdraw(
+		@AuthenticationPrincipal CustomUserDetails customUserDetails,
+		@PathVariable("member-id") Long memberId,
+		HttpServletRequest request);
 
 }
