@@ -18,6 +18,7 @@ public enum ResponseCode {
 
 	// 3000 - MEMBER
 	MEMBER_NOT_FOUND("3000", "회원이 존재하지 않습니다."),
+	ALREADY_WITHDRAWN_MEMBER("3001", "이미 탈퇴된 회원입니다."),
 
 	// 4000 - FAST
 	FAIL_TO_GET_STRESS_DATE_FAST_API_SERVER("4000", "FAST API 에서 스트레스 데이터를 불러오지 못했습니다."),

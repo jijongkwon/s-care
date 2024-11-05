@@ -6,6 +6,7 @@ import java.util.List;
 import org.hibernate.annotations.SQLRestriction;
 
 import com.scare.api.core.domain.BaseTimeEntity;
+import com.scare.api.member.exception.AlreadyWithdrawnMemberException;
 import com.scare.api.pet.domain.PetCollection;
 
 import jakarta.persistence.CascadeType;
@@ -77,6 +78,22 @@ public class Member extends BaseTimeEntity {
 	public void updateNicknameAndProfileUrl(String nickname, String profileUrl) {
 		this.nickname = nickname;
 		this.profileUrl = profileUrl;
+	}
+
+	public void withdraw() {
+		if (!isActive()) {
+			throw new AlreadyWithdrawnMemberException("이미 탈퇴된 회원");
+		}
+
+		this.status = MemberStatus.INACTIVE;
+	}
+
+	public boolean isActive() {
+		if (this.status == MemberStatus.ACTIVE) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 }
