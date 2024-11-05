@@ -1,6 +1,6 @@
 package com.scare.data.member.network
 
-import com.scare.data.member.dto.Auth.LoginResponseDTO
+import android.util.Log
 import com.scare.data.member.dto.Auth.RefreshRequestDTO
 import com.scare.data.member.repository.Auth.TokenRepository
 import kotlinx.coroutines.Dispatchers
@@ -10,7 +10,6 @@ import okhttp3.Interceptor
 import okhttp3.Response
 import retrofit2.Call
 import retrofit2.awaitResponse
-import kotlin.text.substringAfter
 
 class TokenInterceptor(
     private val tokenRepository: TokenRepository,
@@ -19,6 +18,8 @@ class TokenInterceptor(
     override fun intercept(chain: Interceptor.Chain): Response {
         var request = chain.request()
         val accessToken = runBlocking { tokenRepository.getAccessToken() } //동기처리
+
+        Log.d("TokenInterceptor", "accessToken: $accessToken")
 
         request = request.newBuilder()
             .addHeader("Authorization", "$accessToken")
@@ -36,6 +37,7 @@ class TokenInterceptor(
                     reissueAccessToken(chain)
                 }
             }
+
             if (newAccessToken != null) {
                 runBlocking { tokenRepository.saveAccessToken(newAccessToken) }
 
@@ -52,9 +54,6 @@ class TokenInterceptor(
     }
 
     private suspend fun reissueAccessToken(chain: Interceptor.Chain): String? {
-        // 헤더에서 accessToken 가져오기
-        val accessToken = chain.request().header("Authorization")?.substringAfter("Bearer ")
-
         // 쿠키에서 refreshToken 가져오기
         val refreshToken = getRefreshTokenFromCookies(chain)
 

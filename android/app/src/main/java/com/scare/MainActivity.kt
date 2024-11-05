@@ -15,6 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.scare.data.member.network.RetrofitClient
 import com.scare.data.member.repository.Auth.TokenRepository
+import com.scare.data.member.repository.User.UserInfoRepository
 import com.scare.ui.mobile.calender.MyCalender
 import com.scare.ui.mobile.calender.MyReport
 import com.scare.ui.mobile.common.LocalNavController
@@ -25,6 +26,8 @@ import com.scare.ui.mobile.main.StartPage
 import com.scare.ui.mobile.map.Map
 import com.scare.ui.mobile.viewmodel.login.LoginViewModel
 import com.scare.ui.mobile.viewmodel.login.LoginViewModelFactory
+import com.scare.ui.mobile.viewmodel.user.UserInfoViewModel
+import com.scare.ui.mobile.viewmodel.user.UserInfoViewModelFactory
 import com.scare.ui.theme.ScareTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,7 +35,7 @@ import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     private lateinit var loginViewModel: LoginViewModel
-
+//    private lateinit var userInfoViewModel: UserInfoViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -46,6 +49,9 @@ class MainActivity : ComponentActivity() {
         loginViewModel = ViewModelProvider(
             this, LoginViewModelFactory(googleLoginRepository, TokenRepository.getInstance())
         )[LoginViewModel::class.java]
+
+        // UserInfoRepository 생성
+        val userInfoRepository = UserInfoRepository()
 
         // accessToken 확인 후 시작 화면 설정
         CoroutineScope(Dispatchers.Main).launch {
@@ -66,7 +72,7 @@ class MainActivity : ComponentActivity() {
                             composable("report") { MyReport() } // "map" 경로 추가
                             composable("walk") { MyCourse() } // "walk" 경로 추가
                             composable("map") { Map() } // "map" 경로 추가
-                            composable("mypage") { MyAuthPage() } // "map" 경로 추가
+                            composable("mypage") { MyAuthPage(userInfoRepository) } // "map" 경로 추가
                         }
                     }
                 }

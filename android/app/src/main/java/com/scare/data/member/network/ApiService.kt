@@ -1,9 +1,8 @@
 package com.scare.data.member.network
 
-import com.google.android.gms.common.api.Response
 import com.scare.data.member.dto.Auth.LoginRequestDTO
-import com.scare.data.member.dto.Auth.LoginResponseDTO
 import com.scare.data.member.dto.Auth.RefreshRequestDTO
+import com.scare.data.member.dto.User.APIResponseDTO
 import com.scare.data.member.dto.User.UserInfoResponseDTO
 import com.scare.data.member.repository.Auth.TokenRepository
 import okhttp3.OkHttpClient
@@ -13,11 +12,12 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 object RetrofitClient {
     private const val BASE_URL = "https://k11a408.p.ssafy.io"
 
-    private lateinit var tokenRepository: TokenRepository
+    lateinit var tokenRepository: TokenRepository
     private lateinit var tokenInterceptor: TokenInterceptor
 
     fun init(tokenRepo: TokenRepository) {
@@ -57,7 +57,6 @@ object RetrofitClient {
 }
 
 interface ApiService {
-
     //로그인
     @POST("/api/v1/members/auth/login")
     fun login(@Body loginRequestDTO: LoginRequestDTO): Call<Unit>
@@ -67,6 +66,6 @@ interface ApiService {
     fun refreshToken(@Body refreshToken: RefreshRequestDTO): Call<Unit>
 
     //회원정보조회
-    @GET("user/info") // 실제 API 엔드포인트에 맞게 수정
-    suspend fun getUserInfo(): UserInfoResponseDTO
+    @GET("/api/v1/members/{memberId}") // 실제 API 엔드포인트에 맞게 수정
+    suspend fun getUserInfo(@Path("memberId") memberId: Long): APIResponseDTO
 }

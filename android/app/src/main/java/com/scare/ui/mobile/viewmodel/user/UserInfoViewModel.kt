@@ -1,5 +1,6 @@
 package com.scare.ui.mobile.viewmodel.user
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.scare.data.member.dto.User.UserInfoResponseDTO
@@ -14,7 +15,18 @@ class UserInfoViewModel(private val repository: UserInfoRepository) : ViewModel(
 
     fun fetchUserInfo() {
         viewModelScope.launch {
-            _userInfo.value = repository.getUserInfo() // Repository에서 데이터 가져오기
+            try {
+                val userInfo = repository.getUserInfo()
+
+                if (userInfo != null) {
+                    Log.d("UserInfoViewModel", "User info fetched: $userInfo")
+                    _userInfo.value = userInfo
+                } else {
+                    Log.e("UserInfoViewModel", "userInfo = null")
+                }
+            } catch (e: Exception) {
+                Log.e("UserInfoViewModel", "Error fetching user info", e)
+            }
         }
     }
 }

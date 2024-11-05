@@ -1,5 +1,6 @@
 package com.scare.ui.mobile.main
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
@@ -18,21 +19,29 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.scare.data.member.dto.User.UserInfoResponseDTO
+import com.scare.data.member.repository.User.UserInfoRepository
 import com.scare.ui.mobile.common.TheHeader
 import com.scare.ui.mobile.viewmodel.user.UserInfoViewModel
+import com.scare.ui.mobile.viewmodel.user.UserInfoViewModelFactory
 import com.scare.ui.theme.ScareTheme
 import com.scare.ui.theme.Typography
 
 @Composable
 fun MyAuthPage(
-    userInfoViewModel: UserInfoViewModel = viewModel() // ViewModel 인스턴스 주입
+    userInfoRepository: UserInfoRepository, // Repository를 파라미터로 전달받음
 ) {
+
+    // ViewModelFactory를 사용하여 ViewModel을 생성
+    val userInfoViewModel: UserInfoViewModel = viewModel(
+        factory = UserInfoViewModelFactory(userInfoRepository)
+    )
 
     // userInfo 데이터를 수집
     val userInfo by userInfoViewModel.userInfo.collectAsState()
 
     LaunchedEffect(Unit) {
-        userInfoViewModel.fetchUserInfo() // 페이지 진입 시 API 호출
+        val response = userInfoViewModel.fetchUserInfo() // 페이지 진입 시 API 호출
+        Log.d("MyAuthPage", "response: $response")
     }
 
     Scaffold(
@@ -105,24 +114,25 @@ fun MyAuthInfo(
 }
 
 ////////////////////아래 주석은 더미데이터
-@Preview(showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun MyAuthPagePreview() {
-    // 기본 데이터를 사용하여 Preview를 위한 MyAuthInfo 호출
-    val sampleUserInfo = UserInfoResponseDTO(
-        email = "test@example.com",
-        profileUrl = "https://img.freepik.com/free-photo/adorable-portrait-pomeranian-dog_23-2151771743.jpg",
-        nickname = "Tester"
-    )
-
-    ScareTheme {
-        Scaffold(
-            topBar = { TheHeader(null, isMainPage = false) }
-        ) { innerPadding ->
-            MyAuthInfo(
-                userInfo = sampleUserInfo,
-                modifier = Modifier.padding(innerPadding)
-            )
-        }
-    }
-}
+//@Preview(showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+//@Composable
+//fun MyAuthPagePreview() {
+//    // 기본 데이터를 사용하여 Preview를 위한 MyAuthInfo 호출
+//    val sampleUserInfo = UserInfoResponseDTO(
+//        email = "test@example.com",
+//        profileUrl = "https://img.freepik.com/free-photo/adorable-portrait-pomeranian-dog_23-2151771743.jpg",
+//        nickname = "Tester"
+//        provider = "google"
+//    )
+//
+//    ScareTheme {
+//        Scaffold(
+//            topBar = { TheHeader(null, isMainPage = false) }
+//        ) { innerPadding ->
+//            MyAuthInfo(
+//                userInfo = sampleUserInfo,
+//                modifier = Modifier.padding(innerPadding)
+//            )
+//        }
+//    }
+//}
