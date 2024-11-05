@@ -1,8 +1,10 @@
 package com.scare.api.member.controller.docs;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import com.scare.api.core.jwt.dto.CustomUserDetails;
 import com.scare.api.core.template.response.BaseResponse;
 import com.scare.api.member.service.dto.MemberInfoDto;
 
@@ -23,6 +25,8 @@ public interface MemberControllerDocs {
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 회원"),
 		@ApiResponse(responseCode = "500", description = "서버 오류")
 	})
-	public ResponseEntity<BaseResponse<MemberInfoDto>> getMemberInfo(@PathVariable("memberId") Long memberId);
+	public ResponseEntity<BaseResponse<MemberInfoDto>> getMemberInfo(
+		@AuthenticationPrincipal CustomUserDetails customUserDetails,
+		@PathVariable("member-id") Long memberId);
 
 }
