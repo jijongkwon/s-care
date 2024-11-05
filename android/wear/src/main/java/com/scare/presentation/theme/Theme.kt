@@ -1,4 +1,4 @@
-package com.scare.wear.presentation.theme
+package com.scare.presentation.theme
 
 import androidx.compose.runtime.Composable
 import androidx.wear.compose.material.MaterialTheme

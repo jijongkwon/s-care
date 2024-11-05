@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.scare.wear.data.repository.sensor
+package com.scare.data.repository.sensor
 
 import androidx.health.services.client.data.DataType
 import androidx.health.services.client.data.HeartRateAccuracy

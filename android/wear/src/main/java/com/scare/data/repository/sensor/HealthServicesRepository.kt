@@ -1,4 +1,4 @@
-package com.scare.wear.data.repository.sensor
+package com.scare.data.repository.sensor
 
 /*
  * Copyright 2022 The Android Open Source Project
@@ -22,8 +22,8 @@ import androidx.health.services.client.PassiveListenerCallback
 import androidx.health.services.client.data.DataPointContainer
 import androidx.health.services.client.data.DataType
 import androidx.health.services.client.data.PassiveListenerConfig
-import com.scare.wear.TAG
-import com.scare.wear.service.sensor.SensorService
+import com.scare.TAG
+import com.scare.service.sensor.SensorService
 import kotlinx.coroutines.runBlocking
 
 class HealthServicesRepository(context: Context) {
