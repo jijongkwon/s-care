@@ -21,6 +21,7 @@ public class MemberExHandler {
 
 	@ExceptionHandler(NoMemberException.class)
 	public ResponseEntity<BaseResponse<Object>> noMemberException(NoMemberException e) {
+		log.error(e.getMessage());
 		return ResponseEntity.status(HttpStatus.NOT_FOUND)
 			.body(BaseResponse.ofFail(ResponseCode.MEMBER_NOT_FOUND));
 	}
