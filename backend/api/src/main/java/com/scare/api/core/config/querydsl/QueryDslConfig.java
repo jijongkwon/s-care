@@ -3,7 +3,6 @@ package com.scare.api.core.config.querydsl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.querydsl.jpa.JPQLQueryFactory;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import jakarta.persistence.EntityManager;
@@ -16,7 +15,7 @@ public class QueryDslConfig {
 	private EntityManager em;
 
 	@Bean
-	public JPQLQueryFactory jpqlQueryFactory() {
+	public JPAQueryFactory jpaQueryFactory() {
 		return new JPAQueryFactory(em);
 	}
 
