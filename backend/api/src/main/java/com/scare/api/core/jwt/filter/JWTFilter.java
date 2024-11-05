@@ -10,6 +10,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.scare.api.core.jwt.dto.CustomUserDetails;
+import com.scare.api.core.jwt.dto.TokenType;
 import com.scare.api.core.jwt.util.JWTUtil;
 import com.scare.api.core.template.response.BaseResponse;
 import com.scare.api.core.template.response.ResponseCode;
@@ -46,7 +47,7 @@ public class JWTFilter extends OncePerRequestFilter {
 		String accessToken = authorizationHeader.substring(7);
 
 		// 토큰 만료 여부 확인, 만료시 다음 필터로 넘기지 않음
-		ResponseCode errorResponseCode = jwtUtil.validateToken(accessToken);
+		ResponseCode errorResponseCode = jwtUtil.validateToken(accessToken, TokenType.ACCESS_TOKEN);
 		if (errorResponseCode != null) {
 			setErrorResponse(response, errorResponseCode);
 			return;

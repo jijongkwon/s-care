@@ -2,7 +2,6 @@ package com.scare.api.core.jwt.util;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.UUID;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -10,6 +9,8 @@ import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.scare.api.core.jwt.dto.TokenPayload;
+import com.scare.api.core.jwt.dto.TokenType;
 import com.scare.api.core.template.response.ResponseCode;
 
 import io.jsonwebtoken.ExpiredJwtException;
@@ -32,7 +33,6 @@ public class JWTUtil {
 
 	@Value("${jwt.access.expiration}")
 	private Long accessExpiration;
-
 
 	@Value("${jwt.refresh.expiration}")
 	private Long refreshExpiration;
@@ -61,7 +61,16 @@ public class JWTUtil {
 			.get("role", String.class);
 	}
 
-	public ResponseCode validateToken(String token) {
+	public String getTokenType(String token) {
+		return Jwts.parser()
+			.verifyWith(secretKey)
+			.build()
+			.parseSignedClaims(token)
+			.getPayload()
+			.get("tokenType", String.class);
+	}
+
+	public ResponseCode validateToken(String token, TokenType tokenType) {
 		ResponseCode responseCode = null;
 
 		try {
@@ -77,21 +86,22 @@ public class JWTUtil {
 			responseCode = ResponseCode.UNAUTHORIZED_EXCEPTION;
 		}
 
+		if (!getTokenType(token).equals(tokenType.getValue())) {
+			responseCode = ResponseCode.UNAUTHORIZED_EXCEPTION;
+		}
+
 		return responseCode;
 	}
 
-	public String createAccessToken(Long memberId, String role) {
+	public String createToken(TokenPayload tokenPayload) {
 		return Jwts.builder()
-			.claim("memberId", memberId)
-			.claim("role", role)
+			.claim("memberId", tokenPayload.getMemberId())
+			.claim("role", tokenPayload.getRole())
+			.claim("tokenType", tokenPayload.getTokenType())
 			.issuedAt(new Date(System.currentTimeMillis()))
 			.expiration(new Date(System.currentTimeMillis() + accessExpiration))
 			.signWith(secretKey)
 			.compact();
-	}
-
-	public String createRefreshToken() {
-		return UUID.randomUUID().toString() + "-" + System.currentTimeMillis();
 	}
 
 	public Cookie createCookie(String key, String value) {
