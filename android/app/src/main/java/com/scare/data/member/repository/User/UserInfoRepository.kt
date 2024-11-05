@@ -1,7 +1,7 @@
-package com.scare.data.repository.User
+package com.scare.data.member.repository.User
 
-import com.scare.data.dto.User.UserInfoResponseDTO
-import com.scare.data.network.RetrofitClient.apiService
+import com.scare.data.member.dto.User.UserInfoResponseDTO
+import com.scare.data.member.network.RetrofitClient.apiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

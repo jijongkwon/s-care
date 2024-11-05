@@ -1,8 +1,8 @@
-package com.scare.data.network
+package com.scare.data.member.network
 
-import com.scare.data.dto.Auth.LoginResponseDTO
-import com.scare.data.dto.Auth.RefreshRequestDTO
-import com.scare.data.repository.Auth.TokenRepository
+import com.scare.data.member.dto.Auth.LoginResponseDTO
+import com.scare.data.member.dto.Auth.RefreshRequestDTO
+import com.scare.data.member.repository.Auth.TokenRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext

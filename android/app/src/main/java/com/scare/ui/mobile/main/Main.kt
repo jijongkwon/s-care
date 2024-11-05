@@ -40,12 +40,3 @@ fun MainPage(loginViewModel: LoginViewModel) {
         }
     }
 }
-
-/////////////////프리뷰 확인
-//@Preview(showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
-//@Composable
-//fun StartPagePreview() {
-//    ScareTheme {
-//        MainPage(loginViewModel = LoginViewModel(GoogleLoginRepository(LocalContext.current)), navController = rememberNavController()) // 빈 콜백 함수 전달
-//    }
-//}

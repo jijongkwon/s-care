@@ -1,4 +1,4 @@
-package com.scare.data.datastore
+package com.scare.data.member.datastore
 
 import android.content.Context
 import androidx.datastore.core.DataStore

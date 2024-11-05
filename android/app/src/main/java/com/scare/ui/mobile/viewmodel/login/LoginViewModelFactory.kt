@@ -3,7 +3,7 @@ package com.scare.ui.mobile.viewmodel.login
 import GoogleLoginRepository
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.scare.data.repository.Auth.TokenRepository
+import com.scare.data.member.repository.Auth.TokenRepository
 
 class LoginViewModelFactory(
     private val googleLoginRepository: GoogleLoginRepository,

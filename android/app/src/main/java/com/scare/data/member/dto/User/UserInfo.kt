@@ -1,4 +1,4 @@
-package com.scare.data.dto.User
+package com.scare.data.member.dto.User
 
 class UserInfoResponseDTO{
     val email: String

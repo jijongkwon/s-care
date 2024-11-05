@@ -1,4 +1,4 @@
-package com.scare.data.dto.Auth
+package com.scare.data.member.dto.Auth
 
 class LoginResponseDTO {
     val accessToken: String

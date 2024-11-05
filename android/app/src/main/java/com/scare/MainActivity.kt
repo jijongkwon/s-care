@@ -13,9 +13,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
-import com.scare.data.network.RetrofitClient
-import com.scare.data.repository.Auth.TokenRepository
+import com.scare.data.member.network.RetrofitClient
+import com.scare.data.member.repository.Auth.TokenRepository
 import com.scare.ui.mobile.calender.MyCalender
+import com.scare.ui.mobile.calender.MyReport
 import com.scare.ui.mobile.common.LocalNavController
 import com.scare.ui.mobile.course.MyCourse
 import com.scare.ui.mobile.main.MainPage
@@ -62,6 +63,7 @@ class MainActivity : ComponentActivity() {
                             composable("start") { StartPage(loginViewModel) { launchLogin() } }
                             composable("main") { MainPage(loginViewModel) }
                             composable("statistics") { MyCalender() } // "statistics" 경로 추가
+                            composable("report") { MyReport() } // "map" 경로 추가
                             composable("walk") { MyCourse() } // "walk" 경로 추가
                             composable("map") { Map() } // "map" 경로 추가
                             composable("mypage") { MyAuthPage() } // "map" 경로 추가

@@ -1,11 +1,11 @@
-package com.scare.data.repository.Auth
+package com.scare.data.member.repository.Auth
 
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.scare.data.datastore.authDataStore
+import com.scare.data.member.datastore.authDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
