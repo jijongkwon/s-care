@@ -1,10 +1,7 @@
 package com.scare.api.core.jwt.util;
 
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.UUID;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -12,7 +9,8 @@ import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.scare.api.core.jwt.dto.TokenPayloadDto;
+import com.scare.api.core.jwt.dto.TokenPayload;
+import com.scare.api.core.jwt.dto.TokenType;
 import com.scare.api.core.template.response.ResponseCode;
 
 import io.jsonwebtoken.ExpiredJwtException;
@@ -63,7 +61,16 @@ public class JWTUtil {
 			.get("role", String.class);
 	}
 
-	public ResponseCode validateToken(String token) {
+	public String getTokenType(String token) {
+		return Jwts.parser()
+			.verifyWith(secretKey)
+			.build()
+			.parseSignedClaims(token)
+			.getPayload()
+			.get("tokenType", String.class);
+	}
+
+	public ResponseCode validateToken(String token, TokenType tokenType) {
 		ResponseCode responseCode = null;
 
 		try {
@@ -79,22 +86,22 @@ public class JWTUtil {
 			responseCode = ResponseCode.UNAUTHORIZED_EXCEPTION;
 		}
 
+		if (!getTokenType(token).equals(tokenType.getValue())) {
+			responseCode = ResponseCode.UNAUTHORIZED_EXCEPTION;
+		}
+
 		return responseCode;
 	}
 
-	public String createAccessToken(TokenPayloadDto tokenPayloadDto) {
+	public String createToken(TokenPayload tokenPayload) {
 		return Jwts.builder()
-			.claim("memberId", tokenPayloadDto.getMemberId())
-			.claim("role", tokenPayloadDto.getRole())
+			.claim("memberId", tokenPayload.getMemberId())
+			.claim("role", tokenPayload.getRole())
+			.claim("tokenType", tokenPayload.getTokenType())
 			.issuedAt(new Date(System.currentTimeMillis()))
 			.expiration(new Date(System.currentTimeMillis() + accessExpiration))
 			.signWith(secretKey)
 			.compact();
-	}
-
-	public String createRefreshToken() {
-		return UUID.randomUUID().toString() + "-" + LocalDateTime.now()
-			.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
 	}
 
 	public Cookie createCookie(String key, String value) {

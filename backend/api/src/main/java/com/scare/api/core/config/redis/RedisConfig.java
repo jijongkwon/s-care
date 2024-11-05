@@ -23,7 +23,7 @@ public class RedisConfig {
 	}
 
 	@Bean
-	public RedisTemplate<String, Object> refreshTokenRedisTemplate() {
+	public RedisTemplate<String, Object> tokenRedisTemplate() {
 		RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
 		redisTemplate.setConnectionFactory(redisConnectionFactory());
 
