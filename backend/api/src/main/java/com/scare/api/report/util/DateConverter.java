@@ -10,7 +10,7 @@ public final class DateConverter {
 
 	public static LocalDateTime convertToStartOfDay(String dateStr) {
 		LocalDate date = LocalDate.parse(dateStr, FORMATTER);
-		return date.atStartOfDay(); // 자정으로 LocalDateTime 생성
+		return date.atTime(0, 0, 0); // 자정으로 LocalDateTime 생성
 	}
 
 	public static LocalDateTime convertToEndOfDay(String dateStr) {
