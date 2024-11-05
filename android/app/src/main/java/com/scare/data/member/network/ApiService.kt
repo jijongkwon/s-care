@@ -1,11 +1,11 @@
-package com.scare.data.network
+package com.scare.data.member.network
 
 import com.google.android.gms.common.api.Response
-import com.scare.data.dto.Auth.LoginRequestDTO
-import com.scare.data.dto.Auth.LoginResponseDTO
-import com.scare.data.dto.Auth.RefreshRequestDTO
-import com.scare.data.dto.User.UserInfoResponseDTO
-import com.scare.data.repository.Auth.TokenRepository
+import com.scare.data.member.dto.Auth.LoginRequestDTO
+import com.scare.data.member.dto.Auth.LoginResponseDTO
+import com.scare.data.member.dto.Auth.RefreshRequestDTO
+import com.scare.data.member.dto.User.UserInfoResponseDTO
+import com.scare.data.member.repository.Auth.TokenRepository
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -50,7 +50,7 @@ object RetrofitClient {
 
     // tokenRepository가 초기화되지 않았을 경우 예외 처리
     private fun checkInitialized() {
-        if (!::tokenRepository.isInitialized) {
+        if (!RetrofitClient::tokenRepository.isInitialized) {
             throw IllegalStateException("TokenRepository must be initialized before using RetrofitClient")
         }
     }

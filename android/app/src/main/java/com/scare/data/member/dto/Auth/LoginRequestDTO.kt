@@ -1,4 +1,4 @@
-package com.scare.data.dto.Auth
+package com.scare.data.member.dto.Auth
 
 data class LoginRequestDTO (
     val email: String,

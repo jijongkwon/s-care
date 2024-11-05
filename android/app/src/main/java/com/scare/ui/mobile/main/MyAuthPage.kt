@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
-import com.scare.data.dto.User.UserInfoResponseDTO
+import com.scare.data.member.dto.User.UserInfoResponseDTO
 import com.scare.ui.mobile.common.TheHeader
 import com.scare.ui.mobile.viewmodel.user.UserInfoViewModel
 import com.scare.ui.theme.ScareTheme
