@@ -50,7 +50,7 @@ fun TheHeader(
         }
 
         Row {
-            Logo(modifier = Modifier.weight(1f).clickable(onClick = { navController?.navigate("main") }))
+            Logo(modifier = Modifier.clickable(onClick = { navController?.navigate("main") }))
             // 오른쪽에 비어있는 공간
             Spacer(modifier = Modifier.size(16.dp)) // 아이콘 크기와 동일한 크기의 Spacer
         }
@@ -69,7 +69,7 @@ fun Logo(modifier: Modifier = Modifier) {
     Image(
         painter = logoImage,
         contentDescription = "Logo",
-        modifier = Modifier.width(80.dp) // 가로 크기 200dp로 조정
-            .height(60.dp) // 세로 크기 60dp로 고정 // 크기 조정
+        modifier = modifier.width(80.dp) // 가로 크기 200dp로 조정
+            .height(30.dp) // 세로 크기 60dp로 고정 // 크기 조정
     )
 }
