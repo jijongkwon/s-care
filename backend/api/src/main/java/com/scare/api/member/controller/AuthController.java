@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.scare.api.core.jwt.util.JWTUtil;
 import com.scare.api.core.template.response.BaseResponse;
+import com.scare.api.core.template.response.ResponseCode;
 import com.scare.api.member.controller.docs.AuthControllerDocs;
 import com.scare.api.member.controller.dto.request.LoginReq;
 import com.scare.api.member.service.AuthService;
@@ -44,10 +45,15 @@ public class AuthController implements AuthControllerDocs {
 	@Override
 	@PostMapping("/reissue")
 	public ResponseEntity<BaseResponse<?>> reissue(HttpServletRequest request, HttpServletResponse response) {
-		Map<String, String> result = authService.reissue(request.getCookies());
+		Map<String, Object> result = authService.reissue(request.getCookies());
+
+		Object errorResponseCode = result.getOrDefault("errorResponseCode", null);
+		if (errorResponseCode != null) {
+			return ResponseEntity.ok(BaseResponse.ofFail((ResponseCode)errorResponseCode));
+		}
 
 		response.setHeader("Authorization", "Bearer " + result.get("accessToken"));
-		response.addCookie(jwtUtil.createCookie("refreshToken", result.get("refreshToken")));
+		response.addCookie(jwtUtil.createCookie("refreshToken", (String)result.get("refreshToken")));
 
 		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}

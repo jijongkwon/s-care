@@ -27,9 +27,7 @@ public enum ResponseCode {
 	FAIL_TO_SAVE_WALKING_COURSE("5001", "[ERROR] 산책 코스 저장에 실패했습니다."),
 
 	// 6000 - Redis
-	REFRESH_TOKEN_STORED_EXCEPTION("6000", "Refresh Token 관련 Redis에서 오류가 발생했습니다."),
-	REFRESH_TOKEN_EXPIRED_EXCEPTION("6001", "Refresh Token이 만료되었습니다."),
-	REFRESH_TOKEN_DATA_NOT_FOUND_EXCEPTION("6002", "Refresh Token 관련 Redis에서 값을 찾을 수 없습니다.");
+	REDIS_TOKEN_STORED_EXCEPTION("6000", "Redis에서 Token관련 작업 중 오류가 발생했습니다.");
 
 	private String code;
 	private String message;

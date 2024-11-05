@@ -7,10 +7,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.scare.api.core.template.response.BaseResponse;
 import com.scare.api.core.template.response.ResponseCode;
+import com.scare.api.member.exception.InvalidCookieRefreshTokenException;
 import com.scare.api.member.exception.NoMemberException;
-import com.scare.api.member.exception.RefreshTokenDataNotFoundException;
-import com.scare.api.member.exception.RefreshTokenExpiredException;
-import com.scare.api.member.exception.RefreshTokenStoredException;
+import com.scare.api.member.exception.RedisTokenStoredException;
+import com.scare.api.member.exception.RefreshTokenMismatchException;
+import com.scare.api.member.exception.RefreshTokenNotFoundException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,24 +25,33 @@ public class MemberExHandler {
 			.body(BaseResponse.ofFail(ResponseCode.MEMBER_NOT_FOUND));
 	}
 
-	@ExceptionHandler(RefreshTokenStoredException.class)
-	public ResponseEntity<BaseResponse<Object>> refreshTokenSaveException(RefreshTokenStoredException e) {
+	@ExceptionHandler(RedisTokenStoredException.class)
+	public ResponseEntity<BaseResponse<Object>> redisTokenStoredException(RedisTokenStoredException e) {
 		log.error(e.getMessage());
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-			.body(BaseResponse.ofFail(ResponseCode.REFRESH_TOKEN_STORED_EXCEPTION));
+			.body(BaseResponse.ofFail(ResponseCode.REDIS_TOKEN_STORED_EXCEPTION));
 	}
 
-	@ExceptionHandler(RefreshTokenExpiredException.class)
-	public ResponseEntity<BaseResponse<Object>> refreshTokenExpiredException(RefreshTokenExpiredException e) {
+	@ExceptionHandler(RefreshTokenNotFoundException.class)
+	public ResponseEntity<BaseResponse<Object>> refreshTokenNotFoundException(RefreshTokenNotFoundException e) {
 		log.error(e.getMessage());
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
 			.body(BaseResponse.ofFail(ResponseCode.UNAUTHORIZED_EXCEPTION));
 	}
 
-	@ExceptionHandler(RefreshTokenDataNotFoundException.class)
-	public ResponseEntity<BaseResponse<Object>> refreshTokenDataNotFoundException(RefreshTokenDataNotFoundException e) {
+	@ExceptionHandler(RefreshTokenMismatchException.class)
+	public ResponseEntity<BaseResponse<Object>> refreshTokenMismatchException(RefreshTokenMismatchException e) {
 		log.error(e.getMessage());
-		return ResponseEntity.status(HttpStatus.NOT_FOUND)
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+			.body(BaseResponse.ofFail(e.getResponseCode()));
+	}
+
+	@ExceptionHandler(InvalidCookieRefreshTokenException.class)
+	public ResponseEntity<BaseResponse<Object>> invalidCookieRefreshTokenException(
+		InvalidCookieRefreshTokenException e) {
+		log.error(e.getMessage());
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
 			.body(BaseResponse.ofFail(ResponseCode.UNAUTHORIZED_EXCEPTION));
 	}
+
 }
