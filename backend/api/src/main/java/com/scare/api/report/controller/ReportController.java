@@ -31,7 +31,6 @@ public class ReportController {
 		@RequestParam("to") String to
 	) {
 		List<ReportDto> reports = reportFacade.getReports(userDetails.getMemberId(), from, to);
-		// TODO: 지난주, 이번주 스트레스 조회
 		return ResponseEntity.ok(BaseResponse.ofSuccess(WeeklyReportRes.builder()
 			.lastWeekStress(null)
 			.currentWeekStress(null)
