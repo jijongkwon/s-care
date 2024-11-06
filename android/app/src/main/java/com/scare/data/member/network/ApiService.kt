@@ -2,6 +2,7 @@ package com.scare.data.member.network
 
 import android.content.Context
 import android.util.Log
+import com.scare.BuildConfig
 import com.scare.data.member.dto.Auth.LoginRequestDTO
 import com.scare.data.member.dto.Auth.RefreshRequestDTO
 import com.scare.data.member.dto.User.UserAPIResponseDTO
@@ -21,7 +22,7 @@ import java.net.CookieManager
 import java.net.CookiePolicy
 
 object RetrofitClient {
-    private const val BASE_URL = "https://k11a408.p.ssafy.io/"
+    private const val BASE_URL = BuildConfig.BASE_URL
 
     lateinit var tokenRepository: TokenRepository
     private lateinit var tokenInterceptor: TokenInterceptor

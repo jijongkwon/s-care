@@ -18,11 +18,14 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
+        buildConfigField("String", "CLIENT_ID", "\"${getApiKey("CLIENT_ID")}\"")
+        buildConfigField("String", "BASE_URL", "\"${getApiKey("BASE_URL")}\"")
+
+        resValue("string", "map_api_key", getApiKey("MAP_API_KEY"))
+
         vectorDrawables {
             useSupportLibrary = true
         }
-
-        resValue("string", "map_api_key", getApiKey("MAP_API_KEY"))
     }
 
     buildTypes {
@@ -53,7 +56,7 @@ android {
 }
 
 fun getApiKey(key: String): String {
-    return gradleLocalProperties(rootDir).getProperty(key)
+    return gradleLocalProperties(rootDir).getProperty(key) ?: ""
 }
 
 dependencies {
