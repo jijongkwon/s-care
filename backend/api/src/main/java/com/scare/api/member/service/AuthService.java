@@ -82,7 +82,7 @@ public class AuthService {
 
 	public void logout(Cookie[] cookies) {
 		String refreshToken = jwtUtil.getCookieValue(cookies, "refreshToken");
-
+		log.info("넘어온 refreshToken: {}", refreshToken); // 나중에 삭제할 로그
 		validateRefreshToken(refreshToken);
 	}
 
