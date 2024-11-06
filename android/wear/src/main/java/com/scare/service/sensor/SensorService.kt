@@ -1,8 +1,7 @@
 package com.scare.service.sensor
 
 import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
+import android.content.Intent
 import android.os.PowerManager
 import android.os.PowerManager.WakeLock
 import android.util.Log
@@ -15,20 +14,30 @@ import com.scare.data.repository.sensor.SensorRepository
 import com.scare.data.repository.sensor.latestHeartRate
 import kotlinx.coroutines.runBlocking
 
-
 class SensorService : PassiveListenerService() {
     private lateinit var wakeLock: WakeLock
     private lateinit var repository: SensorRepository
-    private val channelId = "HeartRateServiceChannel"
     private val notificationId = 1
 
     override fun onCreate() {
         super.onCreate()
-        Log.d(TAG, "service created")
+        Log.d(TAG, "service onCreate")
         repository = SensorRepository(this)
-        createNotificationChannel()
-        startForeground(notificationId, createNotification())
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Log.d(TAG, "service onStartCommand")
+        when(intent?.action) {
+            Actions.START.toString() -> start()
+            Actions.STOP.toString() -> stopSelf()
+        }
         acquireWakeLock()
+        return super.onStartCommand(intent, flags, startId)
+    }
+
+    private fun start() {
+        val notification = createNotification()
+        startForeground(notificationId, notification)
     }
 
     private fun acquireWakeLock() {
@@ -41,22 +50,13 @@ class SensorService : PassiveListenerService() {
     }
 
     private fun createNotification(): Notification {
-        return NotificationCompat.Builder(this, channelId)
+        return NotificationCompat.Builder(this, "HeartRateServiceChannel")
             .setContentTitle("Heart Rate Monitoring")
             .setContentText("Monitoring heart rate in the background")
             .setSmallIcon(android.R.drawable.ic_menu_info_details)
             .build()
     }
 
-    private fun createNotificationChannel() {
-        val serviceChannel = NotificationChannel(
-            channelId,
-            "Heart Rate Monitoring",
-            NotificationManager.IMPORTANCE_LOW
-        )
-        val manager = getSystemService(NotificationManager::class.java)
-        manager.createNotificationChannel(serviceChannel)
-    }
 
     override fun onNewDataPointsReceived(dataPoints: DataPointContainer) {
         super.onNewDataPointsReceived(dataPoints)
@@ -70,9 +70,13 @@ class SensorService : PassiveListenerService() {
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d(TAG, "service destroyed")
+        Log.d(TAG, "service onDestroy")
         if (wakeLock.isHeld) {
             wakeLock.release()
         }
+    }
+
+    enum class Actions {
+        START, STOP
     }
 }

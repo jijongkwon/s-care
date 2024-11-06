@@ -66,5 +66,7 @@ class HealthServicesRepository(context: Context) {
 
     fun unregisterForHeartRateData() {
         Log.i(TAG, "Unregistering listeners")
+        passiveMonitoringClient.clearPassiveListenerCallbackAsync()
+        passiveMonitoringClient.clearPassiveListenerServiceAsync()
     }
 }
