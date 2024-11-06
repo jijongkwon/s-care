@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,6 +53,7 @@ fun HomeScreen(
                     Image(
                         painter = stressState.image,
                         contentDescription = null,
+                        Modifier.size(150.dp)
                         )
                 }
                 Column(
@@ -88,23 +90,23 @@ fun HomeScreen(
 
 @Composable
 fun getStressStatus(stressValue: Double): StressState {
-    if (stressValue < 70) {
+    if (stressValue < 60) {
         return StressState(
             text = stringResource(R.string.stress_good),
             color = color_stress_good,
-            image = painterResource(R.drawable.pet_good),
+            image = painterResource(R.drawable.happy_dog_face),
         )
-    } else if (stressValue < 130) {
+    } else if (stressValue < 100) {
         return StressState(
             text = stringResource(R.string.stress_normal),
             color = color_stress_normal,
-            image = painterResource(R.drawable.pet_good),
+            image = painterResource(R.drawable.normal_dog_face),
         )
     } else {
         return StressState(
             text = stringResource(R.string.stress_bad),
             color = color_stress_bad,
-            image = painterResource(R.drawable.pet_good),
+            image = painterResource(R.drawable.gloomy_dog_face),
         )
     }
 }

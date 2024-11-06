@@ -7,48 +7,24 @@
 package com.scare
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.google.android.gms.wearable.DataClient
-import com.google.android.gms.wearable.DataEvent
-import com.google.android.gms.wearable.DataEventBuffer
-import com.google.android.gms.wearable.Wearable
+import androidx.activity.viewModels
 import com.scare.presentation.home.HomeApp
+import com.scare.presentation.sensor.HeartRateManager
+import com.scare.presentation.sensor.HeartRateViewModel
 
-class MainActivity : ComponentActivity(), DataClient.OnDataChangedListener {
+class MainActivity : ComponentActivity() {
+
+    private val heartRateViewModel: HeartRateViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val healthServicesRepository = (application as MainApplication).healthServicesRepository
-        val sensorRepository = (application as MainApplication).sensorRepository
+        HeartRateManager.setViewModel(heartRateViewModel)
 
         setContent {
-            HomeApp(
-                healthServicesRepository = healthServicesRepository,
-                sensorRepository = sensorRepository,
-            )
-        }
-    }
-
-    public override fun onResume() {
-        super.onResume()
-        Wearable.getDataClient(this).addListener(this)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Wearable.getDataClient(this).removeListener(this)
-    }
-
-    override fun onDataChanged(dataEvents: DataEventBuffer) {
-        dataEvents.forEach { event ->
-            if (event.type == DataEvent.TYPE_DELETED) {
-                Log.d(TAG, "DataItem deleted: " + event.dataItem.uri)
-            } else if (event.type == DataEvent.TYPE_CHANGED) {
-                Log.d(TAG, "DataItem changed: " + event.dataItem.uri.path)
-            }
+            HomeApp()
         }
     }
 }
