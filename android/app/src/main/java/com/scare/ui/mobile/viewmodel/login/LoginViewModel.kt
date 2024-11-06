@@ -7,15 +7,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.scare.data.member.dto.Auth.LoginRequestDTO
-import com.scare.data.member.dto.Auth.LoginResponseDTO
 import com.scare.data.member.network.RetrofitClient
 import com.scare.data.member.repository.Auth.TokenRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import retrofit2.awaitResponse
 
 class LoginViewModel(
@@ -96,16 +92,6 @@ class LoginViewModel(
             }
         } catch (e: Exception) {
             Log.e("LoginViewModel", "API 호출 실패: ${e.message}")
-        }
-    }
-
-    // 로그아웃 처리
-    fun signOut() {
-        googleLoginRepository.signOut()
-        _profileUrl.value = null
-
-        viewModelScope.launch {
-            tokenRepository.clearTokens()
         }
     }
 }

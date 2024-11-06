@@ -1,6 +1,9 @@
 package com.scare.ui.mobile.main
 
+import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -10,6 +13,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -18,21 +22,30 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.scare.data.member.dto.User.UserInfoResponseDTO
+import com.scare.data.member.repository.User.UserInfoRepository
+import com.scare.ui.mobile.common.LocalNavController
 import com.scare.ui.mobile.common.TheHeader
 import com.scare.ui.mobile.viewmodel.user.UserInfoViewModel
+import com.scare.ui.mobile.viewmodel.user.UserInfoViewModelFactory
 import com.scare.ui.theme.ScareTheme
 import com.scare.ui.theme.Typography
 
 @Composable
 fun MyAuthPage(
-    userInfoViewModel: UserInfoViewModel = viewModel() // ViewModel 인스턴스 주입
+    userInfoRepository: UserInfoRepository, // Repository를 파라미터로 전달받음
 ) {
+
+    // ViewModelFactory를 사용하여 ViewModel을 생성
+    val userInfoViewModel: UserInfoViewModel = viewModel(
+        factory = UserInfoViewModelFactory(userInfoRepository)
+    )
 
     // userInfo 데이터를 수집
     val userInfo by userInfoViewModel.userInfo.collectAsState()
 
     LaunchedEffect(Unit) {
-        userInfoViewModel.fetchUserInfo() // 페이지 진입 시 API 호출
+        val response = userInfoViewModel.fetchUserInfo() // 페이지 진입 시 API 호출
+        Log.d("MyAuthPage", "response: $response")
     }
 
     Scaffold(
@@ -41,7 +54,7 @@ fun MyAuthPage(
 
         // userInfo를 사용해 UI 표시
         userInfo?.let {
-            MyAuthInfo(it, modifier = Modifier.padding(innerPadding)) // MyAuthInfo에 데이터 전달
+            MyAuthInfo(it, userInfoViewModel, modifier = Modifier.padding(innerPadding)) // MyAuthInfo에 데이터 전달
         } ?: Text("Loading...") // 데이터 로딩 중 표시
     }
 }
@@ -49,12 +62,15 @@ fun MyAuthPage(
 @Composable
 fun MyAuthInfo(
     userInfo: UserInfoResponseDTO,
+    userInfoViewModel: UserInfoViewModel,
     modifier: Modifier = Modifier,
 ) {
 
     val profileUrl = userInfo.profileUrl
     val nickname = userInfo.nickname
     val email = userInfo.email
+
+    val navController = LocalNavController.current
 
     Column(
         modifier = modifier
@@ -67,7 +83,7 @@ fun MyAuthInfo(
             model = profileUrl,
             contentDescription = "User Image",
             modifier = Modifier
-                .size(100.dp),
+                .size(100.dp).clip(CircleShape),
             contentScale = ContentScale.Crop
 
         )
@@ -88,7 +104,10 @@ fun MyAuthInfo(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    userInfoViewModel.logout()
+                    navController?.navigate("start")
+                          },
             ) {
                 Text(
                     text = "로그아웃",
@@ -99,29 +118,18 @@ fun MyAuthInfo(
                 )
             }
 
-            Text("탈퇴하기")
-        }
-    }
-}
+            Spacer(modifier = Modifier.height(16.dp))
 
-////////////////////아래 주석은 더미데이터
-@Preview(showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun MyAuthPagePreview() {
-    // 기본 데이터를 사용하여 Preview를 위한 MyAuthInfo 호출
-    val sampleUserInfo = UserInfoResponseDTO(
-        email = "test@example.com",
-        profileUrl = "https://img.freepik.com/free-photo/adorable-portrait-pomeranian-dog_23-2151771743.jpg",
-        nickname = "Tester"
-    )
-
-    ScareTheme {
-        Scaffold(
-            topBar = { TheHeader(null, isMainPage = false) }
-        ) { innerPadding ->
-            MyAuthInfo(
-                userInfo = sampleUserInfo,
-                modifier = Modifier.padding(innerPadding)
+            Text(
+                text = "탈퇴하기",
+                style = Typography.titleLarge.copy( // TextStyle 적용
+                    fontSize = 16.sp, // 크기 변경
+                    fontWeight = FontWeight.Medium // 굵기 변경
+                ),
+                modifier = Modifier.clickable(onClick = {
+                    userInfoViewModel.withdraw()
+                    navController?.navigate("start")
+                })
             )
         }
     }
