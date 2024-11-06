@@ -1,20 +1,23 @@
 package com.scare.ui.mobile.course.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material3.Card
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.scare.data.dto.Course.CourseResponseDTO
 import com.scare.ui.theme.DarkColorScheme
 import com.scare.ui.theme.LightColorScheme
@@ -23,6 +26,7 @@ import com.scare.ui.theme.Typography
 import com.scare.util.calculateTimeDifference
 import com.scare.util.formatDateTime
 
+@ExperimentalNaverMapApi
 @Composable
 fun CourseItem(course: CourseResponseDTO) {
     val darkTheme = isSystemInDarkTheme()
@@ -32,56 +36,78 @@ fun CourseItem(course: CourseResponseDTO) {
         LightColorScheme
     }
 
+    var isExpanded by remember { mutableStateOf(false) }
+
     Box(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).background(colorScheme.background),
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(colorScheme.background),
     ) {
-        Row(
-            modifier = Modifier.padding(30.dp, 16.dp).fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // 날짜와 시작 시간
-            Column(
-                modifier = Modifier,
-                horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.SpaceBetween,
+        Column {
+            Row(
+                modifier = Modifier.padding(60.dp, 30.dp).fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = formatDateTime(course.startedAt),
-                    style = Typography.bodyMedium.copy(color = colorScheme.onSurface),
-                )
+                // 날짜와 시작 시간
+                Column(
+                    modifier = Modifier,
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Text(
+                        text = formatDateTime(course.startedAt),
+                        style = Typography.bodyLarge.copy(color = colorScheme.onSurface),
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // 총 시간
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = calculateTimeDifference(
+                                course.startedAt,
+                                course.finishedAt
+                            ),
+                            style = Typography.titleLarge.copy(
+                                color = colorScheme.tertiary, fontWeight = FontWeight.Bold, fontSize = 24.sp
+                            )
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = "총 시간", style = Typography.labelMedium.copy(color = colorScheme.onSurface)
+                        )
+                    }
+                }
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // 총 시간
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = calculateTimeDifference(course.startedAt, course.finishedAt), // 총 시간 (예시, 실제로 계산하여 표시)
-                        style = Typography.titleSmall.copy(
-                            color = colorScheme.tertiary, fontWeight = FontWeight.Bold, fontSize = 24.sp
-                        )
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = "총 시간", style = Typography.bodySmall.copy(color = colorScheme.onSurface)
-                    )
-                }
+                // 아이콘
+                Icon(
+                    modifier = Modifier.clickable(onClick = { isExpanded = !isExpanded }),
+                    imageVector = if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                    contentDescription = "Detail",
+                    tint = colorScheme.onSurface,
+                )
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // 아이콘
-            Icon(
-                imageVector = Icons.Default.KeyboardArrowDown,
-                contentDescription = "Detail",
-                tint = colorScheme.onSurface,
+            HorizontalDivider(
+                color = colorScheme.tertiary,
+                thickness = 0.5.dp,
+                modifier = Modifier
+                    .fillMaxWidth()
             )
+
+            if (isExpanded) {
+                CourseDetail(course)
+            }
         }
     }
 }
 
+@ExperimentalNaverMapApi
 @Preview(showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun CourseItemPreview() {
