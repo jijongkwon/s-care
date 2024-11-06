@@ -1,8 +1,0 @@
-<resources>
-    <string name="hello_world">From the Round world,\nHello, %1$s!</string>
-
-    <string name="stress">스트레스</string>
-    <string name="stress_good">좋음</string>
-    <string name="stress_normal">보통</string>
-    <string name="stress_bad">나쁨</string>
-</resources>

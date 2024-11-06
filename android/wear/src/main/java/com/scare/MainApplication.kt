@@ -1,41 +1,36 @@
 package com.scare
 
-import android.Manifest
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
-import com.scare.data.repository.sensor.HealthServicesRepository
-import com.scare.data.repository.sensor.SensorRepository
-import com.scare.service.sensor.SensorService
+import com.scare.service.sensor.HeartRateService
 
 const val TAG = "scare wear os"
-const val PERMISSION = Manifest.permission.BODY_SENSORS
 
 class MainApplication : Application() {
-    val healthServicesRepository by lazy { HealthServicesRepository(this) }
-    val sensorRepository by lazy { SensorRepository(this) }
-
     override fun onCreate() {
         super.onCreate()
-        val channel = NotificationChannel(
-            "HeartRateServiceChannel",
-            "Heart Rate Monitoring",
-            NotificationManager.IMPORTANCE_HIGH
-        )
-        val notificationManager = getSystemService(NotificationManager::class.java)
-        notificationManager.createNotificationChannel(channel)
-
-        Intent(applicationContext, SensorService::class.java).also {
-            it.action = SensorService.Actions.START.toString()
+        Intent(applicationContext, HeartRateService::class.java).also {
+            it.action = HeartRateService.Actions.START.toString()
             startService(it)
         }
+
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val heartRateChannel = NotificationChannel(
+            R.string.heartRateChannelId.toString(),
+            R.string.heartRateChannelName.toString(),
+            NotificationManager.IMPORTANCE_HIGH
+        )
+
+        notificationManager.createNotificationChannel(heartRateChannel)
     }
 
     override fun onTerminate() {
         super.onTerminate()
-        Intent(applicationContext, SensorService::class.java).also {
-            it.action = SensorService.Actions.STOP.toString()
+        Intent(applicationContext, HeartRateService::class.java).also {
+            it.action = HeartRateService.Actions.STOP.toString()
             startService(it)
         }
     }
