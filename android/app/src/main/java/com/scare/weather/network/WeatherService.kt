@@ -1,6 +1,7 @@
 package com.scare.weather.network
 
 import com.google.gson.GsonBuilder
+import com.scare.BuildConfig
 import com.scare.weather.model.WeatherRequest
 import com.scare.weather.model.WeatherResponse
 import okhttp3.OkHttpClient
@@ -32,8 +33,8 @@ class WeatherService {
     private val weatherApi = retrofit.create(WeatherApi::class.java)
 
     fun getWeather(request: WeatherRequest): Call<WeatherResponse> {
-        // URL 인코딩된 서비스키를 다시 디코딩
-        val decodedServiceKey = URLDecoder.decode(request.serviceKey, "UTF-8")
+        val decodedServiceKey = URLDecoder.decode(BuildConfig.WEATHER_API_KEY, "UTF-8")
+
         return weatherApi.getWeather(
             serviceKey = decodedServiceKey,
             pageNo = request.pageNo,

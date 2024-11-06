@@ -19,8 +19,6 @@ class WeatherServiceTest : TestCase() {
     public override fun setUp() {
         weatherService = WeatherService()
         request = WeatherRequest(
-            // 실제 발급받은 서비스 키를 그대로 사용
-            serviceKey = "rKJCDjhFYT5aWYA%2FFKMbricUNLjUQQMYeOtgHZLF5quCNyIoBVElUcuvs9B3z7537HR2QYSZc2zIvwDOtHSftA%3D%3D",
             baseDate = WeatherDateUtil.getCurrentBaseDate(),
             baseTime = WeatherDateUtil.getCurrentBaseTime(),
             nx = 55,

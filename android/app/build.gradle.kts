@@ -22,6 +22,8 @@ android {
             useSupportLibrary = true
         }
 
+        // API 키 설정 추가
+        buildConfigField("String", "WEATHER_API_KEY", "\"${getApiKey("WEATHER_API_KEY")}\"")
         resValue("string", "map_api_key", getApiKey("MAP_API_KEY"))
     }
 
