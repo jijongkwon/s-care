@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.scare.wear"
+    namespace = "com.scare"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.scare.wear"
+        applicationId = "com.scare"
         minSdk = 30
         targetSdk = 34
         versionCode = 1
@@ -52,6 +52,8 @@ dependencies {
     implementation(libs.androidx.health.services.client)
     // https://developer.android.com/kotlin/coroutines?hl=ko
     implementation(libs.kotlinx.coroutines.android)
+    // https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-core
+    implementation(libs.kotlinx.coroutines.core)
     // https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-guava
     implementation(libs.kotlinx.coroutines.guava)
     // https://developer.android.com/jetpack/androidx/releases/datastore?hl=ko
@@ -62,11 +64,12 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     // https://mvnrepository.com/artifact/com.google.accompanist/accompanist-permissions
     implementation(libs.accompanist.permissions)
+
     implementation(libs.androidx.ui.tooling.preview.android)
     implementation(libs.androidx.material.icons.core.android)
-    debugImplementation(libs.ui.tooling)
+
     // https://mvnrepository.com/artifact/androidx.compose.ui/ui-tooling-preview
-    runtimeOnly(libs.ui.tooling.preview)
+    implementation(libs.ui.tooling.preview)
     // https://developer.android.com/jetpack/androidx/releases/compose-ui?hl=ko
     implementation(libs.ui)
 
@@ -80,4 +83,7 @@ dependencies {
     implementation(libs.work.runtime.ktx)
 
     implementation(libs.accompanist.permissions)
+
+    // https://mvnrepository.com/artifact/com.google.android.gms/play-services-wearable
+    implementation(libs.gms.play.services.wearable)
 }

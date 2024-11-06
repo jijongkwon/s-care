@@ -13,12 +13,14 @@ import androidx.compose.ui.unit.dp
 import com.scare.ui.mobile.common.TheHeader
 import com.scare.ui.mobile.main.component.*
 import com.scare.ui.mobile.viewmodel.login.LoginViewModel
+import com.scare.ui.mobile.viewmodel.sensor.HeartRateViewModel
 
 
 @Composable
-fun MainPage(loginViewModel: LoginViewModel) {
+fun MainPage(loginViewModel: LoginViewModel, heartRateViewModel: HeartRateViewModel) {
 
     val profileUrl by loginViewModel.profileUrl.collectAsState()
+    val hrValue by heartRateViewModel.hrValue.collectAsState()
 
     Scaffold(
         topBar = { TheHeader(profileUrl, isMainPage = true) }
@@ -34,7 +36,7 @@ fun MainPage(loginViewModel: LoginViewModel) {
         ) {
             PetSentence()
             MyPetImage(60)
-            MyStressRate(60)
+            MyStressRate(hrValue)
             ButtonContainer()
             SolutionCardList(solutions)
         }

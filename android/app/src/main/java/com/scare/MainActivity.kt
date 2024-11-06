@@ -1,12 +1,11 @@
 package com.scare
 
 import GoogleLoginRepository
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.NavHost
@@ -25,16 +24,22 @@ import com.scare.ui.mobile.main.StartPage
 import com.scare.ui.mobile.map.Map
 import com.scare.ui.mobile.viewmodel.login.LoginViewModel
 import com.scare.ui.mobile.viewmodel.login.LoginViewModelFactory
+import com.scare.ui.mobile.viewmodel.sensor.HeartRateManager
+import com.scare.ui.mobile.viewmodel.sensor.HeartRateViewModel
 import com.scare.ui.theme.ScareTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+const val TAG = "scare mobile"
+
 class MainActivity : ComponentActivity() {
     private lateinit var loginViewModel: LoginViewModel
+    private val heartRateViewModel: HeartRateViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        HeartRateManager.setViewModel(heartRateViewModel)
 
         // TokenRepository 초기화
         TokenRepository.init(this)
@@ -61,7 +66,7 @@ class MainActivity : ComponentActivity() {
                         @OptIn(ExperimentalNaverMapApi::class)
                         NavHost(navController = navController, startDestination = startDestination) {
                             composable("start") { StartPage(loginViewModel) { launchLogin() } }
-                            composable("main") { MainPage(loginViewModel) }
+                            composable("main") { MainPage(loginViewModel, heartRateViewModel) }
                             composable("statistics") { MyCalender() } // "statistics" 경로 추가
                             composable("report") { MyReport() } // "map" 경로 추가
                             composable("walk") { MyCourse() } // "walk" 경로 추가

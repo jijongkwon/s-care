@@ -1,4 +1,4 @@
-package com.scare.wear.presentation.home
+package com.scare.presentation.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,11 +20,11 @@ import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.TimeText
 import androidx.wear.tooling.preview.devices.WearDevices
-import com.scare.wear.presentation.theme.ScareTheme
-import com.scare.wear.R
-import com.scare.wear.presentation.theme.color_stress_bad
-import com.scare.wear.presentation.theme.color_stress_good
-import com.scare.wear.presentation.theme.color_stress_normal
+import com.scare.presentation.theme.ScareTheme
+import com.scare.R
+import com.scare.presentation.theme.color_stress_bad
+import com.scare.presentation.theme.color_stress_good
+import com.scare.presentation.theme.color_stress_normal
 import kotlin.math.roundToInt
 
 @Composable
