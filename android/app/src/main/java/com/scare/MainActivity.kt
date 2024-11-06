@@ -1,13 +1,12 @@
 package com.scare
 
 import GoogleLoginRepository
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -15,7 +14,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -34,19 +32,19 @@ import com.scare.ui.mobile.main.StartPage
 import com.scare.ui.mobile.map.Map
 import com.scare.ui.mobile.viewmodel.login.LoginViewModel
 import com.scare.ui.mobile.viewmodel.login.LoginViewModelFactory
-import com.scare.ui.mobile.viewmodel.user.UserInfoViewModel
-import com.scare.ui.mobile.viewmodel.user.UserInfoViewModelFactory
+import com.scare.ui.mobile.viewmodel.sensor.HeartRateManager
+import com.scare.ui.mobile.viewmodel.sensor.HeartRateViewModel
 import com.scare.ui.theme.ScareTheme
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+
+const val TAG = "scare mobile"
 
 class MainActivity : ComponentActivity() {
     private lateinit var loginViewModel: LoginViewModel
-//    private lateinit var userInfoViewModel: UserInfoViewModel
+    private val heartRateViewModel: HeartRateViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        HeartRateManager.setViewModel(heartRateViewModel)
 
         // TokenRepository 초기화
         TokenRepository.init(this)
@@ -62,64 +60,53 @@ class MainActivity : ComponentActivity() {
         // UserInfoRepository 생성
         val userInfoRepository = UserInfoRepository()
 
-        // accessToken 확인 후 시작 화면 설정
-//        CoroutineScope(Dispatchers.Main).launch {
-//            val startDestination = withContext(Dispatchers.IO) {
-//                if (TokenRepository.getInstance().getAccessToken() != null) {
-//                    "main"
-//                } else {
-//                    "start"
-//                }
-//            }
+        setContent {
+            val navController = rememberNavController()
+            var isInitialized by remember { mutableStateOf(false) } // 초기화 상태 변수
 
-            setContent {
-                val navController = rememberNavController()
-                var isInitialized by remember { mutableStateOf(false) } // 초기화 상태 변수
+            CompositionLocalProvider(LocalNavController provides navController) {
+                ScareTheme {
+                    // accessToken 상태를 관찰하여 실시간으로 업데이트 확인
+                    val accessToken by TokenRepository.getInstance().accessTokenFlow.collectAsState(initial = null)
 
-                CompositionLocalProvider(LocalNavController provides navController) {
-                    ScareTheme {
-                        // accessToken 상태를 관찰하여 실시간으로 업데이트 확인
-                        val accessToken by TokenRepository.getInstance().accessTokenFlow.collectAsState(initial = null)
+                    // 초기화 완료 여부 설정
+                    LaunchedEffect(accessToken) {
+                        if (accessToken != null || accessToken == null) {
+                            isInitialized = true // accessToken 상태가 안정화된 후에만 표시
+                        }
+                    }
 
-                        // 초기화 완료 여부 설정
-                        LaunchedEffect(accessToken) {
-                            if (accessToken != null || accessToken == null) {
-                                isInitialized = true // accessToken 상태가 안정화된 후에만 표시
-                            }
+                    if(isInitialized) {
+                        // accessToken 상태에 따라 초기 시작 화면 설정
+                        val startDestination = if (accessToken != null) "main" else "start"
+
+                        @OptIn(ExperimentalNaverMapApi::class)
+                        NavHost(
+                            navController = navController,
+                            startDestination = startDestination
+                        ) {
+                            composable("start") { StartPage(loginViewModel) { launchLogin() } }
+                            composable("main") { MainPage(loginViewModel, heartRateViewModel) }
+                            composable("statistics") { MyCalender() } // "statistics" 경로 추가
+                            composable("report") { MyReport() } // "map" 경로 추가
+                            composable("walk") { MyCourse() } // "walk" 경로 추가
+                            composable("map") { Map() } // "map" 경로 추가
+                            composable("mypage") { MyAuthPage(userInfoRepository) } // "map" 경로 추가
                         }
 
-                        if(isInitialized) {
-                            // accessToken 상태에 따라 초기 시작 화면 설정
-                            val startDestination = if (accessToken != null) "main" else "start"
-
-                            @OptIn(ExperimentalNaverMapApi::class)
-                            NavHost(
-                                navController = navController,
-                                startDestination = startDestination
-                            ) {
-                                composable("start") { StartPage(loginViewModel) { launchLogin() } }
-                                composable("main") { MainPage(loginViewModel) }
-                                composable("statistics") { MyCalender() } // "statistics" 경로 추가
-                                composable("report") { MyReport() } // "map" 경로 추가
-                                composable("walk") { MyCourse() } // "walk" 경로 추가
-                                composable("map") { Map() } // "map" 경로 추가
-                                composable("mypage") { MyAuthPage(userInfoRepository) } // "map" 경로 추가
-                            }
-
-                            // accessToken이 null일 경우 start로 이동
-                            LaunchedEffect(accessToken) {
-                                Log.d("MainActivity", "accessToken changed: $accessToken")
-                                if (accessToken == null) {
-                                    navController.navigate("start") {
-                                        popUpTo("main") { inclusive = true }
-                                    }
+                        // accessToken이 null일 경우 start로 이동
+                        LaunchedEffect(accessToken) {
+                            Log.d("MainActivity", "accessToken changed: $accessToken")
+                            if (accessToken == null) {
+                                navController.navigate("start") {
+                                    popUpTo("main") { inclusive = true }
                                 }
                             }
                         }
                     }
                 }
             }
-//        }
+        }
     }
 
     private val signInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->

@@ -1,4 +1,4 @@
-package com.scare.wear.presentation.theme
+package com.scare.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 
