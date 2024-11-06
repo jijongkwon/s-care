@@ -92,10 +92,12 @@ dependencies {
 
     implementation(libs.accompanist.permissions)
 
-
     // OkHttp
     implementation(libs.okhttp)
     implementation(libs.logging.interceptor) // 로깅 인터셉터 (디버깅용)
+    implementation(libs.okhttp.v493) // 최신 버전으로 대체 가능
+    implementation(libs.okhttp.urlconnection)
+
 
     //dataStore
     implementation(libs.androidx.datastore.preferences)

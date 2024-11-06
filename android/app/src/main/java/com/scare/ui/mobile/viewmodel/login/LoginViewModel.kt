@@ -94,14 +94,4 @@ class LoginViewModel(
             Log.e("LoginViewModel", "API 호출 실패: ${e.message}")
         }
     }
-
-    // 로그아웃 처리
-    fun signOut() {
-        googleLoginRepository.signOut()
-        _profileUrl.value = null
-
-        viewModelScope.launch {
-            tokenRepository.clearTokens()
-        }
-    }
 }

@@ -1,6 +1,7 @@
 package com.scare.data.member.repository.Auth
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -45,12 +46,14 @@ class TokenRepository(private val dataStore: DataStore<Preferences>) {
 
     // 비동기로 AccessToken 가져오기
     val accessTokenFlow: Flow<String?> = dataStore.data.map { preferences ->
-        preferences[ACCESS_TOKEN_KEY]
+        val token = preferences[ACCESS_TOKEN_KEY]
+        Log.d("TokenRepository", "accessTokenFlow updated: $token")
+        token
     }
 
-    // 동기적으로 AccessToken 가져오기 (비추천)
-    fun getAccessToken(): String? = runBlocking {
-        accessTokenFlow.first()
+    // 비동기적으로 AccessToken 가져오기
+    suspend fun getAccessToken(): String? {
+        return accessTokenFlow.first() // 최신 값 반환
     }
 
     // AccessToken 저장
@@ -60,10 +63,14 @@ class TokenRepository(private val dataStore: DataStore<Preferences>) {
         }
     }
 
-    // 모든 토큰 삭제
-    suspend fun clearTokens() {
+    // 특정 토큰 삭제
+    suspend fun clearToken(tokenType: String) {
         dataStore.edit { preferences ->
-            preferences.clear()
+            when (tokenType) {
+                "access_token" -> preferences.remove(ACCESS_TOKEN_KEY)
+                "profile_url" -> preferences.remove(PROFILE_URL_KEY)
+                "all" -> preferences.clear() // 모든 데이터 삭제
+            }
         }
     }
 }
