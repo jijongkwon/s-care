@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    id("com.chaquo.python")
 }
 
 android {
@@ -18,16 +17,6 @@ android {
             useSupportLibrary = true
         }
 
-        ndk {
-            // On Apple silicon, you can omit x86_64.
-            abiFilters += listOf("arm64-v8a", "x86_64")
-        }
-
-    }
-
-    flavorDimensions += "pyVersion"
-    productFlavors {
-        create("py310") { dimension = "pyVersion" }
     }
 
     buildTypes {
@@ -52,25 +41,6 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
-}
-
-chaquopy {
-    defaultConfig {
-        version = "3.10"
-
-        pip {
-            install("src/main/python/numpy-1.23.3-0-cp310-cp310-android_21_arm64_v8a.whl")
-            install("scipy")
-        }
-    }
-    productFlavors {
-        getByName("py310") { version = "3.10" }
-    }
-    sourceSets {
-        getByName("main") {
-            srcDir("src/main/python")
         }
     }
 }

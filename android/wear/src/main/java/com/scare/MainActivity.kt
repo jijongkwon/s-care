@@ -31,17 +31,5 @@ class MainActivity : ComponentActivity() {
             HomeApp()
         }
 
-        if (!Python.isStarted()) {
-            Python.start(AndroidPlatform(this))
-            val python = Python.getInstance()
-            val module = python.getModule("calc_stress")
-            val message: PyObject = module.callAttr(
-                "get_single_stress", arrayOf(
-                    70.0, 72.0, 71.0, 73.0, 75.0, 74.0, 76.0, 77.0, 78.0, 76.0, 75.0
-                )
-            )
-        } else {
-            Log.d("PythonError", "실패!")
-        }
     }
 }
