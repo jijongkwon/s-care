@@ -67,7 +67,9 @@ class MainActivity : ComponentActivity() {
             CompositionLocalProvider(LocalNavController provides navController) {
                 ScareTheme {
                     // accessToken 상태를 관찰하여 실시간으로 업데이트 확인
-                    val accessToken by TokenRepository.getInstance().accessTokenFlow.collectAsState(initial = null)
+                    val accessToken by TokenRepository.getInstance().accessTokenFlow.collectAsState(
+                        initial = null
+                    )
 
                     // 초기화 완료 여부 설정
                     LaunchedEffect(accessToken) {
@@ -76,7 +78,7 @@ class MainActivity : ComponentActivity() {
                         }
                     }
 
-                    if(isInitialized) {
+                    if (isInitialized) {
                         // accessToken 상태에 따라 초기 시작 화면 설정
                         val startDestination = if (accessToken != null) "main" else "start"
 
@@ -92,7 +94,10 @@ class MainActivity : ComponentActivity() {
                                 val weekInfo = backStackEntry.arguments?.getString("weekInfo")
                                 val dateRange = backStackEntry.arguments?.getString("dateRange")
 
-                                MyReport(weekInfo = weekInfo, dateRange = dateRange) // MyReport에 파라미터 전달
+                                MyReport(
+                                    weekInfo = weekInfo,
+                                    dateRange = dateRange
+                                ) // MyReport에 파라미터 전달
                             }
                             composable("walk") { MyCourse() } // "walk" 경로 추가
                             composable("map") { Map() } // "map" 경로 추가
@@ -114,12 +119,13 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private val signInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == RESULT_OK) {
-            val data = result.data
-            loginViewModel.handleSignInResult(data) // 로그인 결과 처리
+    private val signInLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                val data = result.data
+                loginViewModel.handleSignInResult(data) // 로그인 결과 처리
+            }
         }
-    }
 
     private fun launchLogin() {
         signInLauncher.launch(loginViewModel.getSignInIntent())
