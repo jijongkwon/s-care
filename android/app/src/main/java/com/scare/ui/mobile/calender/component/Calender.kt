@@ -37,6 +37,7 @@ import com.scare.R
 import com.scare.ui.theme.NeonYellow
 import java.time.LocalDate
 import java.time.YearMonth
+import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
 
@@ -47,6 +48,9 @@ fun Calender(modifier: Modifier = Modifier, onDaySelected: (LocalDate) -> Unit) 
     var currentMonth by remember { mutableStateOf(YearMonth.now()) }
     val today:LocalDate = LocalDate.now()
     var selectedDay by remember { mutableStateOf(today) }
+
+    // "yyyy년 MM월" 형식으로 년/월 포맷터 정의
+    val monthFormatter = DateTimeFormatter.ofPattern("yyyy년 M월")
 
     Column(modifier = Modifier.padding(16.dp)) {
         // 달력 상단: 년도와 월 표시
@@ -69,7 +73,7 @@ fun Calender(modifier: Modifier = Modifier, onDaySelected: (LocalDate) -> Unit) 
             Spacer(modifier = Modifier.width(20.dp))
 
             Text(
-                text = "${currentMonth.year}년 ${currentMonth.month.getDisplayName(TextStyle.FULL, Locale.getDefault())}",
+                text = currentMonth.format(monthFormatter),
                 style = MaterialTheme.typography.bodyLarge,
             )
 
@@ -117,9 +121,10 @@ fun Calender(modifier: Modifier = Modifier, onDaySelected: (LocalDate) -> Unit) 
 
                 // 날짜 추가
                 for (day in 1..daysInMonth) {
-                    val date: LocalDate = currentMonth.atDay(day)
 
                     item {
+                        val date: LocalDate = currentMonth.atDay(day)
+
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier

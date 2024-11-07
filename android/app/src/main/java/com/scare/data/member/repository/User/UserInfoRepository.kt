@@ -1,9 +1,8 @@
 package com.scare.data.member.repository.User
 
-import android.util.Log
 import com.scare.data.member.dto.User.UserInfoResponseDTO
-import com.scare.data.member.network.RetrofitClient.apiService
-import com.scare.data.member.network.RetrofitClient.tokenRepository
+import com.scare.data.RetrofitClient.apiService
+import com.scare.data.RetrofitClient.tokenRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject

@@ -1,11 +1,11 @@
-package com.scare.data.member.network
+package com.scare.data
 
-import android.content.Context
 import android.util.Log
 import com.scare.BuildConfig
 import com.scare.data.member.dto.Auth.LoginRequestDTO
 import com.scare.data.member.dto.Auth.RefreshRequestDTO
 import com.scare.data.member.dto.User.UserAPIResponseDTO
+import com.scare.data.member.network.TokenInterceptor
 import com.scare.data.member.repository.Auth.TokenRepository
 import okhttp3.JavaNetCookieJar
 import okhttp3.OkHttpClient

@@ -1,10 +1,9 @@
 package com.scare.ui.mobile.calender.component
 
-import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -14,11 +13,21 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.scare.ui.mobile.common.LocalNavController
 import com.scare.ui.theme.NeonYellow
 import com.scare.ui.theme.Typography
+import java.time.LocalDate
+import java.time.temporal.WeekFields
+import java.util.Locale
 
 @Composable
-fun WeeklyReport(onClick: () -> Unit) {
+fun WeeklyReport() {
+
+    val navController = LocalNavController.current
+
+    // 주차 정보와 날짜 범위 계산
+    val (weekInfo, dateRange) = getCurrentWeekInfo()
+
     Box(
         modifier = Modifier
             .fillMaxWidth(0.8f) // 버튼 너비를 80%로 설정 (조정 가능)
@@ -32,7 +41,11 @@ fun WeeklyReport(onClick: () -> Unit) {
                     cornerRadius = androidx.compose.ui.geometry.CornerRadius(16.dp.toPx(), 16.dp.toPx()),
                     style = Stroke(width = 1.dp.toPx(), cap = StrokeCap.Round)
                 )
-            },
+            }
+            .clickable(onClick = {
+                navController?.navigate("report?weekInfo=$weekInfo&dateRange=$dateRange")
+            })
+        ,
         contentAlignment = Alignment.Center // 텍스트 중앙 정렬
     ) {
         Text(
@@ -42,4 +55,24 @@ fun WeeklyReport(onClick: () -> Unit) {
             )
         )
     }
+}
+
+// 주차 계산 함수
+fun getCurrentWeekInfo(): Pair<String, String> {
+    val today = LocalDate.now()
+    val weekFields = WeekFields.of(Locale.getDefault())
+    val weekOfMonth = today.get(weekFields.weekOfMonth())
+    val month = today.month.value
+    val year = today.year
+
+    // 해당 주의 시작일과 종료일 계산
+    val startOfWeek = today.with(weekFields.dayOfWeek(), 1L) // 월요일로 설정
+    val endOfWeek = today.with(weekFields.dayOfWeek(), 7L)   // 일요일로 설정
+
+    val endDate = if (endOfWeek.isBefore(today)) endOfWeek else today // 종료일이 오늘 날짜 이후라면 오늘까지
+
+    return Pair(
+        "$year 년 $month 월 $weekOfMonth 주차",
+        "${startOfWeek} ~ ${endDate}"
+    )
 }

@@ -5,10 +5,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class HeartRateViewModel: ViewModel() {
-    private var _hrValue = MutableStateFlow(0.0)
-    val hrValue: StateFlow<Double> get() = _hrValue
+    private var _stress = MutableStateFlow(0)
+    val stress: StateFlow<Int> get() = _stress
 
-    fun updateHeartRate(hrValue: Double) {
-        _hrValue.value = hrValue
+    fun updateStress(stress: Int) {
+        _stress.value = stress
     }
 }
