@@ -7,13 +7,9 @@
 package com.scare
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import com.chaquo.python.PyObject
-import com.chaquo.python.Python
-import com.chaquo.python.android.AndroidPlatform
 import com.scare.presentation.home.HomeApp
 import com.scare.presentation.sensor.HeartRateManager
 import com.scare.presentation.sensor.HeartRateViewModel
