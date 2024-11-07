@@ -1,6 +1,6 @@
 package com.scare.weather.network
 
-import com.scare.weather.model.WeatherResponse
+import com.scare.weather.model.response.WeatherResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query

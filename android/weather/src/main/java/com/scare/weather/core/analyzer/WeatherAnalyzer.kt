@@ -1,9 +1,10 @@
-package com.scare.weather.analyzer
+package com.scare.weather.core.analyzer
 
-import com.scare.weather.enums.WeatherStatus
 import com.scare.weather.model.WeatherInfo
+import com.scare.weather.model.enums.WeatherStatus
+import javax.inject.Inject
 
-class WeatherAnalyzer {
+class WeatherAnalyzer @Inject constructor() {
     fun analyzeWeather(weatherInfo: WeatherInfo): WeatherStatus {
         // 비/눈이 오는 경우 즉시 BAD 반환
         if (WeatherCriteria.isRainingOrSnowing(weatherInfo.precipitationType)) {
