@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("com.chaquo.python")
+    id("kotlin-kapt") // KAPT 플러그인 추가
 }
 
 android {
@@ -46,7 +47,10 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     compileOptions {
@@ -152,4 +156,12 @@ dependencies {
     implementation(libs.gms.play.services.wearable)
 
     implementation(project(":walk"))
+
+    // Room
+    val roomVersion = rootProject.extra["roomVersion"] as String
+
+    implementation("androidx.room:room-runtime:$roomVersion")
+    kapt("androidx.room:room-compiler:$roomVersion")
+
+    implementation("androidx.room:room-ktx:$roomVersion")
 }
