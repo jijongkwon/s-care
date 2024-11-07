@@ -33,12 +33,12 @@ import com.scare.ui.theme.low
 import com.scare.ui.theme.medium
 
 @Composable
-fun MyStressRate(stress: Double,
+fun MyStressRate(stress: Int,
                  modifier: Modifier = Modifier
 ) {
     val stressLevel = when {
-        stress <= 60 -> "낮음"
-        stress <= 90 -> "보통"
+        stress <= 20 -> "낮음"
+        stress <= 40 -> "보통"
         else -> "높음"
     }
 

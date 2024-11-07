@@ -7,7 +7,7 @@ object HeartRateManager {
         this.viewModel = viewModel
     }
 
-    fun updateHeartRate(hrValue: Double) {
-        viewModel.updateHeartRate(hrValue)
+    fun updateStress(stress: Int) {
+        viewModel.updateStress(stress)
     }
 }

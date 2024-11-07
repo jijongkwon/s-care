@@ -59,7 +59,7 @@ fun MyCalender() {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            WeeklyReport(onClick={navController?.navigate("map")})
+            WeeklyReport()
         }
     }
 }

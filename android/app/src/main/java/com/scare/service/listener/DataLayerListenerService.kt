@@ -17,12 +17,12 @@ class DataLayerListenerService: WearableListenerService() {
                 val uri = event.dataItem.uri
                 if (uri.path == "/heartRate") {
                     val dataMap = DataMapItem.fromDataItem(event.dataItem).dataMap
-                    val hrValue = dataMap.getDouble("hrValue")
+                    val stress = dataMap.getInt("hrValue")
                     val timestamp = dataMap.getLong("timestamp")  // Optional timestamp
 
                     // Update UI or LiveData with the new heart rate value
-                    HeartRateManager.updateHeartRate(hrValue)
-                    Log.d(TAG, "Received DataItem hrValue: $hrValue at $timestamp")
+                    HeartRateManager.updateStress(stress)
+                    Log.d(TAG, "Received DataItem hrValue: $stress at $timestamp")
                 }
             }
         }

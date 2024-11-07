@@ -88,7 +88,12 @@ class MainActivity : ComponentActivity() {
                             composable("start") { StartPage(loginViewModel) { launchLogin() } }
                             composable("main") { MainPage(loginViewModel, heartRateViewModel) }
                             composable("statistics") { MyCalender() } // "statistics" 경로 추가
-                            composable("report") { MyReport() } // "map" 경로 추가
+                            composable("report?weekInfo={weekInfo}&dateRange={dateRange}") { backStackEntry ->
+                                val weekInfo = backStackEntry.arguments?.getString("weekInfo")
+                                val dateRange = backStackEntry.arguments?.getString("dateRange")
+
+                                MyReport(weekInfo = weekInfo, dateRange = dateRange) // MyReport에 파라미터 전달
+                            }
                             composable("walk") { MyCourse() } // "walk" 경로 추가
                             composable("map") { Map() } // "map" 경로 추가
                             composable("mypage") { MyAuthPage(userInfoRepository) } // "map" 경로 추가

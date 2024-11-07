@@ -9,7 +9,7 @@ import com.scare.ui.mobile.common.LocalNavController
 import com.scare.ui.mobile.common.TheHeader
 
 @Composable
-fun MyReport() {
+fun MyReport(weekInfo: String?, dateRange: String?) {
     val navController = LocalNavController.current
 
     Scaffold (
