@@ -5,5 +5,3 @@ plugins {
     alias(libs.plugins.android.library) apply false
     id("com.chaquo.python") version "16.0.0" apply false
 }
-
-extra["roomVersion"] = "2.6.1"
