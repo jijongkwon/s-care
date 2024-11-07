@@ -1,6 +1,7 @@
 package com.scare.data.member.network
 
 import android.util.Log
+import com.scare.data.ApiService
 import com.scare.data.member.dto.Auth.RefreshRequestDTO
 import com.scare.data.member.repository.Auth.TokenRepository
 import kotlinx.coroutines.Dispatchers

@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.scare.data.member.dto.Auth.LoginRequestDTO
-import com.scare.data.member.network.RetrofitClient
+import com.scare.data.RetrofitClient
 import com.scare.data.member.repository.Auth.TokenRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

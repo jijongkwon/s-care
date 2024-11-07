@@ -4,10 +4,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.scare.data.member.dto.User.UserInfoResponseDTO
-import com.scare.data.member.network.RetrofitClient.apiService
+import com.scare.data.RetrofitClient.apiService
 import com.scare.data.member.repository.Auth.TokenRepository
 import com.scare.data.member.repository.User.UserInfoRepository
-import com.scare.ui.mobile.common.LocalNavController
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
