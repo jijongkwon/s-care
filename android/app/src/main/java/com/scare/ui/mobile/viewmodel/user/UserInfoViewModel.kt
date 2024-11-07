@@ -45,7 +45,7 @@ class UserInfoViewModel(private val userRepository: UserInfoRepository) : ViewMo
                             // 로그아웃 성공 처리
                             Log.d("UserInfoViewModel", "logout success")
                             viewModelScope.launch {
-                                tokenRepository.clearToken("all") // accessToken만 삭제
+                                tokenRepository.clearToken("all")
 
                                 val isAccessTokenCleared = tokenRepository.getAccessToken() == null
                                 val isProfileUrlCleared = tokenRepository.profileUrlFlow.first() == null
