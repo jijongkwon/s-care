@@ -150,4 +150,6 @@ dependencies {
 
     // wearable service
     implementation(libs.gms.play.services.wearable)
+
+    implementation(project(":walk"))
 }

@@ -14,7 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
-import com.scare.data.dto.Course.CourseResponseDTO
+import com.scare.data.course.dto.CourseResponseDTO
 import com.scare.ui.mobile.common.TheHeader
 import com.scare.ui.mobile.course.component.CourseList
 import com.scare.ui.theme.DarkColorScheme
