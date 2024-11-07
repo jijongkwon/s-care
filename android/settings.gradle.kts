@@ -24,3 +24,4 @@ dependencyResolutionManagement {
 rootProject.name = "scare"
 include(":app")
 include(":wear")
+include(":walk")

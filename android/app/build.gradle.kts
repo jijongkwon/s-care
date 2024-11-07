@@ -3,6 +3,7 @@ import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("com.chaquo.python")
 }
 
 android {
@@ -25,6 +26,16 @@ android {
 
         vectorDrawables {
             useSupportLibrary = true
+        }
+
+        ndk {
+            // On Apple silicon, you can omit x86_64.
+            abiFilters += listOf("arm64-v8a", "x86_64")
+        }
+
+        flavorDimensions += "pyVersion"
+        productFlavors {
+            create("py310") { dimension = "pyVersion" }
         }
 
         // API 키 설정 추가
@@ -61,6 +72,25 @@ android {
 
 fun getApiKey(key: String): String {
     return gradleLocalProperties(rootDir).getProperty(key) ?: ""
+}
+
+chaquopy {
+    defaultConfig {
+        version = "3.10"
+
+        pip {
+            install("src/main/python/numpy-1.23.3-0-cp310-cp310-android_21_arm64_v8a.whl")
+            install("scipy")
+        }
+    }
+    productFlavors {
+        getByName("py310") { version = "3.10" }
+    }
+    sourceSets {
+        getByName("main") {
+            srcDir("src/main/python")
+        }
+    }
 }
 
 dependencies {
@@ -120,4 +150,6 @@ dependencies {
 
     // wearable service
     implementation(libs.gms.play.services.wearable)
+
+    implementation(project(":walk"))
 }

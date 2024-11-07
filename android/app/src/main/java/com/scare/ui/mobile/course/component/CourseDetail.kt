@@ -12,7 +12,7 @@ import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.compose.*
 import com.naver.maps.map.overlay.OverlayImage
 import com.scare.R
-import com.scare.data.dto.Course.CourseResponseDTO
+import com.scare.data.course.dto.CourseResponseDTO
 import com.scare.ui.theme.DarkColorScheme
 import com.scare.ui.theme.LightColorScheme
 
