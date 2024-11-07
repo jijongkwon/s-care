@@ -1,5 +1,6 @@
 package com.scare.ui.mobile.map
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -8,16 +9,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import com.naver.maps.map.compose.*
 import com.scare.ui.mobile.common.TheHeader
+import com.scare.ui.mobile.map.component.StartWalkButton
 
 @ExperimentalNaverMapApi
 @Composable
 fun Map() {
 
-    Scaffold(
-        topBar = {
-            TheHeader(isMainPage = false)
-        }
-    ) { innerPadding ->
+    Scaffold(topBar = {
+        TheHeader(isMainPage = false)
+    }) { innerPadding ->
         Box(
             Modifier.fillMaxSize().padding(innerPadding)
         ) {
@@ -32,10 +32,12 @@ fun Map() {
                 )
             }
             NaverMap(
-                locationSource = rememberFusedLocationSource(),
-                properties = mapProperties,
-                uiSettings = mapUiSettings
+                locationSource = rememberFusedLocationSource(), properties = mapProperties, uiSettings = mapUiSettings
             )
+            StartWalkButton(
+                modifier = Modifier.fillMaxSize(),
+                text = "산책 시작하기",
+                onClick = { Log.d("walking", "start") })
         }
     }
 }
