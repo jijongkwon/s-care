@@ -86,4 +86,6 @@ dependencies {
 
     // https://mvnrepository.com/artifact/com.google.android.gms/play-services-wearable
     implementation(libs.gms.play.services.wearable)
+
+    implementation(project(":walk"))
 }
