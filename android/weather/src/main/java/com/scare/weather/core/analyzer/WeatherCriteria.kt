@@ -1,4 +1,4 @@
-package com.scare.weather.analyzer
+package com.scare.weather.core.analyzer
 
 object WeatherCriteria {
     // 좋은 날씨 기준

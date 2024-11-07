@@ -1,4 +1,4 @@
-package com.scare.weather.util
+package com.scare.weather.core.util
 
 import android.annotation.SuppressLint
 import java.time.LocalDateTime
