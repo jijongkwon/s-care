@@ -22,6 +22,7 @@ import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.scare.data.RetrofitClient
 import com.scare.data.member.repository.Auth.TokenRepository
 import com.scare.data.member.repository.User.UserInfoRepository
+import com.scare.service.listener.LogInListenerService
 import com.scare.ui.mobile.calender.MyCalender
 import com.scare.ui.mobile.calender.MyReport
 import com.scare.ui.mobile.common.LocalNavController
@@ -42,23 +43,26 @@ class MainActivity : ComponentActivity() {
     private lateinit var loginViewModel: LoginViewModel
     private val heartRateViewModel: HeartRateViewModel by viewModels()
 
+    private lateinit var logInListenerService: LogInListenerService
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         HeartRateManager.setViewModel(heartRateViewModel)
 
-        // TokenRepository 초기화
-        TokenRepository.init(this)
-
-        // RetrofitClient 초기화 (TokenRepository가 초기화된 후에만)
-        RetrofitClient.init(TokenRepository.getInstance())
+        // TokenRepository 초기화 및 RetrofitClient 초기화
+        val tokenRepository = TokenRepository.getInstance(this)
+        RetrofitClient.init(tokenRepository)
 
         val googleLoginRepository = GoogleLoginRepository(this) // GoogleLoginRepository 초기화
         loginViewModel = ViewModelProvider(
-            this, LoginViewModelFactory(googleLoginRepository, TokenRepository.getInstance())
+            this, LoginViewModelFactory(googleLoginRepository, tokenRepository)
         )[LoginViewModel::class.java]
 
         // UserInfoRepository 생성
         val userInfoRepository = UserInfoRepository()
+
+        // LogInListenerService 초기화
+        logInListenerService = LogInListenerService(this)
 
         setContent {
             val navController = rememberNavController()
@@ -67,9 +71,7 @@ class MainActivity : ComponentActivity() {
             CompositionLocalProvider(LocalNavController provides navController) {
                 ScareTheme {
                     // accessToken 상태를 관찰하여 실시간으로 업데이트 확인
-                    val accessToken by TokenRepository.getInstance().accessTokenFlow.collectAsState(
-                        initial = null
-                    )
+                    val accessToken by tokenRepository.accessTokenFlow.collectAsState(initial = null)
 
                     // 초기화 완료 여부 설정
                     LaunchedEffect(accessToken) {
@@ -101,7 +103,7 @@ class MainActivity : ComponentActivity() {
                             }
                             composable("walk") { MyCourse() } // "walk" 경로 추가
                             composable("map") { Map() } // "map" 경로 추가
-                            composable("mypage") { MyAuthPage(userInfoRepository) } // "map" 경로 추가
+                            composable("mypage") { MyAuthPage(userInfoRepository, tokenRepository) } // "map" 경로 추가
                         }
 
                         // accessToken이 null일 경우 start로 이동
@@ -124,6 +126,9 @@ class MainActivity : ComponentActivity() {
             if (result.resultCode == RESULT_OK) {
                 val data = result.data
                 loginViewModel.handleSignInResult(data) // 로그인 결과 처리
+
+                // 로그인 성공 후 워치에 로그인 상태 전송
+                logInListenerService.sendAuthRequest(true)
             }
         }
 

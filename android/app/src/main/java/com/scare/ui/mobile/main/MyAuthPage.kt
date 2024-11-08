@@ -1,5 +1,6 @@
 package com.scare.ui.mobile.main
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -15,33 +16,36 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.scare.data.member.dto.User.UserInfoResponseDTO
+import com.scare.data.member.repository.Auth.TokenRepository
 import com.scare.data.member.repository.User.UserInfoRepository
+import com.scare.service.listener.LogoutListenerService
 import com.scare.ui.mobile.common.LocalNavController
 import com.scare.ui.mobile.common.TheHeader
 import com.scare.ui.mobile.viewmodel.user.UserInfoViewModel
 import com.scare.ui.mobile.viewmodel.user.UserInfoViewModelFactory
-import com.scare.ui.theme.ScareTheme
 import com.scare.ui.theme.Typography
 
 @Composable
 fun MyAuthPage(
     userInfoRepository: UserInfoRepository, // Repository를 파라미터로 전달받음
+    tokenRepository: TokenRepository
 ) {
 
     // ViewModelFactory를 사용하여 ViewModel을 생성
     val userInfoViewModel: UserInfoViewModel = viewModel(
-        factory = UserInfoViewModelFactory(userInfoRepository)
+        factory = UserInfoViewModelFactory(userInfoRepository, tokenRepository)
     )
 
     // userInfo 데이터를 수집
     val userInfo by userInfoViewModel.userInfo.collectAsState()
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         val response = userInfoViewModel.fetchUserInfo() // 페이지 진입 시 API 호출
@@ -54,7 +58,7 @@ fun MyAuthPage(
 
         // userInfo를 사용해 UI 표시
         userInfo?.let {
-            MyAuthInfo(it, userInfoViewModel, modifier = Modifier.padding(innerPadding)) // MyAuthInfo에 데이터 전달
+            MyAuthInfo(it, userInfoViewModel,context, modifier = Modifier.padding(innerPadding)) // MyAuthInfo에 데이터 전달
         } ?: Text("Loading...") // 데이터 로딩 중 표시
     }
 }
@@ -63,6 +67,7 @@ fun MyAuthPage(
 fun MyAuthInfo(
     userInfo: UserInfoResponseDTO,
     userInfoViewModel: UserInfoViewModel,
+    context: Context,
     modifier: Modifier = Modifier,
 ) {
 
@@ -106,6 +111,7 @@ fun MyAuthInfo(
             Button(
                 onClick = {
                     userInfoViewModel.logout()
+                    sendLogoutToWatch(context)
                     navController?.navigate("start")
                           },
             ) {
@@ -128,9 +134,16 @@ fun MyAuthInfo(
                 ),
                 modifier = Modifier.clickable(onClick = {
                     userInfoViewModel.withdraw()
+                    sendLogoutToWatch(context)
                     navController?.navigate("start")
                 })
             )
         }
     }
+}
+
+// 로그아웃 또는 탈퇴 후 워치에 로그아웃 상태 전송
+fun sendLogoutToWatch(context: Context) {
+    val logoutListenerService = LogoutListenerService(context)
+    logoutListenerService.sendAuthRequest(false)
 }
