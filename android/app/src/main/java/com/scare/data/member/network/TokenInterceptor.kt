@@ -1,6 +1,7 @@
 package com.scare.data.member.network
 
 import android.util.Log
+import androidx.navigation.NavController
 import com.scare.data.ApiService
 import com.scare.data.member.dto.Auth.RefreshRequestDTO
 import com.scare.data.member.repository.Auth.TokenRepository
@@ -14,13 +15,11 @@ import retrofit2.awaitResponse
 
 class TokenInterceptor(
     private val tokenRepository: TokenRepository,
-    private val apiService: () -> ApiService // 새 토큰을 요청하는 API 인터페이스
+    private val apiService: () -> ApiService, // 새 토큰을 요청하는 API 인터페이스
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         var request = chain.request()
         val accessToken = runBlocking { tokenRepository.getAccessToken() } //동기처리
-
-        Log.d("TokenInterceptor", "accessToken: $accessToken")
 
         request = request.newBuilder()
             .addHeader("Authorization", "$accessToken")
@@ -48,6 +47,8 @@ class TokenInterceptor(
                     .build()
 
                 return chain.proceed(request)
+            } else {
+                null
             }
         }
 
@@ -59,7 +60,10 @@ class TokenInterceptor(
         val refreshToken = getRefreshTokenFromCookies(chain)
 
         if (refreshToken == null) {
-            return null // 쿠키에서 refreshToken을 찾지 못하면 null 반환
+                runBlocking {
+                    tokenRepository.clearToken("all")
+                } // 모든 토큰 제거
+            return null
         }
 
         // 새 토큰 요청을 위한 DTO 생성
@@ -77,7 +81,7 @@ class TokenInterceptor(
                 null // 실패 시 null 반환
             }
         } catch (e: Exception) {
-            null // 네트워크 오류 등 예외 처리
+            null
         }
     }
 

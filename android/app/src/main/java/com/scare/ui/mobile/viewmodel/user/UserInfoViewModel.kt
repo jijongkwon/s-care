@@ -4,10 +4,12 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import com.scare.data.member.dto.User.UserInfoResponseDTO
 import com.scare.data.RetrofitClient.apiService
 import com.scare.data.member.repository.Auth.TokenRepository
 import com.scare.data.member.repository.User.UserInfoRepository
+import com.scare.ui.mobile.common.LocalNavController
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
@@ -57,13 +59,31 @@ class UserInfoViewModel(
                             }
                         } else {
                             // 실패 처리
-                            Log.d("UserInfoViewModel", "logout fail")
+                            if (response.code() == 401) {
+                                Log.d("UserInfoViewModel", "logout/withdraw 401")
+                                viewModelScope.launch {
+                                    tokenRepository.clearToken("all") // 모든 데이터 삭제
+                                }
+                            } else {
+                                Log.d("UserInfoViewModel", "logout/withdraw fail")
+                            }
+                            Log.d("UserInfoViewModel", "Another logout error")
                         }
                     }
 
                     override fun onFailure(call: Call<Unit>, t: Throwable) {
                         // 네트워크 오류 처리
-                        Log.d("UserInfoViewModel", "network: ${t.message}")
+                        when (t) {
+                            is java.net.UnknownHostException -> {
+                                Log.d("UserInfoViewModel", "UnknownHostException: Check your internet connection")
+                            }
+                            is javax.net.ssl.SSLHandshakeException -> {
+                                Log.d("UserInfoViewModel", "SSLHandshakeException: SSL certificate problem")
+                            }
+                            else -> {
+                                Log.d("UserInfoViewModel", "Other error: ${t.localizedMessage}")
+                            }
+                        }
                     }
                 })
             } catch (e: Exception) {
@@ -73,6 +93,8 @@ class UserInfoViewModel(
     }
 
     fun withdraw() {
+        val navController = NavController
+
         viewModelScope.launch {
             try {
                 val memberId = userRepository.getMemberId()
@@ -87,12 +109,20 @@ class UserInfoViewModel(
                             }
                         } else {
                             // 실패 처리
-                            Log.d("UserInfoViewModel", "탈퇴 실패")
+                            if (response.code() == 401) {
+                                Log.d("UserInfoViewModel", "logout/withdraw 401")
+                                viewModelScope.launch {
+                                    tokenRepository.clearToken("all") // 모든 데이터 삭제
+                                }
+                            } else {
+                                Log.d("UserInfoViewModel", "logout/withdraw fail")
+                            }
+                            Log.d("UserInfoViewModel", "Another withdrwaw error")
                         }
                     }
 
                     override fun onFailure(call: Call<Unit>, t: Throwable) {
-                        Log.d("UserInfoViewModel", "네트워크 오류: ${t.message}")
+                        Log.d("UserInfoViewModel", "Network error: ${t.message}")
                     }
                 })
             } catch (e: Exception) {
