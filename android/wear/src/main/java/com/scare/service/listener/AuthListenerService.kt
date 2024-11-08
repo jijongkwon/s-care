@@ -10,7 +10,11 @@ class AuthRequestService(context: Context) {
     private val dataClient: DataClient = Wearable.getDataClient(context)
 
     fun sendAuthRequest() {
-        val authDataReq = PutDataMapRequest.create("/authRequest").asPutDataRequest().setUrgent()
+        val authDataReq = PutDataMapRequest.create("/authRequest").apply{
+            dataMap.putString("String", "GIVE ME LOGIN")
+            dataMap.putLong("timestamp", System.currentTimeMillis()) // 매번 다른 데이터로 인식되도록
+
+        }.asPutDataRequest().setUrgent()
 
         dataClient.putDataItem(authDataReq).addOnSuccessListener {
             Log.d("AuthRequestService", "Login status request sent to mobile")

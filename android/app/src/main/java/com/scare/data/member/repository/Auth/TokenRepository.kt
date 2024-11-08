@@ -9,23 +9,22 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import com.scare.data.member.datastore.authDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.runBlocking
 
 
 class TokenRepository(private val dataStore: DataStore<Preferences>) {
 
     companion object {
-        private lateinit var instance: TokenRepository
+        @Volatile
+        private var instance: TokenRepository? = null
 
-        // TokenRepository 초기화 함수
-        fun init(context: Context) {
-            instance = TokenRepository(context.authDataStore)
-        }
-
-        fun getInstance(): TokenRepository {
-            return instance
+        // Thread-safe 초기화 함수
+        fun getInstance(context: Context): TokenRepository {
+            return instance ?: synchronized(this) {
+                instance ?: TokenRepository(context.authDataStore).also {
+                    instance = it
+                }
+            }
         }
 
         private val ACCESS_TOKEN_KEY = stringPreferencesKey("access_token")

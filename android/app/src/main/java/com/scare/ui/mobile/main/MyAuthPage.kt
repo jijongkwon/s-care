@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.scare.data.member.dto.User.UserInfoResponseDTO
+import com.scare.data.member.repository.Auth.TokenRepository
 import com.scare.data.member.repository.User.UserInfoRepository
 import com.scare.service.listener.LogoutListenerService
 import com.scare.ui.mobile.common.LocalNavController
@@ -34,11 +35,12 @@ import com.scare.ui.theme.Typography
 @Composable
 fun MyAuthPage(
     userInfoRepository: UserInfoRepository, // Repository를 파라미터로 전달받음
+    tokenRepository: TokenRepository
 ) {
 
     // ViewModelFactory를 사용하여 ViewModel을 생성
     val userInfoViewModel: UserInfoViewModel = viewModel(
-        factory = UserInfoViewModelFactory(userInfoRepository)
+        factory = UserInfoViewModelFactory(userInfoRepository, tokenRepository)
     )
 
     // userInfo 데이터를 수집

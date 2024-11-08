@@ -1,5 +1,6 @@
 package com.scare.ui.mobile.viewmodel.user
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,10 +16,12 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class UserInfoViewModel(private val userRepository: UserInfoRepository) : ViewModel() {
+class UserInfoViewModel(
+    private val userRepository: UserInfoRepository,
+    private val tokenRepository: TokenRepository) : ViewModel() {
+
     private val _userInfo = MutableStateFlow<UserInfoResponseDTO?>(null)
     val userInfo: StateFlow<UserInfoResponseDTO?> = _userInfo
-    val tokenRepository = TokenRepository.getInstance()
 
     fun fetchUserInfo() {
         viewModelScope.launch {

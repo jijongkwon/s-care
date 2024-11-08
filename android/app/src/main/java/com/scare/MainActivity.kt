@@ -49,15 +49,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         HeartRateManager.setViewModel(heartRateViewModel)
 
-        // TokenRepository 초기화
-        TokenRepository.init(this)
-
-        // RetrofitClient 초기화 (TokenRepository가 초기화된 후에만)
-        RetrofitClient.init(TokenRepository.getInstance())
+        // TokenRepository 초기화 및 RetrofitClient 초기화
+        val tokenRepository = TokenRepository.getInstance(this)
+        RetrofitClient.init(tokenRepository)
 
         val googleLoginRepository = GoogleLoginRepository(this) // GoogleLoginRepository 초기화
         loginViewModel = ViewModelProvider(
-            this, LoginViewModelFactory(googleLoginRepository, TokenRepository.getInstance())
+            this, LoginViewModelFactory(googleLoginRepository, tokenRepository)
         )[LoginViewModel::class.java]
 
         // UserInfoRepository 생성
@@ -73,9 +71,7 @@ class MainActivity : ComponentActivity() {
             CompositionLocalProvider(LocalNavController provides navController) {
                 ScareTheme {
                     // accessToken 상태를 관찰하여 실시간으로 업데이트 확인
-                    val accessToken by TokenRepository.getInstance().accessTokenFlow.collectAsState(
-                        initial = null
-                    )
+                    val accessToken by tokenRepository.accessTokenFlow.collectAsState(initial = null)
 
                     // 초기화 완료 여부 설정
                     LaunchedEffect(accessToken) {
@@ -107,7 +103,7 @@ class MainActivity : ComponentActivity() {
                             }
                             composable("walk") { MyCourse() } // "walk" 경로 추가
                             composable("map") { Map() } // "map" 경로 추가
-                            composable("mypage") { MyAuthPage(userInfoRepository) } // "map" 경로 추가
+                            composable("mypage") { MyAuthPage(userInfoRepository, tokenRepository) } // "map" 경로 추가
                         }
 
                         // accessToken이 null일 경우 start로 이동
