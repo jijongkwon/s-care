@@ -8,19 +8,24 @@ import com.google.android.gms.wearable.DataMapItem
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.WearableListenerService
 import com.scare.TAG
-import com.scare.service.heartrate.SaveHeartRateService
-import com.scare.service.listener.checkLoginStatus
+import com.scare.data.heartrate.dao.HeartRateDao
+import com.scare.data.heartrate.database.AppDatabase
+import com.scare.data.heartrate.database.entity.HeartRate
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import javax.inject.Inject
+import java.time.LocalDateTime
 
 @AndroidEntryPoint
 class HeartRateListenerService : WearableListenerService() {
 
-    @Inject
-    lateinit var saveHeartRateService: SaveHeartRateService
+    private lateinit var db: AppDatabase
+    private lateinit var heartRateDao: HeartRateDao
+
+//    @Inject
+//    lateinit var saveHeartRateService: SaveHeartRateService
+
 
 //    private lateinit var dataClient: DataClient
 
@@ -32,14 +37,14 @@ class HeartRateListenerService : WearableListenerService() {
                 if (uri.path == "/heartRate") {
                     val dataMap = DataMapItem.fromDataItem(event.dataItem).dataMap
                     val heartRate = dataMap.getDouble("hrValue")
+                    val heartRateEntity = HeartRate(
+                        heartRate = heartRate,
+                        createdAt = LocalDateTime.now()
+                    )
+                    db = AppDatabase.getInstance(this)!!
+                    heartRateDao = db.getHeartRateDao()
+                    saveHearRate(heartRateEntity)
                     Log.d(TAG, "save heart rate $heartRate")
-                    CoroutineScope(Dispatchers.IO).launch {
-                        try {
-                            saveHeartRateService.saveHeartRate(heartRate)
-                        } catch (e: Exception) {
-                            Log.e("DataLayerListenerService", "Error saving heart rate", e)
-                        }
-                    }
                 }
 
 //                if (uri.path == "/authRequest") {
@@ -60,4 +65,11 @@ class HeartRateListenerService : WearableListenerService() {
             }
         }
     }
+
+    private fun saveHearRate(heartRate: HeartRate) {
+        CoroutineScope(Dispatchers.IO).launch {
+            heartRateDao.save(heartRate)
+        }
+    }
+
 }
