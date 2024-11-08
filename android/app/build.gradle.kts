@@ -162,9 +162,8 @@ dependencies {
 
     // Room
     val room_version = "2.6.1"
-
     implementation("androidx.room:room-runtime:$room_version")
-    kapt("androidx.room:room-compiler:$room_version") // KAPT 사용
+    ksp("androidx.room:room-compiler:$room_version")
 
     // Room의 Kotlin 코루틴 지원
     implementation("androidx.room:room-ktx:$room_version")
