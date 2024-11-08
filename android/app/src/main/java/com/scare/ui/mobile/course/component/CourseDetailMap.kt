@@ -16,6 +16,7 @@ import com.naver.maps.map.overlay.OverlayImage
 import com.scare.R
 import com.scare.data.course.dto.CourseResponseDTO
 import com.scare.ui.mobile.common.LocalCourseViewModel
+import com.scare.ui.theme.Gray
 
 @ExperimentalNaverMapApi
 @Composable
@@ -84,10 +85,18 @@ fun CourseDetailMap(course: CourseResponseDTO) {
                     icon = OverlayImage.fromResource(R.drawable.last_marker)
                 )
                 PathOverlay(
-                    coords = coords,
+                    coords = coords.slice(course.startIdx..course.endIdx),
                     color = MaterialTheme.colorScheme.tertiary,
                     outlineColor = MaterialTheme.colorScheme.tertiary,
                     width = 5.dp,
+                    globalZIndex = 1
+                )
+                ArrowheadPathOverlay(
+                    coords = coords,
+                    color = Gray,
+                    outlineColor = Gray,
+                    width = 5.dp,
+                    globalZIndex = 0
                 )
             }
         }
