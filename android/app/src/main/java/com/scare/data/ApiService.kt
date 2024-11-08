@@ -13,11 +13,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.PATCH
-import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.*
 import java.net.CookieManager
 import java.net.CookiePolicy
 
@@ -56,7 +52,7 @@ object RetrofitClient {
                 .build()
         }
 
-    private val retrofit by lazy {
+    val retrofit by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(okHttpClient) // OkHttpClient 추가
@@ -93,7 +89,7 @@ interface ApiService {
     //로그아웃
     @POST("/api/v1/members/auth/logout")
     fun logout(): Call<Unit>
-    
+
     //탈퇴
     @PATCH("/api/v1/members/auth/{memberId}/withdraw")
     fun withdraw(@Path("memberId") memberId: Long): Call<Unit>

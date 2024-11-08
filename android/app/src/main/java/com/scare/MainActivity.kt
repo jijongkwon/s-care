@@ -7,30 +7,28 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.scare.data.RetrofitClient
+import com.scare.data.course.repository.CourseRepository
 import com.scare.data.member.repository.Auth.TokenRepository
 import com.scare.data.member.repository.User.UserInfoRepository
 import com.scare.service.listener.LogInListenerService
 import com.scare.ui.mobile.calender.MyCalender
 import com.scare.ui.mobile.calender.MyReport
+import com.scare.ui.mobile.common.LocalCourseViewModel
 import com.scare.ui.mobile.common.LocalNavController
 import com.scare.ui.mobile.course.MyCourse
 import com.scare.ui.mobile.main.MainPage
 import com.scare.ui.mobile.main.MyAuthPage
 import com.scare.ui.mobile.main.StartPage
 import com.scare.ui.mobile.map.Map
+import com.scare.ui.mobile.viewmodel.course.CourseViewModel
+import com.scare.ui.mobile.viewmodel.course.CourseViewModelFactory
 import com.scare.ui.mobile.viewmodel.login.LoginViewModel
 import com.scare.ui.mobile.viewmodel.login.LoginViewModelFactory
 import com.scare.ui.mobile.viewmodel.sensor.HeartRateManager
@@ -61,6 +59,15 @@ class MainActivity : ComponentActivity() {
         // UserInfoRepository 생성
         val userInfoRepository = UserInfoRepository()
 
+        // CourseRepository 인스턴스 생성
+        val courseRepository = CourseRepository()
+
+        // CourseViewModel 인스턴스 생성 (ViewModelProvider와 Factory 사용)
+        val courseViewModel = ViewModelProvider(
+            this,
+            CourseViewModelFactory(courseRepository)
+        )[CourseViewModel::class.java]
+
         // LogInListenerService 초기화
         logInListenerService = LogInListenerService(this)
 
@@ -68,7 +75,10 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             var isInitialized by remember { mutableStateOf(false) } // 초기화 상태 변수
 
-            CompositionLocalProvider(LocalNavController provides navController) {
+            CompositionLocalProvider(
+                LocalNavController provides navController,
+                LocalCourseViewModel provides courseViewModel
+            ) {
                 ScareTheme {
                     // accessToken 상태를 관찰하여 실시간으로 업데이트 확인
                     val accessToken by tokenRepository.accessTokenFlow.collectAsState(initial = null)

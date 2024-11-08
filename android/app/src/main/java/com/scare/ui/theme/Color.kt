@@ -2,9 +2,10 @@ package com.scare.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val White = Color(255,255,255)
+val White = Color(255, 255, 255)
 val NeonYellow = Color(229, 253, 80)
 val DarkNavy = Color(39, 35, 58)
+val Gray = Color(115, 115, 115)
 
 val Green = Color(110, 223, 11)
 
