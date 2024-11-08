@@ -88,4 +88,5 @@ dependencies {
     implementation(libs.gms.play.services.wearable)
 
     implementation(project(":walk"))
+    implementation(libs.androidx.compiler)
 }

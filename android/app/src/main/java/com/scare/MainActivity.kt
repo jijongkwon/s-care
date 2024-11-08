@@ -22,6 +22,7 @@ import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.scare.data.RetrofitClient
 import com.scare.data.member.repository.Auth.TokenRepository
 import com.scare.data.member.repository.User.UserInfoRepository
+import com.scare.service.listener.LogInListenerService
 import com.scare.ui.mobile.calender.MyCalender
 import com.scare.ui.mobile.calender.MyReport
 import com.scare.ui.mobile.common.LocalNavController
@@ -42,6 +43,8 @@ class MainActivity : ComponentActivity() {
     private lateinit var loginViewModel: LoginViewModel
     private val heartRateViewModel: HeartRateViewModel by viewModels()
 
+    private lateinit var logInListenerService: LogInListenerService
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         HeartRateManager.setViewModel(heartRateViewModel)
@@ -59,6 +62,9 @@ class MainActivity : ComponentActivity() {
 
         // UserInfoRepository 생성
         val userInfoRepository = UserInfoRepository()
+
+        // LogInListenerService 초기화
+        logInListenerService = LogInListenerService(this)
 
         setContent {
             val navController = rememberNavController()
@@ -124,6 +130,9 @@ class MainActivity : ComponentActivity() {
             if (result.resultCode == RESULT_OK) {
                 val data = result.data
                 loginViewModel.handleSignInResult(data) // 로그인 결과 처리
+
+                // 로그인 성공 후 워치에 로그인 상태 전송
+                logInListenerService.sendAuthRequest(true)
             }
         }
 

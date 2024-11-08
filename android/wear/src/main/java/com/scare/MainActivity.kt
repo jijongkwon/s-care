@@ -7,18 +7,31 @@
 package com.scare
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.lifecycle.ViewModelProvider
 import com.scare.presentation.home.HomeApp
+import com.scare.presentation.home.HomeAuth
 import com.scare.presentation.sensor.HeartRateManager
 import com.scare.presentation.sensor.HeartRateViewModel
 import com.scare.service.listener.AuthRequestService
+import com.scare.viewmodel.auth.AuthViewModel
+import com.scare.viewmodel.auth.AuthViewModelFactory
 
 class MainActivity : ComponentActivity() {
 
     private val heartRateViewModel: HeartRateViewModel by viewModels()
     private lateinit var authRequestService: AuthRequestService
+
+    // AuthViewModel 생성에 AuthViewModelFactory 사용
+    private val authViewModel: AuthViewModel by viewModels {
+        AuthViewModelFactory(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,8 +45,19 @@ class MainActivity : ComponentActivity() {
         authRequestService.sendAuthRequest()
 
         setContent {
-            HomeApp()
-        }
+            // 로그인 상태를 관찰하여 UI를 업데이트
+            val isLoggedIn by authViewModel.isLoggedIn.collectAsState(initial = false)
 
+            Log.d("MainActivity","$isLoggedIn")
+
+            if (isLoggedIn) {
+                HomeApp()
+            } else {
+                HomeAuth(
+                    onRequestLogin = {
+                        authRequestService.sendAuthRequest()
+                })
+            }
+        }
     }
 }

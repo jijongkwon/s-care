@@ -59,14 +59,6 @@ class LoginViewModel(
                 viewModelScope.launch { // viewModelScope 내에서 호출
                     sendUserAPI(loginRequestDTO)
                 }
-
-                // 실제 서버에서 토큰을 받아 저장하는 로직을 구현
-                val accessToken = "서버에서 받은 accessToken" // 실제 서버에서 받은 값으로 대체
-
-                // suspend 함수를 viewModelScope 내에서 호출
-                viewModelScope.launch {
-                    tokenRepository.saveAccessToken(accessToken)
-                }
             } else {
                 // account가 null일 경우 로그 출력
                 Log.e("LoginViewModel", "GoogleSignInAccount is null")
