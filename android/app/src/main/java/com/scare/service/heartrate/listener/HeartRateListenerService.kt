@@ -8,24 +8,17 @@ import com.google.android.gms.wearable.DataMapItem
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.WearableListenerService
 import com.scare.TAG
-import com.scare.data.heartrate.dao.HeartRateDao
-import com.scare.data.heartrate.database.AppDatabase
 import com.scare.data.heartrate.database.entity.HeartRate
+import com.scare.service.heartrate.HeartRateUseCase
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.time.LocalDateTime
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class HeartRateListenerService : WearableListenerService() {
 
-    private lateinit var db: AppDatabase
-    private lateinit var heartRateDao: HeartRateDao
-
-//    @Inject
-//    lateinit var saveHeartRateService: SaveHeartRateService
-
+    @Inject
+    lateinit var heartRateUseCase: HeartRateUseCase  //TODO : 여기서 주입이 되지 않음
 
 //    private lateinit var dataClient: DataClient
 
@@ -41,9 +34,14 @@ class HeartRateListenerService : WearableListenerService() {
                         heartRate = heartRate,
                         createdAt = LocalDateTime.now()
                     )
-                    db = AppDatabase.getInstance(this)!!
-                    heartRateDao = db.getHeartRateDao()
-                    saveHearRate(heartRateEntity)
+//                    HeartRateRepositoryImpl(AppDatabase.getInstance(context = this)!!).save(
+//                        heartRateEntity
+//                    )
+
+                    //TODO: 왜 주입이 안될까요?
+                    heartRateUseCase.save(heartRateEntity)
+
+
                     Log.d(TAG, "save heart rate $heartRate")
                 }
 
@@ -63,12 +61,6 @@ class HeartRateListenerService : WearableListenerService() {
 //                    }
 //                }
             }
-        }
-    }
-
-    private fun saveHearRate(heartRate: HeartRate) {
-        CoroutineScope(Dispatchers.IO).launch {
-            heartRateDao.save(heartRate)
         }
     }
 
