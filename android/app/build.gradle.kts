@@ -5,6 +5,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     id("com.chaquo.python")
     kotlin("kapt")
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -170,4 +172,8 @@ dependencies {
     implementation("androidx.room:room-rxjava3:$room_version")
     implementation("androidx.room:room-guava:$room_version")
     testImplementation("androidx.room:room-testing:$room_version")
+
+    // Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
 }
