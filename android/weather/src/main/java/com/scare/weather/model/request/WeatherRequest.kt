@@ -1,4 +1,4 @@
-package com.scare.weather.model
+package com.scare.weather.model.request
 
 data class WeatherRequest(
     val pageNo: Int = 1,
