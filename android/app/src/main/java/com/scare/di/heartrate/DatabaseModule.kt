@@ -1,12 +1,12 @@
-package com.scare.module.heartrate
+package com.scare.di.heartrate
 
 import android.content.Context
 import com.scare.data.heartrate.database.AppDatabase
 import com.scare.repository.heartrate.HeartRateRepository
-import com.scare.repository.heartrate.HeartRateRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
@@ -25,6 +25,6 @@ object DatabaseModule {
     @Provides
     fun provideHeartRateRepository(
         appDatabase: AppDatabase
-    ): HeartRateRepository = HeartRateRepositoryImpl(appDatabase = appDatabase)
+    ): HeartRateRepository = HeartRateRepository(appDatabase = appDatabase)
 
 }

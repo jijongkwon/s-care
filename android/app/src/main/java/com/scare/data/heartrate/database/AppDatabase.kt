@@ -16,22 +16,23 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun getHeartRateDao(): HeartRateDao
 
     companion object {
-        const val DATABASE_NAME = "scare_database"
-        var appDatabase: AppDatabase? = null
+        private const val DATABASE_NAME = "scare_database"
 
-        fun getInstance(context: Context): AppDatabase? {
-            if (appDatabase == null) {
-                appDatabase = Room.databaseBuilder(
-                    context,
-                    AppDatabase::class.java,
-                    DATABASE_NAME
-                )
-                    .fallbackToDestructiveMigration()
-                    .build()
+        @Volatile
+        private var appDatabase: AppDatabase? = null
+
+        fun getInstance(context: Context): AppDatabase {
+            return appDatabase ?: synchronized(this) {
+                appDatabase ?: buildDatabase(context).also { appDatabase = it }
             }
-            return appDatabase
         }
-        
-    }
 
+        private fun buildDatabase(context: Context) = Room.databaseBuilder(
+            context.applicationContext,
+            AppDatabase::class.java,
+            DATABASE_NAME
+        )
+            .fallbackToDestructiveMigration()
+            .build()
+    }
 }
