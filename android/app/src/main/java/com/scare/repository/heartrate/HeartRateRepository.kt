@@ -16,4 +16,8 @@ class HeartRateRepository @Inject constructor(
         }
     }
 
+    fun getRecentHeartRates(): List<HeartRate> {
+        return appDatabase.getHeartRateDao().getRecentHeartRates()
+    }
+
 }

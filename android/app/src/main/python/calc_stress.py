@@ -128,6 +128,11 @@ def welch_psd(nni=None,
     fs = 4
     t = np.cumsum(nni)
     t -= t[0]
+
+    # 중복 값이 있을 경우 처리
+    unique_t, indices = np.unique(t, return_index=True)
+    unique_nni = np.array(nni)[indices]
+
     f_interpol = sp.interpolate.interp1d(t, nni, 'cubic')
     t_interpol = np.arange(t[0], t[-1], 1000. / fs)
     nn_interpol = f_interpol(t_interpol)

@@ -31,7 +31,7 @@
         </activity>
 
         <service
-            android:name=".service.heartrate.listener.HeartRateListenerService"
+            android:name=".service.heartrate.HeartRateListenerService"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />

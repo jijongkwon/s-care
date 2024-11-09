@@ -1,6 +1,9 @@
-package com.scare.service.heartrate.listener
+package com.scare.service.heartrate
 
 import android.util.Log
+import com.chaquo.python.PyObject
+import com.chaquo.python.Python
+import com.chaquo.python.android.AndroidPlatform
 import com.google.android.gms.wearable.DataEvent
 import com.google.android.gms.wearable.DataEventBuffer
 import com.google.android.gms.wearable.DataMapItem
@@ -10,13 +13,7 @@ import com.scare.data.heartrate.database.AppDatabase
 import com.scare.data.heartrate.database.entity.HeartRate
 import com.scare.repository.heartrate.HeartRateRepository
 import com.scare.ui.mobile.viewmodel.sensor.HeartRateManager
-import dagger.hilt.EntryPoint
-import dagger.hilt.InstallIn
-import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.EntryPointAccessors
-import dagger.hilt.components.SingletonComponent
 import java.time.LocalDateTime
-import javax.inject.Inject
 
 class HeartRateListenerService : WearableListenerService() {
 
@@ -35,15 +32,41 @@ class HeartRateListenerService : WearableListenerService() {
                         heartRate = heartRate,
                         createdAt = LocalDateTime.now()
                     )
+                    saveHeartRate(heartRateEntity)
+                    dispatchStress()
                     Log.d(TAG, "save heart rate $heartRate")
                 }
             }
         }
     }
 
+    private fun getDb() : AppDatabase {
+        return AppDatabase.getInstance(this)
+    }
+
     private fun saveHeartRate(heartRate: HeartRate) {
-        val db = AppDatabase.getInstance(this)
+        val db = getDb()
         HeartRateRepository(db).save(heartRate)
+    }
+
+    private fun dispatchStress() {
+        val db = getDb()
+        val recentHeartRates = HeartRateRepository(db).getRecentHeartRates()
+        val heartRateValues = recentHeartRates.map { it.heartRate }.toDoubleArray()
+        println(heartRateValues)
+        var stress = -1
+        if (recentHeartRates.size >= 10) {
+            if (!Python.isStarted()) {
+                Python.start(AndroidPlatform(this))
+            }
+            val py = Python.getInstance()
+            val pyModule = py.getModule("calc_stress")
+
+            val result: PyObject = pyModule.callAttr("get_single_stress", heartRateValues)
+            stress = result.toInt()
+            Log.d(TAG, "stress 계산 ")
+        }
+        HeartRateManager.updateStress(stress)
     }
 
 }
