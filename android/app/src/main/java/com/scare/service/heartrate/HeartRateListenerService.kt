@@ -13,6 +13,7 @@ import com.scare.data.heartrate.database.AppDatabase
 import com.scare.data.heartrate.database.entity.HeartRate
 import com.scare.repository.heartrate.HeartRateRepository
 import com.scare.ui.mobile.viewmodel.sensor.HeartRateManager
+import java.time.Duration
 import java.time.LocalDateTime
 
 class HeartRateListenerService : WearableListenerService() {
@@ -52,19 +53,20 @@ class HeartRateListenerService : WearableListenerService() {
     private fun dispatchStress() {
         val db = getDb()
         val recentHeartRates = HeartRateRepository(db).getRecentHeartRates()
-        val heartRateValues = recentHeartRates.map { it.heartRate }.toDoubleArray()
-        println(heartRateValues)
+        val now = LocalDateTime.now()
+        val heartRateValues = recentHeartRates
+            .filter { Duration.between(it.createdAt, now).toMinutes() <= 30 }
+            .map { it.heartRate }
+            .toDoubleArray()
         var stress = -1
-        if (recentHeartRates.size >= 10) {
+        if (heartRateValues.size >= 6) {
             if (!Python.isStarted()) {
                 Python.start(AndroidPlatform(this))
             }
             val py = Python.getInstance()
             val pyModule = py.getModule("calc_stress")
-
             val result: PyObject = pyModule.callAttr("get_single_stress", heartRateValues)
             stress = result.toInt()
-            Log.d(TAG, "stress 계산 ")
         }
         HeartRateManager.updateStress(stress)
     }
