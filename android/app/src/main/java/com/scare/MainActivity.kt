@@ -102,14 +102,12 @@ class MainActivity : ComponentActivity() {
                             composable("start") { StartPage(loginViewModel) { launchLogin() } }
                             composable("main") { MainPage(loginViewModel, heartRateViewModel) }
                             composable("statistics") { MyCalender() } // "statistics" 경로 추가
-                            composable("report?weekInfo={weekInfo}&dateRange={dateRange}") { backStackEntry ->
-                                val weekInfo = backStackEntry.arguments?.getString("weekInfo")
-                                val dateRange = backStackEntry.arguments?.getString("dateRange")
+                            composable("report?from={from}&to={to}") { backStackEntry ->
+                                // from과 to를 정확히 가져옵니다.
+                                val from = backStackEntry.arguments?.getString("from")
+                                val to = backStackEntry.arguments?.getString("to")
 
-                                MyReport(
-                                    weekInfo = weekInfo,
-                                    dateRange = dateRange
-                                ) // MyReport에 파라미터 전달
+                                MyReport(from = from, to = to) // MyReport에 매개변수 전달
                             }
                             composable("walk") { MyCourse() } // "walk" 경로 추가
                             composable("map") { Map() } // "map" 경로 추가

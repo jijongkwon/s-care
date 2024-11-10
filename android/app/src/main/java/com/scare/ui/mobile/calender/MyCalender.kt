@@ -27,8 +27,9 @@ import java.time.LocalDate
 @Composable
 fun MyCalender() {
     val navController = LocalNavController.current
-    var selectedStress by remember { mutableStateOf(0.0) } // 선택된 날짜의 스트레스 상태
-    var stressData by remember { mutableStateOf<Map<LocalDate, Double>>(emptyMap()) } // 한 달의 스트레스 데이터를 저장할 상태
+    var selectedDate by remember { mutableStateOf(LocalDate.now()) } // 선택된 날짜
+    var selectedStress by remember { mutableStateOf(0) } // 선택된 날짜의 스트레스 상태
+    var stressData by remember { mutableStateOf<Map<LocalDate, Int>>(emptyMap()) } // 한 달의 스트레스 데이터를 저장할 상태
 
     // API 요청으로 이 달의 스트레스 데이터를 가져오는 로직 (가상의 API 호출)
     LaunchedEffect(Unit) {
@@ -47,10 +48,14 @@ fun MyCalender() {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             // 달력에서 선택된 날짜의 스트레스를 받아옴
-            Calender(modifier = Modifier,
-                onDaySelected = {selectedDate ->
-                selectedStress = stressData[selectedDate] ?: 0.0
-            })
+            Calender(
+                modifier = Modifier,
+                onDaySelected = { date ->
+                    selectedDate = date
+                    selectedStress = stressData[date] ?: 0
+                },
+                stressLevelMap = stressData// 달력에 스트레스 데이터 전달
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -59,7 +64,7 @@ fun MyCalender() {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            WeeklyReport()
+            WeeklyReport(selectedDate = selectedDate)
         }
     }
 }
