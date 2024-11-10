@@ -43,7 +43,11 @@ import java.util.Locale
 
 //달력
 @Composable
-fun Calender(modifier: Modifier = Modifier, onDaySelected: (LocalDate) -> Unit) {
+fun Calender(
+    modifier: Modifier = Modifier,
+    onDaySelected: (LocalDate) -> Unit,
+    stressLevelMap: Map<LocalDate, Int>
+) {
 
     var currentMonth by remember { mutableStateOf(YearMonth.now()) }
     val today:LocalDate = LocalDate.now()
@@ -124,6 +128,7 @@ fun Calender(modifier: Modifier = Modifier, onDaySelected: (LocalDate) -> Unit) 
 
                     item {
                         val date: LocalDate = currentMonth.atDay(day)
+                        val stressLevel = stressLevelMap[date] ?: -1
 
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -132,12 +137,40 @@ fun Calender(modifier: Modifier = Modifier, onDaySelected: (LocalDate) -> Unit) 
                                 .padding(4.dp)
                         ) {
                             if (date.isBefore(today)) {
-                                Image(
-                                    painter = painterResource(R.drawable.happy_dog_face),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(40.dp),
-                                    contentScale = ContentScale.Fit
-                                )
+                                when {
+                                    stressLevel == 0 -> {
+                                        Image(
+                                            painter = painterResource(R.drawable.no_stress_data),
+                                            contentDescription = "No Stress",
+                                            modifier = Modifier.size(40.dp),
+                                            contentScale = ContentScale.Fit
+                                        )
+                                    }
+                                    stressLevel <= 20 -> {
+                                        Image(
+                                            painter = painterResource(R.drawable.gloomy_dog_face),
+                                            contentDescription = "Low Stress",
+                                            modifier = Modifier.size(40.dp),
+                                            contentScale = ContentScale.Fit
+                                        )
+                                    }
+                                    stressLevel <= 40 -> {
+                                        Image(
+                                            painter = painterResource(R.drawable.normal_dog_face),
+                                            contentDescription = "Medium Stress",
+                                            modifier = Modifier.size(40.dp),
+                                            contentScale = ContentScale.Fit
+                                        )
+                                    }
+                                    else -> {
+                                        Image(
+                                            painter = painterResource(R.drawable.happy_dog_face),
+                                            contentDescription = "High Stress",
+                                            modifier = Modifier.size(40.dp),
+                                            contentScale = ContentScale.Fit
+                                        )
+                                    }
+                                }
                             } else {
                                 // 이미지가 없는 경우 빈 공간 유지
                                 Spacer(modifier = Modifier.size(40.dp))

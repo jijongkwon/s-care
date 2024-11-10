@@ -17,16 +17,19 @@ import com.scare.ui.mobile.common.LocalNavController
 import com.scare.ui.theme.NeonYellow
 import com.scare.ui.theme.Typography
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.time.temporal.WeekFields
 import java.util.Locale
 
 @Composable
-fun WeeklyReport() {
+fun WeeklyReport(
+    selectedDate: LocalDate
+) {
 
     val navController = LocalNavController.current
 
     // 주차 정보와 날짜 범위 계산
-    val (weekInfo, dateRange) = getCurrentWeekInfo()
+    val (startDay, endDay) = getWeekRangeForDate(selectedDate)
 
     Box(
         modifier = Modifier
@@ -43,7 +46,7 @@ fun WeeklyReport() {
                 )
             }
             .clickable(onClick = {
-                navController?.navigate("report?weekInfo=$weekInfo&dateRange=$dateRange")
+                navController?.navigate("report?from=$startDay&to=$endDay")
             })
         ,
         contentAlignment = Alignment.Center // 텍스트 중앙 정렬
@@ -58,21 +61,20 @@ fun WeeklyReport() {
 }
 
 // 주차 계산 함수
-fun getCurrentWeekInfo(): Pair<String, String> {
-    val today = LocalDate.now()
+fun getWeekRangeForDate(selectedDate: LocalDate): Pair<String, String> {
     val weekFields = WeekFields.of(Locale.getDefault())
-    val weekOfMonth = today.get(weekFields.weekOfMonth())
-    val month = today.month.value
-    val year = today.year
 
-    // 해당 주의 시작일과 종료일 계산
-    val startOfWeek = today.with(weekFields.dayOfWeek(), 1L) // 월요일로 설정
-    val endOfWeek = today.with(weekFields.dayOfWeek(), 7L)   // 일요일로 설정
+    val startOfWeek = selectedDate.with(weekFields.dayOfWeek(), 1L) // 월요일로 설정
+    val endOfWeek = selectedDate.with(weekFields.dayOfWeek(), 7L) // 일요일로 설정
 
-    val endDate = if (endOfWeek.isBefore(today)) endOfWeek else today // 종료일이 오늘 날짜 이후라면 오늘까지
+    // 현재 날짜 또는 주차 종료일 선택
+    val endDate = if (endOfWeek.isBefore(LocalDate.now())) endOfWeek else LocalDate.now()
+
+    // 날짜 형식 설정
+    val dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd")
 
     return Pair(
-        "$year 년 $month 월 $weekOfMonth 주차",
-        "${startOfWeek} ~ ${endDate}"
+        startOfWeek.format(dateFormatter), // 시작 날짜
+        endDate.format(dateFormatter) // 종료 날짜
     )
 }

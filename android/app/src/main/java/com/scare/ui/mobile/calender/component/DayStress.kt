@@ -24,11 +24,15 @@ import com.scare.ui.theme.NeonYellow
 import com.scare.ui.theme.Typography
 
 @Composable
-fun DayStress(modifier: Modifier, stress: Double) {
+fun DayStress(
+    modifier: Modifier,
+    stress: Int
+) {
 
     val petFace = when {
-        stress <= 60 -> R.drawable.happy_dog_face
-        stress <= 90 -> R.drawable.normal_dog_face
+        stress == 0 -> R.drawable.no_stress_data
+        stress <= 20 -> R.drawable.happy_dog_face
+        stress <= 40 -> R.drawable.normal_dog_face
         else -> R.drawable.gloomy_dog_face
     }
 
