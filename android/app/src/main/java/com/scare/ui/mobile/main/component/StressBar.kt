@@ -31,18 +31,16 @@ import com.scare.ui.theme.White
 import com.scare.ui.theme.high
 import com.scare.ui.theme.low
 import com.scare.ui.theme.medium
+import com.scare.util.getStressLevel
+import com.scare.util.getTextColor
 
 @Composable
 fun MyStressRate(stress: Int,
                  modifier: Modifier = Modifier
 ) {
-    val stressLevel = when {
-        stress <= 20 -> "낮음"
-        stress <= 40 -> "보통"
-        else -> "높음"
-    }
+    val stressLevel = getStressLevel(stress)
 
-    val rate = stress.toFloat() / 200F
+    val rate = stress / 60F
 
     Column (
         modifier.padding(horizontal = 16.dp)
@@ -55,11 +53,7 @@ fun MyStressRate(stress: Int,
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            val textColor = when (stressLevel) {
-                "낮음" -> low
-                "보통" -> medium
-                else -> high
-            }
+            val textColor = getTextColor(stressLevel)
 
             Text(
                 text="스트레스 $stressLevel",
@@ -67,6 +61,7 @@ fun MyStressRate(stress: Int,
                     color = textColor, // 색깔 변경
                     fontWeight = FontWeight.Medium // 굵기 변경
                 ))
+
             Text(
                 text="$stress",
                 style = Typography.labelSmall.copy( // TextStyle 적용

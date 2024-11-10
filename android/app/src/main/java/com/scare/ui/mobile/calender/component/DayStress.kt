@@ -22,6 +22,7 @@ import com.scare.R
 import com.scare.ui.theme.DarkNavy
 import com.scare.ui.theme.NeonYellow
 import com.scare.ui.theme.Typography
+import com.scare.util.getPetFace
 
 @Composable
 fun DayStress(
@@ -29,19 +30,14 @@ fun DayStress(
     stress: Int
 ) {
 
-    val petFace = when {
-        stress == 0 -> R.drawable.no_stress_data
-        stress <= 20 -> R.drawable.happy_dog_face
-        stress <= 40 -> R.drawable.normal_dog_face
-        else -> R.drawable.gloomy_dog_face
-    }
+    val petFace = getPetFace(stress)
 
     Row(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image (
-            painter = painterResource(petFace),
+            painter = petFace,
             contentDescription = "DayStressFace",
             modifier = Modifier.size(100.dp),
             contentScale = ContentScale.Fit

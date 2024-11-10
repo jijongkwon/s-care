@@ -35,6 +35,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.scare.R
 import com.scare.ui.theme.NeonYellow
+import com.scare.util.getPetFace
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
@@ -128,7 +129,7 @@ fun Calender(
 
                     item {
                         val date: LocalDate = currentMonth.atDay(day)
-                        val stressLevel = stressLevelMap[date] ?: -1
+                        val stress = stressLevelMap[date] ?: -1
 
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -137,40 +138,14 @@ fun Calender(
                                 .padding(4.dp)
                         ) {
                             if (date.isBefore(today)) {
-                                when {
-                                    stressLevel == 0 -> {
-                                        Image(
-                                            painter = painterResource(R.drawable.no_stress_data),
-                                            contentDescription = "No Stress",
-                                            modifier = Modifier.size(40.dp),
-                                            contentScale = ContentScale.Fit
-                                        )
-                                    }
-                                    stressLevel <= 20 -> {
-                                        Image(
-                                            painter = painterResource(R.drawable.gloomy_dog_face),
-                                            contentDescription = "Low Stress",
-                                            modifier = Modifier.size(40.dp),
-                                            contentScale = ContentScale.Fit
-                                        )
-                                    }
-                                    stressLevel <= 40 -> {
-                                        Image(
-                                            painter = painterResource(R.drawable.normal_dog_face),
-                                            contentDescription = "Medium Stress",
-                                            modifier = Modifier.size(40.dp),
-                                            contentScale = ContentScale.Fit
-                                        )
-                                    }
-                                    else -> {
-                                        Image(
-                                            painter = painterResource(R.drawable.happy_dog_face),
-                                            contentDescription = "High Stress",
-                                            modifier = Modifier.size(40.dp),
-                                            contentScale = ContentScale.Fit
-                                        )
-                                    }
-                                }
+                                val petFace = getPetFace(stress)
+
+                                Image(
+                                    painter = petFace,
+                                    contentDescription = "No Stress",
+                                    modifier = Modifier.size(40.dp),
+                                    contentScale = ContentScale.Fit
+                                )
                             } else {
                                 // 이미지가 없는 경우 빈 공간 유지
                                 Spacer(modifier = Modifier.size(40.dp))
