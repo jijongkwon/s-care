@@ -6,5 +6,5 @@ class SingleStressRequest(BaseModel):
 
 
 class StressOverviewRequest(BaseModel):
-    hr_data: list[int]
+    hr_data: list[float]
     walking_time: int
