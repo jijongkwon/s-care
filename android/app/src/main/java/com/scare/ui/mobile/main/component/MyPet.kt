@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.sp
 import com.scare.R
 import com.scare.ui.theme.Typography
 import com.scare.ui.theme.White
+import com.scare.util.getPetImage
 
 @Composable
 fun PetSentence() {
@@ -50,14 +51,10 @@ fun MyPetImage(stress: Int,
                    .padding(vertical = 8.dp)
                    .fillMaxWidth()) {
 
-    val petImage = when {
-        stress <= 60 -> R.drawable.happy_dog
-        stress <= 90 -> R.drawable.soso_dog
-        else -> R.drawable.gloomy_dog
-    }
+    val petImage = getPetImage(stress)
 
     Image(
-        painter = painterResource(id = petImage),
+        painter = petImage,
         contentDescription = "Logo",
         modifier
             .width(60.dp)

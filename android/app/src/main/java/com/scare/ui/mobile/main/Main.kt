@@ -25,7 +25,7 @@ fun MainPage(loginViewModel: LoginViewModel, heartRateViewModel: HeartRateViewMo
     Scaffold(
         topBar = { TheHeader(profileUrl, isMainPage = true) }
     ) { innerPadding ->
-        val solutions = listOf("산책하기", "ASMR", "펫과 대화하기")
+        val solutions = listOf("산책하기", "ASMR")
 
         Column(
             modifier = Modifier
