@@ -2,6 +2,7 @@ package com.scare.api.core.util;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 public final class DateConverter {
@@ -21,6 +22,10 @@ public final class DateConverter {
 	public static LocalDate convertToLocalDate(String dateStr) {
 		LocalDate date = LocalDate.parse(dateStr, FORMATTER);
 		return date;
+	}
+
+	public static Long convertToLong(LocalDateTime localDateTime) {
+		return localDateTime.atZone(ZoneId.of("Asia/Seoul")).toInstant().toEpochMilli();
 	}
 
 }
