@@ -37,7 +37,7 @@ class HeartRateService : Service(), SensorEventListener {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(TAG, "service onStartCommand")
-        when(intent?.action) {
+        when (intent?.action) {
             Actions.START.toString() -> start()
             Actions.STOP.toString() -> stopSelf()
         }
@@ -48,13 +48,15 @@ class HeartRateService : Service(), SensorEventListener {
     override fun onSensorChanged(event: SensorEvent?) {
         if (event?.sensor?.type == Sensor.TYPE_HEART_RATE) {
             val hrValue = event.values[0].toDouble()
-            HeartRateManager.updateHeartRate(hrValue)
-            sendToHandheldDevice(hrValue)
+            if (hrValue > 0) {
+                HeartRateManager.updateHeartRate(hrValue)
+                sendToHandheldDevice(hrValue)
+            }
             Log.d(TAG, "service hrValue: $hrValue")
         }
     }
 
-    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) { }
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
 
     override fun onDestroy() {
         super.onDestroy()
