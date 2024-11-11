@@ -43,9 +43,9 @@ public class SaveWalkingCourseReq {
 
 	@Schema(
 		description = "심박수 목록",
-		example = "[25, 30, 28, 27, 32]"
+		example = "[25.5, 30.5, 28.3, 27.2, 32.1]"
 	)
-	private List<Integer> heartRates;
+	private List<Double> heartRates;
 
 	@Schema(description = "위치 데이터 목록")
 	private List<LocationData> locations;

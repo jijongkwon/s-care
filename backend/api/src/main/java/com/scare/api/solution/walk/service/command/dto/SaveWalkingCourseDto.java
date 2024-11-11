@@ -16,7 +16,7 @@ public class SaveWalkingCourseDto {
 	private double distance;
 	private LocalDateTime startedAt;
 	private LocalDateTime finishedAt;
-	private List<Integer> heartRates;
+	private List<Double> heartRates;
 	private SaveWalkingCourseStressDto stressData;
 	private List<SaveWalkingCourseLocationDto> locations;
 
