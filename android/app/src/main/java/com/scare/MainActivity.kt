@@ -24,11 +24,13 @@ import com.scare.data.heartrate.database.dataStore.LastSaveData
 import com.scare.data.heartrate.repository.StressRepository
 import com.scare.data.member.repository.Auth.TokenRepository
 import com.scare.data.member.repository.User.UserInfoRepository
+import com.scare.repository.heartrate.HeartRateRepository
 import com.scare.service.listener.LogInListenerService
 import com.scare.ui.mobile.calender.MyCalender
 import com.scare.ui.mobile.calender.MyReport
 import com.scare.ui.mobile.common.LocalCourseViewModel
 import com.scare.ui.mobile.common.LocalNavController
+import com.scare.ui.mobile.common.LocalWalkViewModel
 import com.scare.ui.mobile.course.MyCourse
 import com.scare.ui.mobile.main.MainPage
 import com.scare.ui.mobile.main.MyAuthPage
@@ -42,6 +44,8 @@ import com.scare.ui.mobile.viewmodel.sensor.HeartRateManager
 import com.scare.ui.mobile.viewmodel.sensor.HeartRateViewModel
 import com.scare.ui.mobile.viewmodel.stress.StressStoreManager
 import com.scare.ui.mobile.viewmodel.stress.StressViewModel
+import com.scare.ui.mobile.viewmodel.walk.WalkViewModel
+import com.scare.ui.mobile.viewmodel.walk.WalkViewModelFactory
 import com.scare.ui.theme.ScareTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -81,6 +85,16 @@ class MainActivity : ComponentActivity() {
             CourseViewModelFactory(courseRepository)
         )[CourseViewModel::class.java]
 
+        val db = AppDatabase.getInstance(this)
+
+        val heartRateRepository = HeartRateRepository(db)
+
+        val walkViewModel = ViewModelProvider(
+            this,
+            WalkViewModelFactory(this, heartRateRepository)
+        ).get(WalkViewModel::class.java)
+
+
         // LogInListenerService 초기화
         logInListenerService = LogInListenerService(this)
 
@@ -107,7 +121,8 @@ class MainActivity : ComponentActivity() {
 
             CompositionLocalProvider(
                 LocalNavController provides navController,
-                LocalCourseViewModel provides courseViewModel
+                LocalCourseViewModel provides courseViewModel,
+                LocalWalkViewModel provides walkViewModel
             ) {
                 ScareTheme {
                     // accessToken 상태를 관찰하여 실시간으로 업데이트 확인
@@ -140,7 +155,7 @@ class MainActivity : ComponentActivity() {
                                 MyReport(from = from, to = to) // MyReport에 매개변수 전달
                             }
                             composable("walk") { MyCourse() } // "walk" 경로 추가
-                            composable("map") { Map() } // "map" 경로 추가
+                            composable("map") { Map(this@MainActivity) } // "map" 경로 추가
                             composable("mypage") { MyAuthPage(userInfoRepository, tokenRepository) } // "map" 경로 추가
                         }
 
