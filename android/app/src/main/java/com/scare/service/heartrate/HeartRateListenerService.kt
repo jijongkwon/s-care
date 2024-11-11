@@ -18,9 +18,6 @@ import java.time.LocalDateTime
 
 class HeartRateListenerService : WearableListenerService() {
 
-    @Inject
-    lateinit var heartRateUseCase: HeartRateUseCase  //TODO : 여기서 주입이 되지 않음
-
     override fun onDataChanged(dataEvents: DataEventBuffer) {
         dataEvents.forEach { event ->
             Log.d(TAG, "event")
@@ -41,7 +38,7 @@ class HeartRateListenerService : WearableListenerService() {
         }
     }
 
-    private fun getDb() : AppDatabase {
+    private fun getDb(): AppDatabase {
         return AppDatabase.getInstance(this)
     }
 
