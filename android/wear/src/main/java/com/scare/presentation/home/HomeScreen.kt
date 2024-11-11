@@ -1,5 +1,6 @@
 package com.scare.presentation.home
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -33,10 +34,13 @@ import com.scare.presentation.sensor.HeartRateViewModelFactory
 import com.scare.presentation.theme.color_stress_bad
 import com.scare.presentation.theme.color_stress_good
 import com.scare.presentation.theme.color_stress_normal
+import com.scare.presentation.walk.WalkViewModel
+import com.scare.presentation.walk.WalkViewModelFactory
 import kotlin.math.roundToInt
 
 @Composable
 fun HomeScreen(
+    context: Context,
     onClickStartWalk: () -> Unit
 ) {
     val viewModel: HeartRateViewModel = viewModel(
@@ -47,6 +51,10 @@ fun HomeScreen(
     val scrollState = rememberScrollState()
 
     val stressState: StressState = getStressStatus(hrValue)
+
+    val walkViewModel: WalkViewModel = viewModel(
+        factory = WalkViewModelFactory(context)
+    )
 
     ScreenScaffold(
         scrollState = scrollState,
@@ -99,7 +107,10 @@ fun HomeScreen(
                     }
                 }
                 Button(
-                    onClick = onClickStartWalk,
+                    onClick = {
+                        onClickStartWalk()
+                        walkViewModel.updateWalkStatus(context, false)
+                    },
                     Modifier.width(70.dp).height(40.dp)
                 ) {
                     Text("산책 시작")

@@ -46,6 +46,10 @@ android {
 }
 
 dependencies {
+    // https://developer.android.com/develop/ui/compose/bom?hl=ko
+    val composeBom = platform("androidx.compose:compose-bom:2024.10.01")
+    implementation(composeBom)
+
     // https://developer.android.com/jetpack/androidx/releases/concurrent?hl=ko
     implementation(libs.androidx.concurrent.futures.ktx)
     // https://developer.android.com/jetpack/androidx/releases/health?hl=ko
@@ -59,7 +63,6 @@ dependencies {
     // https://developer.android.com/jetpack/androidx/releases/datastore?hl=ko
     implementation(libs.androidx.datastore.preferences)
 
-    implementation(libs.androidx.compose.material)
     // https://developer.android.com/jetpack/androidx/releases/lifecycle?hl=ko
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     // https://mvnrepository.com/artifact/com.google.accompanist/accompanist-permissions
@@ -87,6 +90,17 @@ dependencies {
     // https://mvnrepository.com/artifact/com.google.android.gms/play-services-wearable
     implementation(libs.gms.play.services.wearable)
 
-    implementation(project(":walk"))
+    // https://developer.android.com/training/wearables/compose/navigation
+    implementation(libs.androidx.compose.navigation)
+
+    // https://developer.android.com/jetpack/androidx/releases/wear-compose?hl=ko
+    implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.compose.material)
+
+    // https://mvnrepository.com/search?q=horologist
+    implementation(libs.horologist.composables)
+    implementation(libs.horologist.compose.layout)
+    implementation(libs.horologist.compose.material)
+
     implementation(libs.androidx.compiler)
 }

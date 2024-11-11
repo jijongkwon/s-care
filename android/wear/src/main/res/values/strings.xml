@@ -8,4 +8,8 @@
 
     <string name="heartRateChannelId">HeartRateServiceChannel</string>
     <string name="heartRateChannelName">Heart Rate Monitoring</string>
+
+    <string name="home_root">/home</string>
+    <string name="walk_root">/walk</string>
+    <string name="auth_root">/auth</string>
 </resources>
