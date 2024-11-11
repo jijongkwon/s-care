@@ -14,6 +14,9 @@ RUN gradle dependencies --no-daemon
 # env 복사
 COPY .env ./
 
+# Firebase 서비스 계정 키 파일 복사
+COPY src/main/resources/firebase/service-account-key.json ./src/main/resources/firebase/
+
 # 소스 코드 복사
 COPY src ./src
 
@@ -29,9 +32,13 @@ FROM openjdk:21-jdk-slim
 # 컨테이너 내부 /app 디렉토리 기준
 WORKDIR /app
 
-# 빌드 스테이지에서 생성된 jar 파일과 .env 파일 복사
+# Firebase 설정 디렉토리 생성
+RUN mkdir -p /app/src/main/resources/firebase
+
+# 빌드 스테이지에서 생성된 jar 파일, .env 파일, Firebase 서비스 계정 키 파일 복사
 COPY --from=build /app/app.jar ./app.jar
 COPY --from=build /app/.env ./.env
+COPY --from=build /app/src/main/resources/firebase/service-account-key.json ./src/main/resources/firebase/
 
 EXPOSE 8080
 
