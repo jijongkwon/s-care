@@ -23,12 +23,10 @@ public class WalkingCourseDto {
 	private Integer endIdx;
 	private double maxStress;
 	private double minStress;
-	private double distance;
 
 	public static WalkingCourseDto from(WalkingCourse walkingCourse, WalkingDetail walkingDetail) {
 		return WalkingCourseDto.builder()
 			.courseId(walkingCourse.getId())
-			.distance(walkingCourse.getDistance())
 			.startedAt(walkingCourse.getStartedAt().toString())
 			.finishedAt(walkingCourse.getFinishedAt().toString())
 			.startIdx(walkingCourse.getStartIdx())
@@ -49,7 +47,6 @@ public class WalkingCourseDto {
 	public static WalkingCourseDto from(WalkingCourse walkingCourse) {
 		return WalkingCourseDto.builder()
 			.courseId(walkingCourse.getId())
-			.distance(walkingCourse.getDistance())
 			.startedAt(walkingCourse.getStartedAt().toString())
 			.finishedAt(walkingCourse.getFinishedAt().toString())
 			.startIdx(walkingCourse.getStartIdx())
