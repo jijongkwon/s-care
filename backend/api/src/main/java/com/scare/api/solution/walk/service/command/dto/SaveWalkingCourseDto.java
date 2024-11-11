@@ -13,7 +13,6 @@ import lombok.Getter;
 @Builder
 public class SaveWalkingCourseDto {
 
-	private double distance;
 	private LocalDateTime startedAt;
 	private LocalDateTime finishedAt;
 	private List<Double> heartRates;
@@ -22,7 +21,6 @@ public class SaveWalkingCourseDto {
 
 	public static SaveWalkingCourseDto from(SaveWalkingCourseReq request) {
 		return SaveWalkingCourseDto.builder()
-			.distance(request.getDistance())
 			.startedAt(request.getStartedAt())
 			.finishedAt(request.getFinishedAt())
 			.heartRates(request.getHeartRates())
@@ -34,7 +32,6 @@ public class SaveWalkingCourseDto {
 
 	public SaveWalkingCourseDto withStressData(SaveWalkingCourseStressDto stressData) {
 		return SaveWalkingCourseDto.builder()
-			.distance(this.distance)
 			.startedAt(this.startedAt)
 			.finishedAt(this.finishedAt)
 			.heartRates(this.heartRates)

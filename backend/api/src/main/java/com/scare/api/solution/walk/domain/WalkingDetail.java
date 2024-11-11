@@ -31,13 +31,11 @@ public class WalkingDetail {
 	public static class LocationPoint {
 		private double latitude;
 		private double longitude;
-		private LocalDateTime createdAt;
 
 		@Builder
 		public LocationPoint(double latitude, double longitude, LocalDateTime createdAt) {
 			this.latitude = latitude;
 			this.longitude = longitude;
-			this.createdAt = createdAt;
 		}
 	}
 }
