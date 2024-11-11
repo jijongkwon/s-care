@@ -51,3 +51,7 @@ fast:
   api:
     base-url: ${FAST_API_BASE_URL}
     stress-endpoint: ${STRESS_ENDPOINT}
+
+## FCM 서비스 JSON 위치
+fcm:
+  key: ${FCM_SERVICE_ACCOUNT_KEY}

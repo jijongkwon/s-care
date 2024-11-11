@@ -232,6 +232,6 @@ gradle-app.setting
 .env
 
 ### FCM certification file
-src/main/resources/fcmcertification.json
+service-account-key.json
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,intellij,java,gradle
