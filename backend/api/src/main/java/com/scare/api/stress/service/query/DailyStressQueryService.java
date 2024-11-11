@@ -32,6 +32,7 @@ public class DailyStressQueryService {
 		Map<LocalDate, Integer> map = stressList.stream()
 			.collect(Collectors.toMap(DailyStress::getRecordedAt, DailyStress::getStress));
 		List<DailyStressQueryDto> res = new ArrayList<>();
+
 		for (LocalDate date = from; !date.isAfter(to); date = date.plusDays(1)) {
 			int stress = map.getOrDefault(date, -1);
 			res.add(DailyStressQueryDto.builder()
@@ -39,6 +40,7 @@ public class DailyStressQueryService {
 				.recordedAt(date.toString())
 				.build());
 		}
+
 		return res;
 	}
 
