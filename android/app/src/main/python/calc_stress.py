@@ -128,8 +128,13 @@ def welch_psd(nni=None,
     fs = 4
     t = np.cumsum(nni)
     t -= t[0]
-    f_interpol = sp.interpolate.interp1d(t, nni, 'cubic')
-    t_interpol = np.arange(t[0], t[-1], 1000. / fs)
+
+    # 중복 값이 있을 경우 처리
+    unique_t, indices = np.unique(t, return_index=True)
+    unique_nni = np.array(nni)[indices]
+
+    f_interpol = sp.interpolate.interp1d(unique_t, unique_nni, 'cubic')
+    t_interpol = np.arange(t[0], t[-1], 2000. / fs)
     nn_interpol = f_interpol(t_interpol)
 
     # DC 오프셋 억제를 위해 각 샘플에서 평균값을 빼기
