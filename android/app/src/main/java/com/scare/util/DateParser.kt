@@ -4,12 +4,18 @@ import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-fun formatDateTime(dateTimeString: String): String {
+fun formatDateTimeToRender(dateTimeString: String): String {
     val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
     val outputFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm")
     val dateTime = LocalDateTime.parse(dateTimeString, inputFormatter)
 
     return dateTime.format(outputFormatter)
+}
+
+fun formatDateTimeToSearch(dateTime: LocalDateTime): String {
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+
+    return dateTime.format(formatter)
 }
 
 fun calculateTimeDifference(startDateTime: String, endDateTime: String): String {

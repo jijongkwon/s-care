@@ -20,7 +20,7 @@ import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.scare.data.course.dto.CourseResponseDTO
 import com.scare.ui.theme.Typography
 import com.scare.util.calculateTimeDifference
-import com.scare.util.formatDateTime
+import com.scare.util.formatDateTimeToRender
 
 @ExperimentalNaverMapApi
 @Composable
@@ -46,7 +46,7 @@ fun CourseItem(course: CourseResponseDTO) {
                     verticalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
-                        text = formatDateTime(course.startedAt),
+                        text = formatDateTimeToRender(course.startedAt),
                         style = Typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface),
                     )
 
