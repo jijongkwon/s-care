@@ -109,7 +109,7 @@ fun HomeScreen(
                 Button(
                     onClick = {
                         onClickStartWalk()
-                        walkViewModel.updateWalkStatus(context, false)
+                        walkViewModel.updateWalkStatus(context, true)
                     },
                     Modifier.width(70.dp).height(40.dp)
                 ) {

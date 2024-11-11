@@ -1,5 +1,6 @@
 package com.scare.presentation.walk
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -14,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.wear.compose.material.Button
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
@@ -22,9 +24,13 @@ import com.scare.R
 
 @Composable
 fun WalkScreen(
+    context: Context,
     onClickStopWalk: () -> Unit
 ) {
     val scrollState = rememberScrollState()
+    val walkViewModel: WalkViewModel = viewModel(
+        factory = WalkViewModelFactory(context)
+    )
 
     ScreenScaffold(
         scrollState = scrollState
@@ -45,7 +51,10 @@ fun WalkScreen(
                     Modifier.size(100.dp)
                 )
                 Button(
-                    onClick = onClickStopWalk,
+                    onClick = {
+                        onClickStopWalk()
+                        walkViewModel.updateWalkStatus(context, false)
+                    },
                     Modifier.width(70.dp).height(40.dp)
                 ) {
                     Text("산책 종료")

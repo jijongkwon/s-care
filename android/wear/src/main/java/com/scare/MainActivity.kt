@@ -84,7 +84,7 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                         composable(route = walkRoot) {
-                            WalkScreen {
+                            WalkScreen(this@MainActivity) {
                                 navController.navigate(homeRoot)
                             }
                         }
