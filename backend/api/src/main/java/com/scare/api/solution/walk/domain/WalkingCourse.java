@@ -30,9 +30,6 @@ public class WalkingCourse extends BaseTimeEntity {
 	@Column(name = "walking_course_id")
 	private Long id;
 
-	@Column(name = "distance", nullable = false)
-	private double distance;
-
 	@Column(name = "min_stress", nullable = false)
 	private double minStress;
 
@@ -59,9 +56,8 @@ public class WalkingCourse extends BaseTimeEntity {
 	private Member member;
 
 	@Builder
-	public WalkingCourse(double distance, double minStress, double maxStress, double healingStressAvg, Integer startIdx,
+	public WalkingCourse(double minStress, double maxStress, double healingStressAvg, Integer startIdx,
 		Integer endIdx, LocalDateTime startedAt, LocalDateTime finishedAt, Member member) {
-		this.distance = distance;
 		this.minStress = minStress;
 		this.maxStress = maxStress;
 		this.healingStressAvg = healingStressAvg;
