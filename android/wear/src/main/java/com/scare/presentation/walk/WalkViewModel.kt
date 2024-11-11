@@ -8,12 +8,10 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
 import com.scare.TAG
-import com.scare.datastore.IS_WALK_KEY
+import com.scare.datastore.getWalkStatus
 import com.scare.datastore.saveWalkStatus
-import com.scare.datastore.walkStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class WalkViewModel(context: Context) : ViewModel() {
@@ -26,9 +24,7 @@ class WalkViewModel(context: Context) : ViewModel() {
     init {
         // DataStore에서 산책 상태를 관찰
         viewModelScope.launch {
-            context.walkStore.data.map { preferences ->
-                preferences[IS_WALK_KEY] ?: false
-            }.collect { isWalkStatus ->
+            getWalkStatus(context).collect { isWalkStatus ->
                 _isWalk.value = isWalkStatus
             }
         }
@@ -43,7 +39,7 @@ class WalkViewModel(context: Context) : ViewModel() {
     }
 
     private fun sendToHandheldDevice(isWalk: Boolean) {
-        val putDataReq = PutDataMapRequest.create("/walk").apply {
+        val putDataReq = PutDataMapRequest.create("/walkState").apply {
             dataMap.putBoolean("isWalk", isWalk)
             dataMap.putLong("timestamp", System.currentTimeMillis())  // Optional: add a timestamp
         }.asPutDataRequest()
