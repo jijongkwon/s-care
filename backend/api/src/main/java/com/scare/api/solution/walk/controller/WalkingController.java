@@ -37,7 +37,7 @@ public class WalkingController implements WalkingControllerDocs {
 		@AuthenticationPrincipal CustomUserDetails customUserDetails,
 		@RequestBody SaveWalkingCourseReq saveWalkingCourseReq) {
 		return ResponseEntity.ok(BaseResponse.ofSuccess(
-			walkingCommandService.saveWalkingCourse(customUserDetails,
+			walkingCommandService.saveWalkingCourse(customUserDetails.getMemberId(),
 				SaveWalkingCourseDto.from(saveWalkingCourseReq))));
 	}
 
