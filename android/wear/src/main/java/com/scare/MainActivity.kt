@@ -13,10 +13,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.lifecycle.ViewModelProvider
-import com.scare.presentation.home.HomeApp
 import com.scare.presentation.home.HomeAuth
+import com.scare.presentation.home.HomeScreen
 import com.scare.presentation.sensor.HeartRateManager
 import com.scare.presentation.sensor.HeartRateViewModel
 import com.scare.service.listener.AuthRequestService
@@ -51,7 +49,9 @@ class MainActivity : ComponentActivity() {
             Log.d("MainActivity","$isLoggedIn")
 
             if (isLoggedIn) {
-                HomeApp()
+                HomeScreen {
+
+                }
             } else {
                 HomeAuth(
                     onRequestLogin = {

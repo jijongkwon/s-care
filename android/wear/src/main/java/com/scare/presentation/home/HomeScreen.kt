@@ -1,5 +1,6 @@
 package com.scare.presentation.home
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -9,20 +10,26 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.wear.compose.material.Button
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
-import androidx.wear.compose.material.TimeText
-import androidx.wear.tooling.preview.devices.WearDevices
-import com.scare.presentation.theme.ScareTheme
+import com.google.android.horologist.compose.layout.ScreenScaffold
 import com.scare.R
+import com.scare.TAG
+import com.scare.presentation.sensor.HeartRateViewModel
+import com.scare.presentation.sensor.HeartRateViewModelFactory
 import com.scare.presentation.theme.color_stress_bad
 import com.scare.presentation.theme.color_stress_good
 import com.scare.presentation.theme.color_stress_normal
@@ -30,11 +37,20 @@ import kotlin.math.roundToInt
 
 @Composable
 fun HomeScreen(
-    hrValue: Double
+    onClickStartWalk: () -> Unit
 ) {
+    val viewModel: HeartRateViewModel = viewModel(
+        factory = HeartRateViewModelFactory()
+    )
+    val hrValue by viewModel.hrValue.collectAsState()
+    Log.d(TAG, "hrValue $hrValue")
+    val scrollState = rememberScrollState()
+
     val stressState: StressState = getStressStatus(hrValue)
 
-    ScareTheme {
+    ScreenScaffold(
+        scrollState = scrollState,
+    ) {
         Box(
             modifier = Modifier.run {
                 fillMaxSize()
@@ -42,7 +58,6 @@ fun HomeScreen(
             },
             contentAlignment = Alignment.Center
         ) {
-            TimeText()
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
@@ -54,7 +69,7 @@ fun HomeScreen(
                         painter = stressState.image,
                         contentDescription = null,
                         Modifier.size(150.dp)
-                        )
+                    )
                 }
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -77,11 +92,17 @@ fun HomeScreen(
                             color = stressState.color
                         )
                         Text(
-                            text = if (hrValue.isNaN()) "--" else stressState.text,
+                            text = if (hrValue.isNaN()) "" else stressState.text,
                             fontSize = 16.sp,
                             color = stressState.color
                         )
                     }
+                }
+                Button(
+                    onClick = onClickStartWalk,
+                    Modifier.width(70.dp).height(40.dp)
+                ) {
+                    Text("산책 시작")
                 }
             }
         }
@@ -109,10 +130,4 @@ fun getStressStatus(stressValue: Double): StressState {
             image = painterResource(R.drawable.gloomy_dog_face),
         )
     }
-}
-
-@Preview(device = WearDevices.SMALL_ROUND, showSystemUi = true)
-@Composable
-fun HomeScreenPreview() {
-    HomeScreen(hrValue = 130.0)
 }
