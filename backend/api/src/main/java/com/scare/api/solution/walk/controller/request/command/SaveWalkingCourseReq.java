@@ -20,12 +20,6 @@ import lombok.NoArgsConstructor;
 public class SaveWalkingCourseReq {
 
 	@Schema(
-		description = "걷기 운동 거리(km)",
-		example = "1.7"
-	)
-	private double distance;
-
-	@Schema(
 		description = "걷기 운동 시작 시간",
 		example = "2024-10-31T14:30:00",
 		type = "string"
@@ -71,13 +65,5 @@ public class SaveWalkingCourseReq {
 			maximum = "180"
 		)
 		private double longitude;
-
-		@Schema(
-			description = "위치 기록 시간",
-			example = "2024-10-31T14:30:00",
-			type = "string"
-		)
-		@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-		private LocalDateTime createdAt;
 	}
 }
