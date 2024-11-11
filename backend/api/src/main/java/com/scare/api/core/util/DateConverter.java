@@ -1,4 +1,4 @@
-package com.scare.api.report.util;
+package com.scare.api.core.util;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,6 +16,11 @@ public final class DateConverter {
 	public static LocalDateTime convertToEndOfDay(String dateStr) {
 		LocalDate date = LocalDate.parse(dateStr, FORMATTER);
 		return date.atTime(23, 59, 59); // 하루의 마지막 시간으로 설정
+	}
+
+	public static LocalDate convertToLocalDate(String dateStr) {
+		LocalDate date = LocalDate.parse(dateStr, FORMATTER);
+		return date;
 	}
 
 }

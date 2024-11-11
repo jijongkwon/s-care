@@ -1,6 +1,6 @@
 package com.scare.api.report.facade;
 
-import static com.scare.api.report.util.DateConverter.*;
+import static com.scare.api.core.util.DateConverter.*;
 
 import java.util.ArrayList;
 import java.util.List;
