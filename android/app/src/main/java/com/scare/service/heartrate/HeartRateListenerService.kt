@@ -60,6 +60,7 @@ class HeartRateListenerService : WearableListenerService() {
             if (!Python.isStarted()) {
                 Python.start(AndroidPlatform(this))
             }
+
             val py = Python.getInstance()
             val pyModule = py.getModule("calc_stress")
             val result: PyObject = pyModule.callAttr("get_single_stress", heartRateValues)

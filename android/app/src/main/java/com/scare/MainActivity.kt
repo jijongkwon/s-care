@@ -15,6 +15,10 @@ import androidx.navigation.compose.rememberNavController
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.scare.data.RetrofitClient
 import com.scare.data.course.repository.CourseRepository
+import com.scare.data.heartrate.dao.HeartRateDao
+import com.scare.data.heartrate.database.AppDatabase
+import com.scare.data.heartrate.database.dataStore.LastSaveData
+import com.scare.data.heartrate.repository.StressRepository
 import com.scare.data.member.repository.Auth.TokenRepository
 import com.scare.data.member.repository.User.UserInfoRepository
 import com.scare.service.listener.LogInListenerService
@@ -33,6 +37,8 @@ import com.scare.ui.mobile.viewmodel.login.LoginViewModel
 import com.scare.ui.mobile.viewmodel.login.LoginViewModelFactory
 import com.scare.ui.mobile.viewmodel.sensor.HeartRateManager
 import com.scare.ui.mobile.viewmodel.sensor.HeartRateViewModel
+import com.scare.ui.mobile.viewmodel.stress.StressStoreManager
+import com.scare.ui.mobile.viewmodel.stress.StressViewModel
 import com.scare.ui.theme.ScareTheme
 
 const val TAG = "scare mobile"
@@ -40,8 +46,8 @@ const val TAG = "scare mobile"
 class MainActivity : ComponentActivity() {
     private lateinit var loginViewModel: LoginViewModel
     private val heartRateViewModel: HeartRateViewModel by viewModels()
-
     private lateinit var logInListenerService: LogInListenerService
+    private lateinit var stressViewModel: StressViewModel // StressViewModel 추가
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,6 +76,18 @@ class MainActivity : ComponentActivity() {
 
         // LogInListenerService 초기화
         logInListenerService = LogInListenerService(this)
+
+        // AppDatabase를 통해 HeartRateDao 인스턴스 가져오기
+        val heartRateDao = AppDatabase.getInstance(this).getHeartRateDao()
+
+        val lastSaveData = LastSaveData(this)
+        val stressStoreManager = StressStoreManager(this, heartRateDao)
+        val stressRepository = StressRepository()
+
+        stressViewModel = StressViewModel(lastSaveData, stressStoreManager, stressRepository)
+
+        // StressViewModel의 데이터 업로드 메서드 호출
+        stressViewModel.uploadDailyStressData()
 
         setContent {
             val navController = rememberNavController()
