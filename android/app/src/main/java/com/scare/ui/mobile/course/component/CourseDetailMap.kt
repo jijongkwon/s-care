@@ -84,13 +84,16 @@ fun CourseDetailMap(course: CourseResponseDTO) {
                     ),
                     icon = OverlayImage.fromResource(R.drawable.last_marker)
                 )
-                PathOverlay(
-                    coords = coords.slice(course.startIdx..course.endIdx),
-                    color = MaterialTheme.colorScheme.tertiary,
-                    outlineColor = MaterialTheme.colorScheme.tertiary,
-                    width = 5.dp,
-                    globalZIndex = 1
-                )
+                val bestCourse = coords.slice(course.startIdx..course.endIdx)
+                if (bestCourse.size >= 2) {
+                    PathOverlay(
+                        coords = bestCourse,
+                        color = MaterialTheme.colorScheme.tertiary,
+                        outlineColor = MaterialTheme.colorScheme.tertiary,
+                        width = 5.dp,
+                        globalZIndex = 1
+                    )
+                }
                 ArrowheadPathOverlay(
                     coords = coords,
                     color = Gray,
