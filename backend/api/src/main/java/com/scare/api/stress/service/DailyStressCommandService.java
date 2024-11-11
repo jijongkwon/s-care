@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class StressCommandService {
+public class DailyStressCommandService {
 
 	private final MemberRepository memberRepository;
 	private final DailyStressRepository dailyStressRepository;
