@@ -2,11 +2,15 @@
 agp = "8.2.0"
 accompanistPermissions = "0.31.2-alpha"
 coilComposeVersion = "2.0.0"
+composeFoundation = "1.4.0"
 converterGson = "2.9.0"
 datastorePreferences = "1.1.1"
 firebaseBom = "33.5.1"
 concurrentFuturesKtx = "1.2.0"
 healthServicesClient = "1.1.0-alpha04"
+horologistComposables = "0.6.20"
+horologistComposeLayout = "0.6.20"
+horologistComposeMaterial = "0.6.20"
 junitJupiterApi = "5.10.0"
 junitJupiterEngine = "5.10.0"
 kotlin = "1.9.0"
@@ -58,18 +62,26 @@ hilt = "2.48"
 
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
+activity-ktx = { module = "androidx.activity:activity-ktx" }
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx" }
+androidx-compose-foundation = { module = "androidx.wear.compose:compose-foundation", version.ref = "composeFoundation" }
+androidx-compose-navigation = { module = "androidx.wear.compose:compose-navigation" }
 androidx-concurrent-futures-ktx = { module = "androidx.concurrent:concurrent-futures-ktx", version.ref = "concurrentFuturesKtx" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 coil-compose-v200 = { module = "io.coil-kt:coil-compose", version.ref = "coilComposeVersion" }
+compose-material = { module = "androidx.wear.compose:compose-material" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
+dagger-hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler" }
 firebase-auth-ktx = { module = "com.google.firebase:firebase-auth-ktx" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 androidx-health-services-client = { module = "androidx.health:health-services-client", version.ref = "healthServicesClient" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose" }
 gms-play-services-wearable = { module = "com.google.android.gms:play-services-wearable", version.ref = "playServicesWearable" }
+horologist-composables = { module = "com.google.android.horologist:horologist-composables", version.ref = "horologistComposables" }
+horologist-compose-layout = { module = "com.google.android.horologist:horologist-compose-layout", version.ref = "horologistComposeLayout" }
+horologist-compose-material = { module = "com.google.android.horologist:horologist-compose-material", version.ref = "horologistComposeMaterial" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
