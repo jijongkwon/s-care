@@ -69,7 +69,7 @@ class MainActivity : ComponentActivity() {
 
             val startDestination = if (!isLoggedIn) authRoot else if (isWalk) walkRoot else homeRoot
 
-            Log.d("MainActivity","$isLoggedIn")
+            Log.d("MainActivity", "$isLoggedIn")
 
             ScareTheme {
                 AppScaffold {
