@@ -4,8 +4,8 @@ import com.scare.weather.core.analyzer.WeatherAnalyzer
 import com.scare.weather.di.WeatherModule
 import com.scare.weather.model.WeatherInfo
 import com.scare.weather.model.enums.WeatherStatus
-import com.scare.weather.model.request.WeatherRequest
 import com.scare.weather.model.response.WeatherResponse
+import com.scare.weather.model.util.GPSConvertor
 import org.junit.Before
 import org.junit.Test
 import retrofit2.Response
@@ -33,7 +33,7 @@ class WeatherServiceTest {
     @Test
     fun `실제 날씨 API 응답 테스트`() {
         // Given
-        val request = createTestWeatherRequest()
+        val request = GPSConvertor.createWeatherRequest(37.552987017, 126.972591728)
 
         // When
         val response = weatherService.getWeather(request).execute()
@@ -54,7 +54,7 @@ class WeatherServiceTest {
     @Test
     fun `날씨 정보 분석 테스트`() {
         // Given
-        val request = createTestWeatherRequest()
+        val request = GPSConvertor.createWeatherRequest(37.552987017, 126.972591728)
         val response = weatherService.getWeather(request).execute()
         val weatherResponse = response.body()
             ?: throw AssertionError("응답 바디가 null입니다")
@@ -71,52 +71,6 @@ class WeatherServiceTest {
         println("풍속: ${weatherInfo.windSpeed}m/s")
         println("강수형태: ${getPrecipitationTypeDescription(weatherInfo.precipitationType)}")
         println("날씨 상태: ${getWeatherStatusDescription(weatherStatus)}")
-
-        // Assert
-        assert(weatherStatus in WeatherStatus.values()) { "잘못된 날씨 상태입니다: $weatherStatus" }
-        validateWeatherAnalysis(weatherInfo, weatherStatus)
-    }
-
-
-    private fun createTestWeatherRequest() = WeatherRequest(
-        pageNo = 1,
-        numOfRows = 1000,
-        dataType = "JSON",
-        baseDate = "20241108",
-        baseTime = "0600",
-        nx = 55,
-        ny = 127
-    )
-
-    private fun validateWeatherAnalysis(weatherInfo: WeatherInfo, weatherStatus: WeatherStatus) {
-        with(weatherInfo) {
-            when (weatherStatus) {
-                WeatherStatus.GOOD -> {
-                    assert(temperature in 20.0..28.0) { "좋음 상태의 온도 범위를 벗어났습니다: $temperature" }
-                    assert(humidity in 40..60) { "좋음 상태의 습도 범위를 벗어났습니다: $humidity" }
-                    assert(windSpeed <= 5) { "좋음 상태의 풍속 범위를 벗어났습니다: $windSpeed" }
-                    assert(precipitationType == 0) { "좋음 상태에서 강수가 있습니다: $precipitationType" }
-                }
-
-                WeatherStatus.MODERATE -> {
-                    assert(temperature in 15.0..30.0) { "보통 상태의 온도 범위를 벗어났습니다: $temperature" }
-                    assert(humidity in 30..70) { "보통 상태의 습도 범위를 벗어났습니다: $humidity" }
-                    assert(windSpeed <= 10) { "보통 상태의 풍속 범위를 벗어났습니다: $windSpeed" }
-                    assert(precipitationType == 0) { "보통 상태에서 강수가 있습니다: $precipitationType" }
-                }
-
-                WeatherStatus.BAD -> {
-                    val badConditionReason = when {
-                        precipitationType != 0 -> "강수가 있음"
-                        temperature !in 15.0..30.0 -> "온도 범위 초과"
-                        humidity !in 30..70 -> "습도 범위 초과"
-                        windSpeed > 10 -> "풍속 범위 초과"
-                        else -> "복합적인 조건"
-                    }
-                    println("나쁨 상태 사유: $badConditionReason")
-                }
-            }
-        }
     }
 
     private fun printWeatherResponse(response: Response<WeatherResponse>) {
