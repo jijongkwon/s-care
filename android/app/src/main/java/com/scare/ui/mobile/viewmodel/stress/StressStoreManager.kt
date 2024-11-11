@@ -6,6 +6,7 @@ import com.chaquo.python.PyObject
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
 import com.scare.data.heartrate.api.request.CreateDailyStressReq
+import com.scare.data.heartrate.api.request.DailyStressRequest
 import com.scare.data.heartrate.dao.HeartRateDao
 import com.scare.data.heartrate.database.entity.HeartRate
 import java.time.LocalDate
@@ -17,7 +18,7 @@ class StressStoreManager(
     private val heartRateDao: HeartRateDao
 ) {
 
-    fun calculateDailyStressSince(lastSaveDate: LocalDateTime): List<CreateDailyStressReq> {
+    suspend fun calculateDailyStressSince(lastSaveDate: LocalDateTime): DailyStressRequest {
         // lastSaveDate를 기준으로 시작 날짜 설정
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
         val startDateTime = lastSaveDate.format(formatter)
@@ -43,7 +44,7 @@ class StressStoreManager(
 
             val stressLevel = calculateStress(heartRatesForDate)
 
-            Log.d("StressStoreManager", "${stressLevel}")
+            Log.d("StressStoreManager", "stressLevel: ${stressLevel}")
 
             //-1이 아닌 경우에만..
             if(stressLevel != -1) {
@@ -58,20 +59,26 @@ class StressStoreManager(
 
         Log.d("StressStoreManager", "dailyStressRequests:${dailyStressRequests}")
 
-        return dailyStressRequests
+        return DailyStressRequest(dailyStressList = dailyStressRequests)
     }
     
     //스트레스 계산
     fun calculateStress (heartRatesForDate: List<HeartRate>): Int {
         //300개 이상의 배열이 있는 경우에만. . .
-        if (heartRatesForDate.size >= 300) {
+        if (heartRatesForDate.size >= 30) {
             if (!Python.isStarted()) {
                 Python.start(AndroidPlatform(context))
             }
 
             val py = Python.getInstance()
             val pyModule = py.getModule("calc_stress")
-            val result: PyObject = pyModule.callAttr("get_single_stress", heartRatesForDate)
+
+            // heartRate 값만 추출하여 리스트로 변환
+            val heartRateValues = heartRatesForDate.map { it.heartRate }.toDoubleArray()
+
+            Log.d("StressStoreManager", heartRateValues.toString())
+
+            val result: PyObject = pyModule.callAttr("get_single_stress", heartRateValues)
             val stress = result.toInt()
 
             return stress;

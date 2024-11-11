@@ -5,3 +5,7 @@ data class CreateDailyStressReq (
     val recordedAt: String, // "yyyyMMdd"
     val stress: Int,
 )
+
+data class DailyStressRequest(
+    val dailyStressList: List<CreateDailyStressReq>
+)

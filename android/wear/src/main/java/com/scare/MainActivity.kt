@@ -14,10 +14,10 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
+import androidx.wear.compose.material3.AppScaffold
 import androidx.wear.compose.navigation.SwipeDismissableNavHost
 import androidx.wear.compose.navigation.composable
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
-import com.google.android.horologist.compose.layout.AppScaffold
 import com.scare.presentation.home.HomeAuth
 import com.scare.presentation.home.HomeScreen
 import com.scare.presentation.sensor.HeartRateManager

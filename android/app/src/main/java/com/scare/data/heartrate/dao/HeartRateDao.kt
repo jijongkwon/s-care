@@ -16,6 +16,6 @@ interface HeartRateDao {
     fun getRecentHeartRates(): List<HeartRate>
 
     @Query("SELECT * FROM heart_rate WHERE created_at BETWEEN :startDateTime AND :endDateTime")
-    fun getHeartRateSince(startDateTime: String, endDateTime: String): List<HeartRate>
+    suspend fun getHeartRateSince(startDateTime: String, endDateTime: String): List<HeartRate>
 
 }
