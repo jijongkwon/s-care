@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.scare.api.core.util.DateConverter;
 import com.scare.api.member.domain.Member;
@@ -16,6 +17,7 @@ import com.scare.api.stress.service.dto.DailyStressDto;
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class StressCommandService {
 
