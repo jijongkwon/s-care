@@ -6,8 +6,8 @@ import javax.inject.Inject
 
 class WeatherAnalyzer @Inject constructor() {
     fun analyzeWeather(weatherInfo: WeatherInfo): WeatherStatus {
-        // 비/눈이 오는 경우 즉시 BAD 반환
-        if (WeatherCriteria.isRainingOrSnowing(weatherInfo.precipitationType)) {
+        // 비,눈이 오는 경우 즉시 BAD 반환
+        if (WeatherCriteria.isBadWeather(weatherInfo)) {
             return WeatherStatus.BAD
         }
 
@@ -19,21 +19,18 @@ class WeatherAnalyzer @Inject constructor() {
         when {
             WeatherCriteria.isTemperatureGood(weatherInfo.temperature) -> goodConditions++
             WeatherCriteria.isTemperatureModerate(weatherInfo.temperature) -> moderateConditions++
-            else -> return WeatherStatus.BAD
         }
 
         // 습도 체크
         when {
             WeatherCriteria.isHumidityGood(weatherInfo.humidity) -> goodConditions++
             WeatherCriteria.isHumidityModerate(weatherInfo.humidity) -> moderateConditions++
-            else -> return WeatherStatus.BAD
         }
 
         // 풍속 체크
         when {
             WeatherCriteria.isWindSpeedGood(weatherInfo.windSpeed) -> goodConditions++
             WeatherCriteria.isWindSpeedModerate(weatherInfo.windSpeed) -> moderateConditions++
-            else -> return WeatherStatus.BAD
         }
 
         // 최종 상태 결정
