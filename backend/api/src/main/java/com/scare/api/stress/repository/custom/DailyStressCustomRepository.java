@@ -1,6 +1,5 @@
 package com.scare.api.stress.repository.custom;
 
-import static com.scare.api.solution.walk.domain.QWalkingCourse.*;
 import static com.scare.api.stress.domain.QDailyStress.*;
 
 import java.time.LocalDate;
@@ -33,7 +32,7 @@ public class DailyStressCustomRepository {
 	}
 
 	private BooleanExpression memberEq(Member member) {
-		return walkingCourse.member.eq(member);
+		return dailyStress.member.eq(member);
 	}
 
 	private BooleanExpression isAfter(LocalDate from) {
