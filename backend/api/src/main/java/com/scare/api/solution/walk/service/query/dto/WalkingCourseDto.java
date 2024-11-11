@@ -3,6 +3,7 @@ package com.scare.api.solution.walk.service.query.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.scare.api.core.util.DateConverter;
 import com.scare.api.solution.walk.domain.WalkingCourse;
 import com.scare.api.solution.walk.domain.WalkingDetail;
 
@@ -16,8 +17,8 @@ import lombok.Getter;
 public class WalkingCourseDto {
 
 	private Long courseId;
-	private String startedAt;
-	private String finishedAt;
+	private Long startedAt;
+	private Long finishedAt;
 	private List<Pos> posList;
 	private Integer startIdx;
 	private Integer endIdx;
@@ -27,8 +28,8 @@ public class WalkingCourseDto {
 	public static WalkingCourseDto from(WalkingCourse walkingCourse, WalkingDetail walkingDetail) {
 		return WalkingCourseDto.builder()
 			.courseId(walkingCourse.getId())
-			.startedAt(walkingCourse.getStartedAt().toString())
-			.finishedAt(walkingCourse.getFinishedAt().toString())
+			.startedAt(DateConverter.convertToLong(walkingCourse.getStartedAt()))
+			.finishedAt(DateConverter.convertToLong(walkingCourse.getFinishedAt()))
 			.startIdx(walkingCourse.getStartIdx())
 			.endIdx(walkingCourse.getEndIdx())
 			.maxStress(walkingCourse.getMaxStress())
@@ -47,8 +48,8 @@ public class WalkingCourseDto {
 	public static WalkingCourseDto from(WalkingCourse walkingCourse) {
 		return WalkingCourseDto.builder()
 			.courseId(walkingCourse.getId())
-			.startedAt(walkingCourse.getStartedAt().toString())
-			.finishedAt(walkingCourse.getFinishedAt().toString())
+			.startedAt(DateConverter.convertToLong(walkingCourse.getStartedAt()))
+			.finishedAt(DateConverter.convertToLong(walkingCourse.getFinishedAt()))
 			.startIdx(walkingCourse.getStartIdx())
 			.endIdx(walkingCourse.getEndIdx())
 			.maxStress(walkingCourse.getMaxStress())
