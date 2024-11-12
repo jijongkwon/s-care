@@ -22,6 +22,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -56,6 +57,20 @@ fun Calender(
 
     // "yyyy년 MM월" 형식으로 년/월 포맷터 정의
     val monthFormatter = DateTimeFormatter.ofPattern("yyyy년 M월")
+
+    // API 호출하여 스트레스 데이터 가져오기
+    LaunchedEffect(currentMonth) {
+        // 여기서 currentMonth에 맞는 from과 to 값을 생성하여 API 호출
+        val from = "${currentMonth.year}${String.format("%02d", currentMonth.monthValue)}01"
+        val to = if (currentMonth == YearMonth.from(today)) {
+            today.toString().replace("-", "")
+        } else {
+            "${currentMonth.year}${String.format("%02d", currentMonth.monthValue)}${currentMonth.lengthOfMonth()}"
+        }
+
+        // API 호출하여 데이터를 stressLevelMap에 저장
+//        stressLevelMap = fetchMonthlyStressData(from, to) // 가상의 API 호출 함수
+    }
 
     Column(modifier = Modifier.padding(16.dp)) {
         // 달력 상단: 년도와 월 표시
