@@ -1,15 +1,16 @@
 package com.scare.util
 
 import java.time.Duration
+import java.time.Instant
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
-fun formatDateTimeToRender(dateTimeString: String): String {
-    val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
-    val outputFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm")
-    val dateTime = LocalDateTime.parse(dateTimeString, inputFormatter)
+fun formatDateTimeToRender(timestampMillis: Long): String {
+    val formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm")
 
-    return dateTime.format(outputFormatter)
+    return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestampMillis), ZoneId.systemDefault())
+        .format(formatter)
 }
 
 fun formatDateTimeToSearch(dateTime: LocalDateTime): String {
@@ -18,23 +19,16 @@ fun formatDateTimeToSearch(dateTime: LocalDateTime): String {
     return dateTime.format(formatter)
 }
 
-fun calculateTimeDifference(startDateTime: String, endDateTime: String): String {
-    // 입력 형식 정의
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+fun calculateTimeDifference(startDateTime: Long, endDateTime: Long): String {
+    val start = LocalDateTime.ofInstant(Instant.ofEpochMilli(startDateTime), ZoneId.systemDefault())
+    val end = LocalDateTime.ofInstant(Instant.ofEpochMilli(endDateTime), ZoneId.systemDefault())
 
-    // 문자열을 LocalDateTime으로 변환
-    val start = LocalDateTime.parse(startDateTime, formatter)
-    val end = LocalDateTime.parse(endDateTime, formatter)
-
-    // 두 날짜 및 시간 차이 계산
     val duration = Duration.between(start, end)
 
-    // 시, 분, 초로 변환
     val hours = duration.toHours()
     val minutes = duration.toMinutes() % 60
     val seconds = duration.seconds % 60
 
-    // 조건에 맞게 문자열을 구성
     return when {
         hours > 0 -> String.format("%02d:%02d:%02d", hours, minutes, seconds) // 시, 분, 초 모두 표시
         minutes > 0 -> String.format("00:%02d:%02d", minutes, seconds)           // 분, 초만 표시
