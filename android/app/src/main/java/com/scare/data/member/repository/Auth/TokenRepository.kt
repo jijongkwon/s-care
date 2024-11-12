@@ -29,6 +29,19 @@ class TokenRepository(private val dataStore: DataStore<Preferences>) {
 
         private val ACCESS_TOKEN_KEY = stringPreferencesKey("access_token")
         private val PROFILE_URL_KEY = stringPreferencesKey("profile_url")
+        private val FCM_TOKEN_KEY = stringPreferencesKey("fcm_token") // FCM 토큰 키 추가
+    }
+
+    // FCM 토큰 저장
+    suspend fun saveFcmToken(fcmToken: String) {
+        dataStore.edit { preferences ->
+            preferences[FCM_TOKEN_KEY] = fcmToken
+        }
+    }
+
+    // FCM 토큰 불러오기
+    val fcmTokenFlow: Flow<String?> = dataStore.data.map { preferences ->
+        preferences[FCM_TOKEN_KEY]
     }
 
     // profileUrl 저장

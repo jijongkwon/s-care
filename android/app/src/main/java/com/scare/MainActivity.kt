@@ -12,10 +12,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.messaging.FirebaseMessaging
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.scare.data.RetrofitClient
 import com.scare.data.course.repository.CourseRepository
-import com.scare.data.heartrate.dao.HeartRateDao
 import com.scare.data.heartrate.database.AppDatabase
 import com.scare.data.heartrate.database.dataStore.LastSaveData
 import com.scare.data.heartrate.repository.StressRepository
@@ -40,11 +40,15 @@ import com.scare.ui.mobile.viewmodel.sensor.HeartRateViewModel
 import com.scare.ui.mobile.viewmodel.stress.StressStoreManager
 import com.scare.ui.mobile.viewmodel.stress.StressViewModel
 import com.scare.ui.theme.ScareTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 const val TAG = "scare mobile"
 
 class MainActivity : ComponentActivity() {
     private lateinit var loginViewModel: LoginViewModel
+    private lateinit var tokenRepository: TokenRepository // 클래스 필드로 선언
     private val heartRateViewModel: HeartRateViewModel by viewModels()
     private lateinit var logInListenerService: LogInListenerService
     private lateinit var stressViewModel: StressViewModel // StressViewModel 추가
@@ -54,7 +58,7 @@ class MainActivity : ComponentActivity() {
         HeartRateManager.setViewModel(heartRateViewModel)
 
         // TokenRepository 초기화 및 RetrofitClient 초기화
-        val tokenRepository = TokenRepository.getInstance(this)
+        tokenRepository = TokenRepository.getInstance(this)
         RetrofitClient.init(tokenRepository)
 
         val googleLoginRepository = GoogleLoginRepository(this) // GoogleLoginRepository 초기화
@@ -88,6 +92,8 @@ class MainActivity : ComponentActivity() {
 
         // StressViewModel의 데이터 업로드 메서드 호출
         stressViewModel.uploadDailyStressData()
+
+        initializeFCM() // FCM 초기화
 
         setContent {
             val navController = rememberNavController()
@@ -160,5 +166,21 @@ class MainActivity : ComponentActivity() {
 
     private fun launchLogin() {
         signInLauncher.launch(loginViewModel.getSignInIntent())
+    }
+
+    private fun initializeFCM() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val token = task.result
+                Log.d("FCM Token", "FCM Token: $token")
+
+                // CoroutineScope를 사용하여 saveFcmToken 호출
+                CoroutineScope(Dispatchers.IO).launch {
+                    tokenRepository.saveFcmToken(token)
+                }
+            } else {
+                Log.e("FCM Token", "Failed to get FCM token", task.exception)
+            }
+        }
     }
 }

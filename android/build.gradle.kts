@@ -6,3 +6,14 @@ plugins {
     id("com.google.devtools.ksp") version "1.9.21-1.0.15" apply false
     id("com.chaquo.python") version "16.0.0" apply false
 }
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath(libs.gradle)  // Android Gradle Plugin 버전 확인
+        classpath(libs.google.services) // Google Services Plugin 추가
+    }
+}
