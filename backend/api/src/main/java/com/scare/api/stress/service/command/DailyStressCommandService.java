@@ -1,4 +1,4 @@
-package com.scare.api.stress.service;
+package com.scare.api.stress.service.command;
 
 import java.util.List;
 import java.util.stream.Collectors;
