@@ -5,16 +5,19 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.util.Log
-import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
 import com.scare.TAG
-import com.scare.data.heartrate.database.entity.HeartRate
 import com.scare.data.walk.datastore.*
+import com.scare.data.walk.dto.LocationDTO
+import com.scare.data.walk.dto.WalkRequestDTO
+import com.scare.data.walk.repository.WalkRepository
 import com.scare.repository.heartrate.HeartRateRepository
 import com.scare.repository.location.LocationRepository
+import com.scare.util.WearableUtils
+import com.scare.util.formatDateTimeToSearch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,7 +27,8 @@ import java.time.LocalDateTime
 class WalkViewModel(
     context: Context,
     private val heartRateRepository: HeartRateRepository,
-    private val locationRepository: LocationRepository
+    private val locationRepository: LocationRepository,
+    private val walkRepository: WalkRepository
 ) : ViewModel() {
 
     private val dataClient = Wearable.getDataClient(context)
@@ -38,12 +42,14 @@ class WalkViewModel(
     private val _walkEndTime = MutableStateFlow("")
     val walkEndTime: StateFlow<String> = _walkEndTime
 
-    private val _heartRates = MutableStateFlow<List<HeartRate>>(emptyList())
-    val heartRates: StateFlow<List<HeartRate>> get() = _heartRates
+    private val _heartRates = MutableStateFlow<List<Double>>(emptyList())
+    val heartRates: StateFlow<List<Double>> get() = _heartRates
+
+    private val _locations = MutableStateFlow<List<LocationDTO>>(emptyList())
+    val locations: StateFlow<List<LocationDTO>> get() = _locations
 
     private var _locationManager: LocationManager? = null
     private var _locationListener: LocationListener? = null
-    val locationCoordinates = mutableStateListOf<Location>()
 
     init {
         // DataStore에서 산책 상태를 관찰
@@ -61,23 +67,26 @@ class WalkViewModel(
     }
 
     // 산책 상태 저장
-    fun updateWalkStatus(context: Context, isWalk: Boolean) {
+    suspend fun updateWalkStatus(context: Context, isWalk: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             saveWalkStatus(context, isWalk)
             _isWalk.value = isWalk
 
-            sendToHandheldDevice(isWalk)
+            val isConnected = WearableUtils.isWatchConnected(context)
+            if (isConnected) {
+                sendToHandheldDevice(isWalk)
+            }
         }
     }
 
-    fun updateStartTime(context: Context, startTime: String) {
+    suspend fun updateStartTime(context: Context, startTime: String) {
         viewModelScope.launch(Dispatchers.IO) {
             saveWalkStartTime(context, startTime)
             _walkStartTime.value = startTime
         }
     }
 
-    fun updateEndTime(context: Context, endTime: String) {
+    suspend fun updateEndTime(context: Context, endTime: String) {
         viewModelScope.launch(Dispatchers.IO) {
             saveWalkEndTime(context, endTime)
             _walkEndTime.value = endTime
@@ -98,27 +107,36 @@ class WalkViewModel(
         }
     }
 
-    fun fetchHeartRatesWhileWalking(startDate: String, endDate: String) {
+    suspend fun fetchHeartRatesWhileWalking(startDate: String, endDate: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val heartRates = heartRateRepository.getHeartRatesWhileWalking(startDate, endDate)
-                _heartRates.value = heartRates
+                _heartRates.value = heartRates.map { heartRate -> heartRate.heartRate }
             } catch (e: Exception) {
                 Log.e("WalkViewModel", "Error fetching heartrates while walking", e)
             }
         }
     }
 
+    suspend fun fetchLocationsWhileWalking(startDate: String, endDate: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val locations = locationRepository.getLocations(startDate, endDate)
+                _locations.value = locations.map { location -> LocationDTO(location.latitude, location.longitude) }
+            } catch (e: Exception) {
+                Log.e("WalkViewModel", "Error fetching locations while walking", e)
+            }
+        }
+    }
+
     // 위치 업데이트 초기화
-    fun startLocationUpdates(context: Context) {
+    suspend fun startLocationUpdates(context: Context) {
         // LocationManager 초기화
         _locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
         // LocationListener 정의
         _locationListener = object : LocationListener {
             override fun onLocationChanged(location: Location) {
-                Log.d("location print", location.latitude.toString())
-                Log.d("location print", location.longitude.toString())
                 // 위치가 변경될 때 호출
                 locationRepository.save(
                     com.scare.data.location.database.entity.Location(
@@ -145,11 +163,45 @@ class WalkViewModel(
     }
 
     // 위치 업데이트 중지
-    fun stopLocationUpdates() {
+    suspend fun stopLocationUpdates() {
         _locationListener?.let {
             _locationManager?.removeUpdates(it)
         }
         _locationManager = null
         _locationListener = null
+    }
+
+    fun handleWalkStart(context: Context) {
+        viewModelScope.launch {
+            updateWalkStatus(context, true)
+            updateStartTime(context, formatDateTimeToSearch(LocalDateTime.now()))
+            startLocationUpdates(context)
+        }
+    }
+
+    fun handleWalkEnd(context: Context) {
+        viewModelScope.launch {
+            val currentTime = formatDateTimeToSearch(LocalDateTime.now())
+            updateWalkStatus(context, false)
+            updateEndTime(context, currentTime)
+            fetchHeartRatesWhileWalking(_walkStartTime.value, currentTime)
+            fetchLocationsWhileWalking(_walkStartTime.value, currentTime)
+            stopLocationUpdates()
+            postWalking()
+        }
+    }
+
+    suspend fun postWalking() {
+        viewModelScope.launch {
+            try {
+                if (_locations.value.size < 2 || _heartRates.value.size < 6) {
+                    return@launch
+                }
+                val walk = WalkRequestDTO(_walkStartTime.value, _walkEndTime.value, _heartRates.value, _locations.value)
+                walkRepository.postWalk(walk)
+            } catch (e: Exception) {
+                Log.e("WalkViewModel", "Error posting walk", e)
+            }
+        }
     }
 }

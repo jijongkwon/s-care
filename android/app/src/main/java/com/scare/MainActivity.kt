@@ -23,6 +23,7 @@ import com.scare.data.heartrate.database.dataStore.LastSaveData
 import com.scare.data.heartrate.repository.StressRepository
 import com.scare.data.member.repository.Auth.TokenRepository
 import com.scare.data.member.repository.User.UserInfoRepository
+import com.scare.data.walk.repository.WalkRepository
 import com.scare.repository.heartrate.HeartRateRepository
 import com.scare.repository.location.LocationRepository
 import com.scare.service.listener.LogInListenerService
@@ -90,10 +91,11 @@ class MainActivity : ComponentActivity() {
 
         val heartRateRepository = HeartRateRepository(hearRateDb)
         val locationRepository = LocationRepository(locationDb)
+        val walkRepository = WalkRepository()
 
         val walkViewModel = ViewModelProvider(
             this,
-            WalkViewModelFactory(this, heartRateRepository, locationRepository)
+            WalkViewModelFactory(this, heartRateRepository, locationRepository, walkRepository)
         ).get(WalkViewModel::class.java)
 
 
@@ -157,7 +159,7 @@ class MainActivity : ComponentActivity() {
                                 MyReport(from = from, to = to) // MyReport에 매개변수 전달
                             }
                             composable("walk") { MyCourse() } // "walk" 경로 추가
-                            composable("map") { Map(this@MainActivity, locationRepository) } // "map" 경로 추가
+                            composable("map") { Map(this@MainActivity) } // "map" 경로 추가
                             composable("mypage") { MyAuthPage(userInfoRepository, tokenRepository) } // "map" 경로 추가
                         }
 
