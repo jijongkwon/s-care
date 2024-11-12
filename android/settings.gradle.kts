@@ -17,7 +17,7 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven("https://repository.map.naver.com/archive/maven")
-
+        maven { url = uri("https://jitpack.io") }
     }
 }
 
@@ -26,3 +26,7 @@ include(":app")
 include(":wear")
 include(":weather")
 include(":notification")
+include(":hand-pressure-core")
+include(":feature-handtracking")
+include(":feature-pressure")
+include(":feature-analysis")

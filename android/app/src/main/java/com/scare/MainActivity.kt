@@ -15,6 +15,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.NavHost
@@ -30,6 +37,7 @@ import com.scare.data.heartrate.repository.StressRepository
 import com.scare.data.location.database.LocationDatabase
 import com.scare.data.member.repository.Auth.TokenRepository
 import com.scare.data.member.repository.User.UserInfoRepository
+import com.scare.handpressure.feature.handtracking.ui.HandTrackingScreen
 import com.scare.data.walk.repository.WalkRepository
 import com.scare.repository.heartrate.HeartRateRepository
 import com.scare.repository.location.LocationRepository
@@ -58,9 +66,14 @@ import com.scare.ui.mobile.viewmodel.stress.StressViewModel
 import com.scare.ui.mobile.viewmodel.walk.WalkViewModel
 import com.scare.ui.mobile.viewmodel.walk.WalkViewModelFactory
 import com.scare.ui.theme.ScareTheme
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 const val TAG = "scare mobile"
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private lateinit var loginViewModel: LoginViewModel
@@ -71,16 +84,29 @@ class MainActivity : ComponentActivity() {
     private lateinit var monthlyStressViewModel: MonthlyStressViewModel
     private lateinit var weeklyReportViewModel: WeeklyReportViewModel
 
+    private val requestCameraPermission = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            Log.d(TAG, "Camera permission granted")
+        } else {
+            Log.d(TAG, "Camera permission denied")
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         checkPermission()
         HeartRateManager.setViewModel(heartRateViewModel)
 
+        // 카메라 권한 요청
+        requestCameraPermission.launch(Manifest.permission.CAMERA)
+
         // TokenRepository 초기화 및 RetrofitClient 초기화
         tokenRepository = TokenRepository.getInstance(this)
         RetrofitClient.init(tokenRepository)
 
-        val googleLoginRepository = GoogleLoginRepository(this) // GoogleLoginRepository 초기화
+        val googleLoginRepository = GoogleLoginRepository(this)
         loginViewModel = ViewModelProvider(
             this, LoginViewModelFactory(googleLoginRepository, tokenRepository)
         )[LoginViewModel::class.java]
@@ -143,7 +169,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val navController = rememberNavController()
-            var isInitialized by remember { mutableStateOf(false) } // 초기화 상태 변수
+            var isInitialized by remember { mutableStateOf(false) }
 
             CompositionLocalProvider(
                 LocalNavController provides navController,
@@ -157,7 +183,7 @@ class MainActivity : ComponentActivity() {
                     // 초기화 완료 여부 설정
                     LaunchedEffect(accessToken) {
                         if (accessToken != null || accessToken == null) {
-                            isInitialized = true // accessToken 상태가 안정화된 후에만 표시
+                            isInitialized = true
                         }
                     }
 
@@ -170,6 +196,7 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                             startDestination = startDestination
                         ) {
+                            // 기존 라우트들
                             composable("start") { StartPage(loginViewModel) { launchLogin() } }
                             composable("main") { MainPage(loginViewModel, heartRateViewModel) }
                             composable("statistics") { MyCalender(monthlyStressViewModel) } // "statistics" 경로 추가
@@ -177,8 +204,11 @@ class MainActivity : ComponentActivity() {
                                 // from과 to를 정확히 가져옵니다.
                                 val from = backStackEntry.arguments?.getString("from")
                                 val to = backStackEntry.arguments?.getString("to")
-
                                 MyReport(from = from, to = to, viewModel = weeklyReportViewModel) // MyReport에 매개변수 전달
+                            }
+                            // 손 트래킹 화면 추가
+                            composable("hand-tracking") {
+                                HandTrackingScreen()
                             }
                             composable("walk") { MyCourse() } // "walk" 경로 추가
                             composable("map") { Map(this@MainActivity) } // "map" 경로 추가

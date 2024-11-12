@@ -99,6 +99,8 @@ chaquopy {
 }
 
 dependencies {
+    // Module
+    implementation(project(":feature-handtracking"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -160,6 +162,11 @@ dependencies {
 
     // wearable service
     implementation(libs.gms.play.services.wearable)
+
+    implementation("com.google.android.gms:play-services-base:18.2.0")
+    implementation("com.google.android.gms:play-services-tasks:18.0.2")
+
+    implementation(project(":walk"))
 
     // Room
     val room_version = "2.6.1"
