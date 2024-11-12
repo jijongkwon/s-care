@@ -126,6 +126,10 @@ dependencies {
     implementation(libs.play.services.auth)
     implementation(libs.androidx.runtime.livedata)
 
+    //gif
+    implementation(libs.coil.compose.v240)
+    implementation(libs.coil.gif)
+
     // Retrofit
     implementation(libs.retrofit)
     implementation(libs.converter.gson) // Gson 변환기

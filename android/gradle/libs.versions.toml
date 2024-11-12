@@ -1,7 +1,9 @@
 [versions]
 agp = "8.2.0"
 accompanistPermissions = "0.31.2-alpha"
+coilCompose = "2.4.0"
 coilComposeVersion = "2.0.0"
+coilGif = "2.4.0"
 composeFoundation = "1.4.0"
 converterGson = "2.9.0"
 datastorePreferences = "1.1.1"
@@ -81,6 +83,8 @@ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = 
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 coil-compose-v200 = { module = "io.coil-kt:coil-compose", version.ref = "coilComposeVersion" }
+coil-compose-v240 = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+coil-gif = { module = "io.coil-kt:coil-gif", version.ref = "coilGif" }
 compose-material = { module = "androidx.wear.compose:compose-material" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 firebase-bom-v3222 = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBomVersion" }
