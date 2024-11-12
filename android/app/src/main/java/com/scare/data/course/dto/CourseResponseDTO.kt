@@ -16,8 +16,8 @@ data class CourseDetailAPIResponseDTO(
 
 data class CourseResponseDTO(
     val courseId: Long,
-    val startedAt: String,
-    val finishedAt: String,
+    val startedAt: Long,
+    val finishedAt: Long,
     val posList: List<PositionDTO>?,
     val startIdx: Int,
     val endIdx: Int,

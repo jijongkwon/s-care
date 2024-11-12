@@ -9,7 +9,8 @@ import com.scare.data.heartrate.api.request.CreateDailyStressReq
 import com.scare.data.heartrate.api.request.DailyStressRequest
 import com.scare.data.heartrate.dao.HeartRateDao
 import com.scare.data.heartrate.database.entity.HeartRate
-import java.time.LocalDate
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -27,7 +28,9 @@ class StressStoreManager(
         val endDateTime = LocalDateTime.now().minusDays(1).withHour(23).withMinute(59).withSecond(59).format(formatter)
 
         // 지정한 날짜 범위의 심박수 데이터를 가져옴
-        val heartRates = heartRateDao.getHeartRateSince(startDateTime, endDateTime)
+        val heartRates = withContext(Dispatchers.IO) {
+            heartRateDao.getHeartRatesWhileWalking(startDateTime, endDateTime)
+        }
 
         Log.d("heartRateData", heartRates.toString())
 
@@ -47,7 +50,7 @@ class StressStoreManager(
             Log.d("StressStoreManager", "stressLevel: ${stressLevel}")
 
             //-1이 아닌 경우에만..
-            if(stressLevel != -1) {
+            if (stressLevel != -1) {
                 dailyStressRequests.add(
                     CreateDailyStressReq(
                         recordedAt = date.format(DateTimeFormatter.ofPattern("yyyyMMdd")),
@@ -61,9 +64,9 @@ class StressStoreManager(
 
         return DailyStressRequest(dailyStressList = dailyStressRequests)
     }
-    
+
     //스트레스 계산
-    fun calculateStress (heartRatesForDate: List<HeartRate>): Int {
+    fun calculateStress(heartRatesForDate: List<HeartRate>): Int {
         //300개 이상의 배열이 있는 경우에만. . .
         if (heartRatesForDate.size >= 30) {
             if (!Python.isStarted()) {
