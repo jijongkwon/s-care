@@ -35,10 +35,10 @@ public class WalkingController implements WalkingControllerDocs {
 	@PostMapping
 	public ResponseEntity<BaseResponse<?>> saveWalkingCourse(
 		@AuthenticationPrincipal CustomUserDetails customUserDetails,
-		@RequestBody SaveWalkingCourseReq saveWalkingCourseReq) {
+		@RequestBody SaveWalkingCourseReq req) {
 		return ResponseEntity.ok(BaseResponse.ofSuccess(
 			walkingCommandService.saveWalkingCourse(customUserDetails.getMemberId(),
-				SaveWalkingCourseDto.from(saveWalkingCourseReq))));
+				SaveWalkingCourseDto.from(req))));
 	}
 
 	@GetMapping("/detail/{course-id}")

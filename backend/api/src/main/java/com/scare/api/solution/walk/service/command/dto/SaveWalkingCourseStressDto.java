@@ -11,19 +11,19 @@ import lombok.Getter;
 @Getter
 public class SaveWalkingCourseStressDto {
 	@JsonProperty("max_stress")
-	private double maxStress;
+	private Double maxStress;
 
 	@JsonProperty("min_stress")
-	private double minStress;
+	private Double minStress;
 
 	@JsonProperty("healing_stress_avg")
-	private double healingStressAvg;
+	private Double healingStressAvg;
 
 	@JsonProperty("start_idx")
-	private int startIdx;
+	private Integer startIdx;
 
 	@JsonProperty("end_idx")
-	private int endIdx;
+	private Integer endIdx;
 
 	@JsonProperty("stress_indices")
 	private List<Double> stressIndices;

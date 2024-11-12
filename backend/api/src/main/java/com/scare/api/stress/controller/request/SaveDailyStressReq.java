@@ -2,7 +2,7 @@ package com.scare.api.stress.controller.request;
 
 import java.util.List;
 
-import com.scare.api.stress.service.dto.DailyStressDto;
+import com.scare.api.stress.service.command.dto.DailyStressCommandDto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -16,6 +16,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SaveDailyStressReq {
 
-	private List<DailyStressDto> dailyStressList;
-	
+	private List<DailyStressCommandDto> dailyStressList;
+
 }

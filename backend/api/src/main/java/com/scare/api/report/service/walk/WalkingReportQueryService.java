@@ -23,7 +23,9 @@ import com.scare.api.solution.walk.repository.WalkingDetailRepository;
 import com.scare.api.solution.walk.service.query.dto.Pos;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor

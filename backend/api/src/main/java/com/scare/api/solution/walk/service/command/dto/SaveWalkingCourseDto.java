@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.scare.api.core.util.DateConverter;
 import com.scare.api.solution.walk.controller.request.command.SaveWalkingCourseReq;
 
 import lombok.Builder;
@@ -19,12 +20,12 @@ public class SaveWalkingCourseDto {
 	private SaveWalkingCourseStressDto stressData;
 	private List<SaveWalkingCourseLocationDto> locations;
 
-	public static SaveWalkingCourseDto from(SaveWalkingCourseReq request) {
+	public static SaveWalkingCourseDto from(SaveWalkingCourseReq req) {
 		return SaveWalkingCourseDto.builder()
-			.startedAt(request.getStartedAt())
-			.finishedAt(request.getFinishedAt())
-			.heartRates(request.getHeartRates())
-			.locations(request.getLocations().stream()
+			.startedAt(DateConverter.convertToLocalDateTime(req.getStartedAt()))
+			.finishedAt(DateConverter.convertToLocalDateTime(req.getFinishedAt()))
+			.heartRates(req.getHeartRates())
+			.locations(req.getLocations().stream()
 				.map(SaveWalkingCourseLocationDto::from)
 				.collect(Collectors.toList()))
 			.build();

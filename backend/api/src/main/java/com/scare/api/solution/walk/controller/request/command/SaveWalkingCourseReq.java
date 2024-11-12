@@ -1,6 +1,5 @@
 package com.scare.api.solution.walk.controller.request.command;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -25,7 +24,7 @@ public class SaveWalkingCourseReq {
 		type = "string"
 	)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-	private LocalDateTime startedAt;
+	private String startedAt;
 
 	@Schema(
 		description = "걷기 운동 종료 시간",
@@ -33,7 +32,7 @@ public class SaveWalkingCourseReq {
 		type = "string"
 	)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-	private LocalDateTime finishedAt;
+	private String finishedAt;
 
 	@Schema(
 		description = "심박수 목록",

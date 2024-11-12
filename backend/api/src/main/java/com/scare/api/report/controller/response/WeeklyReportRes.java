@@ -16,8 +16,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class WeeklyReportRes {
 
-	private Double lastWeekStress;
-	private Double currentWeekStress;
 	private List<ReportDto> reports;
-
+	
 }
