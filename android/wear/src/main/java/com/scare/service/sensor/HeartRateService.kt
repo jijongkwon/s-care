@@ -15,7 +15,6 @@ import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
 import com.scare.R
 import com.scare.TAG
-import com.scare.presentation.sensor.HeartRateManager
 
 class HeartRateService : Service(), SensorEventListener {
     private lateinit var sensorManager: SensorManager
@@ -49,7 +48,6 @@ class HeartRateService : Service(), SensorEventListener {
         if (event?.sensor?.type == Sensor.TYPE_HEART_RATE) {
             val hrValue = event.values[0].toDouble()
             if (hrValue > 0) {
-                HeartRateManager.updateHeartRate(hrValue)
                 sendToHandheldDevice(hrValue)
             }
             Log.d(TAG, "service hrValue: $hrValue")
