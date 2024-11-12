@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,14 +22,19 @@ import com.scare.ui.mobile.calender.component.DayStress
 import com.scare.ui.mobile.calender.component.WeeklyReport
 import com.scare.ui.mobile.common.LocalNavController
 import com.scare.ui.mobile.common.TheHeader
+import com.scare.ui.mobile.viewmodel.calender.MonthlyStressViewModel
 import com.scare.ui.theme.ScareTheme
 import java.time.LocalDate
 
 @Composable
-fun MyCalender() {
+fun MyCalender(
+    monthlyStressViewModel: MonthlyStressViewModel
+) {
     var selectedDate by remember { mutableStateOf(LocalDate.now()) } // 선택된 날짜
     var selectedStress by remember { mutableStateOf(0) } // 선택된 날짜의 스트레스 상태
-    var stressData by remember { mutableStateOf<Map<LocalDate, Int>>(emptyMap()) } // 한 달의 스트레스 데이터를 저장할 상태
+
+    // ViewModel의 stressLevelMap을 구독
+    val stressLevelMap by monthlyStressViewModel.stressLevelMap.collectAsState()
 
     Scaffold(
         topBar = { TheHeader(null, isMainPage = false) }
@@ -45,9 +51,9 @@ fun MyCalender() {
                 modifier = Modifier,
                 onDaySelected = { date ->
                     selectedDate = date
-                    selectedStress = stressData[date] ?: 0
+                    selectedStress = stressLevelMap[date] ?: 0 // 선택된 날짜의 스트레스 값 가져오기
                 },
-                stressLevelMap = stressData// 달력에 스트레스 데이터 전달
+                monthlyStressViewModel = monthlyStressViewModel
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -62,10 +68,10 @@ fun MyCalender() {
     }
 }
 
-@Preview(showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun CalenderPreview() {
-    ScareTheme {
-        MyCalender()
-    }
-}
+//@Preview(showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+//@Composable
+//fun CalenderPreview() {
+//    ScareTheme {
+//        MyCalender(monthlyStressViewModel: MonthlyStressViewModel)
+//    }
+//}

@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -31,6 +32,7 @@ fun DayStress(
 ) {
 
     val petFace = getPetFace(stress)
+    val stressText = if (stress == -1) "-" else "평균 스트레스 $stress"
 
     Row(
         horizontalArrangement = Arrangement.Center,
@@ -39,9 +41,11 @@ fun DayStress(
         Image (
             painter = petFace,
             contentDescription = "DayStressFace",
-            modifier = Modifier.size(100.dp),
+            modifier = Modifier.size(85.dp),
             contentScale = ContentScale.Fit
         )
+
+        Spacer(modifier = Modifier.width(10.dp))
 
         Box (
             modifier.clip(RoundedCornerShape(14.dp)) // 먼저 모서리를 둥글게 잘라내고
@@ -51,7 +55,7 @@ fun DayStress(
             contentAlignment = Alignment.Center // 텍스트를 중앙에 배치
         ) {
             Text(
-                text="평균 스트레스 $stress",
+                text = stressText,
                 style = Typography.bodyLarge.copy( // TextStyle 적용
                     color = DarkNavy, // 색깔 변경
                     fontWeight = FontWeight.Bold // 굵기 변경
@@ -59,5 +63,4 @@ fun DayStress(
             )
         }
     }
-
 }

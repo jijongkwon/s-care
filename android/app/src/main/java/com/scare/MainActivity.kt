@@ -16,6 +16,7 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.messaging.FirebaseMessaging
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.scare.data.RetrofitClient
+import com.scare.data.calender.repository.MonthlyStressRepository
 import com.scare.data.course.repository.CourseRepository
 import com.scare.data.heartrate.database.AppDatabase
 import com.scare.data.location.database.LocationDatabase
@@ -37,6 +38,8 @@ import com.scare.ui.mobile.main.MainPage
 import com.scare.ui.mobile.main.MyAuthPage
 import com.scare.ui.mobile.main.StartPage
 import com.scare.ui.mobile.map.Map
+import com.scare.ui.mobile.viewmodel.calender.MonthlyStressViewModel
+import com.scare.ui.mobile.viewmodel.calender.MonthlyStressViewModelFactory
 import com.scare.ui.mobile.viewmodel.course.CourseViewModel
 import com.scare.ui.mobile.viewmodel.course.CourseViewModelFactory
 import com.scare.ui.mobile.viewmodel.login.LoginViewModel
@@ -60,6 +63,7 @@ class MainActivity : ComponentActivity() {
     private val heartRateViewModel: HeartRateViewModel by viewModels()
     private lateinit var logInListenerService: LogInListenerService
     private lateinit var stressViewModel: StressViewModel // StressViewModel 추가
+    private lateinit var monthlyStressViewModel: MonthlyStressViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -119,6 +123,15 @@ class MainActivity : ComponentActivity() {
 //            initializeFCM()
 //        }
 
+        //한달 스트레스
+        // MonthlyStressRepository 생성
+        val monthlyStressRepository = MonthlyStressRepository()
+
+        // MonthlyStressViewModel을 Factory를 사용하여 초기화
+        val factory = MonthlyStressViewModelFactory(monthlyStressRepository)
+        monthlyStressViewModel = ViewModelProvider(this, factory)[MonthlyStressViewModel::class.java]
+
+
         setContent {
             val navController = rememberNavController()
             var isInitialized by remember { mutableStateOf(false) } // 초기화 상태 변수
@@ -150,7 +163,7 @@ class MainActivity : ComponentActivity() {
                         ) {
                             composable("start") { StartPage(loginViewModel) { launchLogin() } }
                             composable("main") { MainPage(loginViewModel, heartRateViewModel) }
-                            composable("statistics") { MyCalender() } // "statistics" 경로 추가
+                            composable("statistics") { MyCalender( monthlyStressViewModel ) } // "statistics" 경로 추가
                             composable("report?from={from}&to={to}") { backStackEntry ->
                                 // from과 to를 정확히 가져옵니다.
                                 val from = backStackEntry.arguments?.getString("from")

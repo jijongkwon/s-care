@@ -25,7 +25,7 @@ fun getPetImage(stress: Int): Painter {
 @Composable
 fun getPetFace(stress: Int): Painter {
     val petFace = when {
-        stress == 0 -> R.drawable.no_stress_data
+        stress == -1 -> R.drawable.no_stress_data
         stress <= 20 -> R.drawable.happy_dog_face
         stress <= 40 -> R.drawable.normal_dog_face
         else -> R.drawable.gloomy_dog_face
