@@ -1,6 +1,5 @@
 package com.scare.api.solution.walk.domain;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
@@ -33,7 +32,7 @@ public class WalkingDetail {
 		private double longitude;
 
 		@Builder
-		public LocationPoint(double latitude, double longitude, LocalDateTime createdAt) {
+		public LocationPoint(double latitude, double longitude) {
 			this.latitude = latitude;
 			this.longitude = longitude;
 		}
