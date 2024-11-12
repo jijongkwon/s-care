@@ -7,11 +7,13 @@ converterGson = "2.9.0"
 datastorePreferences = "1.1.1"
 firebaseBom = "33.5.1"
 concurrentFuturesKtx = "1.2.0"
+firebaseBomVersion = "32.2.2"
 firebaseMessagingKtx = "24.0.3"
 googleServices = "4.4.2"
 gradle = "8.2.2"
 healthServicesClient = "1.1.0-alpha04"
 hiltAndroid = "2.44"
+hiltAndroidGradlePlugin = "2.48"
 horologistComposables = "0.6.20"
 horologistComposeLayout = "0.6.20"
 horologistComposeMaterial = "0.6.20"
@@ -81,6 +83,7 @@ androidx-navigation-compose = { module = "androidx.navigation:navigation-compose
 coil-compose-v200 = { module = "io.coil-kt:coil-compose", version.ref = "coilComposeVersion" }
 compose-material = { module = "androidx.wear.compose:compose-material" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
+firebase-bom-v3222 = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBomVersion" }
 firebase-messaging-ktx = { group = "com.google.firebase", name = "firebase-messaging-ktx", version.ref = "firebaseMessagingKtxVersion" }
 dagger-hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
@@ -89,6 +92,7 @@ firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "fir
 androidx-health-services-client = { module = "androidx.health:health-services-client", version.ref = "healthServicesClient" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose" }
 gms-play-services-wearable = { module = "com.google.android.gms:play-services-wearable", version.ref = "playServicesWearable" }
+hilt-android-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hiltAndroidGradlePlugin" }
 hilt-android-v244 = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 horologist-composables = { module = "com.google.android.horologist:horologist-composables", version.ref = "horologistComposables" }
 horologist-compose-layout = { module = "com.google.android.horologist:horologist-compose-layout", version.ref = "horologistComposeLayout" }

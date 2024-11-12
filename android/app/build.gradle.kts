@@ -4,14 +4,13 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("com.chaquo.python")
-    id("kotlin-kapt")
     id("com.google.devtools.ksp")
     id("dagger.hilt.android.plugin") // Hilt 플러그인 추가
 }
 
 android {
     namespace = "com.scare"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.scare"
@@ -122,7 +121,7 @@ dependencies {
     implementation(libs.play.services.location)
     implementation(libs.naver.map.location)
 
-    implementation(platform(libs.firebase.bom)) // Firebase BOM을 사용하여 버전 관리
+    implementation(platform(libs.firebase.bom.v3222)) // Firebase BOM을 사용하여 버전 관리
     implementation(libs.firebase.auth.ktx) // Kotlin 확장 프로그램 사용
     implementation(libs.play.services.auth)
     implementation(libs.androidx.runtime.livedata)
@@ -168,7 +167,6 @@ dependencies {
 
     // Hilt
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler) // Hilt 애노테이션 프로세서 추가
-}
+    ksp(libs.hilt.compiler)
 
-apply(plugin = "dagger.hilt.android.plugin")
+}
