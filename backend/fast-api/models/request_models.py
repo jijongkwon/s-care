@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 
 class SingleStressRequest(BaseModel):
-    hr_data: list[int]
+    hr_data: list[float]
 
 
 class StressOverviewRequest(BaseModel):

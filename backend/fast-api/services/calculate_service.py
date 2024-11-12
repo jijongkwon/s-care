@@ -1,6 +1,36 @@
 import numpy as np
+import pyhrv.frequency_domain as fd
+import pyhrv.time_domain as td
 import scipy as sp
 from scipy.signal import welch
+
+
+def get_single_stress_pyhrv(hr_data: list[float]):
+    # NN 간격 계산
+    nn_intervals = 60000 / np.array(hr_data)
+
+    sdrr = get_sdrr(nn_intervals)
+
+    # RMSSD 계산
+    rmssd_result = td.rmssd(nn_intervals)
+    rmssd = rmssd_result['rmssd']
+
+    # 주파수 분석을 통한 LF/HF 비율 계산
+    freq_domain_features = fd.welch_psd(nni=nn_intervals, show=False)
+    lf_hf_ratio = freq_domain_features['fft_ratio']
+
+    # 스트레스 지수 계산
+    stress_index = lf_hf_ratio / rmssd if rmssd != 0 else None
+
+    # 가중치 계산
+    lf_hf_weight = get_lf_hf_weight(lf_hf_ratio)
+    sdrr_weight = get_sdrr_weight(sdrr)
+    rmssd_weight = get_rmssd_weight(rmssd)
+
+    # 스트레스 지수 계산
+    stress = lf_hf_weight + sdrr_weight + rmssd_weight
+    return stress
+
 
 def get_single_stress(hr_data: list[float]):
     # NN 간격 계산
@@ -113,7 +143,7 @@ def nn_formats(nni):
 
 def get_rmssd(nni=None):
     nnd = nni_diff(nni)
-    rmssd_ = np.sum([x**2 for x in nnd])
+    rmssd_ = np.sum([x ** 2 for x in nnd])
     rmssd_ = np.sqrt(1. / nnd.size * rmssd_)
     return {'rmssd': rmssd_}
 
@@ -127,7 +157,7 @@ def nni_diff(nni):
 
 
 def welch_psd(nni=None,
-              nfft=2**12,
+              nfft=2 ** 12,
               window='hamming',
               mode='normal',
               fbands=None):
@@ -189,7 +219,7 @@ def _compute_parameters(method, frequencies, power, freq_bands):
     vlf_power = np.sum(power[vlf_i]) * df
     lf_power = np.sum(power[lf_i]) * df
     hf_power = np.sum(power[hf_i]) * df
-    abs_powers = (vlf_power, lf_power, hf_power, )
+    abs_powers = (vlf_power, lf_power, hf_power,)
     total_power = np.sum(abs_powers)
 
     vlf_peak = vlf_f[np.argmax(power[vlf_i])]
@@ -241,6 +271,6 @@ def get_multiple_stress_index(hr_data: list[float]):
     stress_arr = []
     for i in range(4, len(hr_data) + 1):
         partial_hr_data = hr_data[:i]
-        stress_index = get_single_stress(partial_hr_data)
+        stress_index = get_single_stress_pyhrv(partial_hr_data)
         stress_arr.append(stress_index)
     return stress_arr
