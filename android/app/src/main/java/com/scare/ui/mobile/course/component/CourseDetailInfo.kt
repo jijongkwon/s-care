@@ -36,8 +36,6 @@ fun CourseDetailInfo(
                 .padding(horizontal = 24.dp, vertical = 8.dp)
         ) {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -59,9 +57,9 @@ fun CourseDetailInfo(
                     text = "내 스트레스",
                     color = MaterialTheme.colorScheme.background
                 )
-                Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        text = (course.maxStress - course.minStress).toString(),
+                        text = (course.maxStress - course.minStress).toInt().toString(),
                         color = MaterialTheme.colorScheme.background,
                         style = Typography.titleLarge.copy(
                             color = MaterialTheme.colorScheme.tertiary,
