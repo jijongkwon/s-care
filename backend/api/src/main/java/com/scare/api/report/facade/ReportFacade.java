@@ -2,7 +2,6 @@ package com.scare.api.report.facade;
 
 import static com.scare.api.core.util.DateConverter.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public final class ReportFacade {
 
-	private final List<ReportService> reportServices = new ArrayList<>();
+	private final List<ReportService> reportServices;
 
 	public List<ReportDto> getReports(Long memberId, String from, String to) {
 		return reportServices.stream()

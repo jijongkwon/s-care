@@ -15,7 +15,7 @@ import com.scare.api.core.jwt.dto.CustomUserDetails;
 import com.scare.api.core.template.response.BaseResponse;
 import com.scare.api.core.util.DateConverter;
 import com.scare.api.stress.controller.request.SaveDailyStressReq;
-import com.scare.api.stress.service.DailyStressCommandService;
+import com.scare.api.stress.service.command.DailyStressCommandService;
 import com.scare.api.stress.service.query.DailyStressQueryService;
 import com.scare.api.stress.service.query.dto.DailyStressQueryDto;
 
@@ -26,8 +26,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DailyStressController {
 
-	private final DailyStressCommandService dailyStressCommandService;
 	private final DailyStressQueryService dailyStressQueryService;
+	private final DailyStressCommandService dailyStressCommandService;
 
 	@PostMapping("/daily")
 	public ResponseEntity<BaseResponse<?>> saveDailyStress(
@@ -50,5 +50,5 @@ public class DailyStressController {
 			DateConverter.convertToLocalDate(to));
 		return ResponseEntity.ok(BaseResponse.ofSuccess(res));
 	}
-	
+
 }

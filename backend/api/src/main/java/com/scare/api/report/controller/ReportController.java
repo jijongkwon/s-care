@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.scare.api.core.jwt.dto.CustomUserDetails;
 import com.scare.api.core.template.response.BaseResponse;
-import com.scare.api.report.controller.response.WeeklyReportRes;
 import com.scare.api.report.facade.ReportFacade;
 import com.scare.api.report.service.dto.ReportDto;
 
@@ -25,16 +24,13 @@ public class ReportController {
 	private final ReportFacade reportFacade;
 
 	@GetMapping("/weekly")
-	public ResponseEntity<BaseResponse<WeeklyReportRes>> getWeeklyReport(
+	public ResponseEntity<BaseResponse<List<ReportDto>>> getWeeklyReport(
 		@AuthenticationPrincipal CustomUserDetails userDetails,
 		@RequestParam("from") String from,
 		@RequestParam("to") String to
 	) {
 		List<ReportDto> reports = reportFacade.getReports(userDetails.getMemberId(), from, to);
-		return ResponseEntity.ok(BaseResponse.ofSuccess(WeeklyReportRes.builder()
-			.lastWeekStress(null)
-			.currentWeekStress(null)
-			.reports(reports)
-			.build()));
+		return ResponseEntity.ok(BaseResponse.ofSuccess(reports));
 	}
+
 }

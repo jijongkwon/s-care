@@ -1,4 +1,4 @@
-package com.scare.api.stress.service.dto;
+package com.scare.api.stress.service.command.dto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class DailyStressDto {
+public class DailyStressCommandDto {
 
 	private int stress;
 	private String recordedAt;
