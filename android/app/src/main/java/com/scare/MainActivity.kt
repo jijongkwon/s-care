@@ -2,6 +2,8 @@ package com.scare
 
 import GoogleLoginRepository
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -12,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.FirebaseApp
 import com.google.firebase.messaging.FirebaseMessaging
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.scare.data.RetrofitClient
@@ -93,7 +96,10 @@ class MainActivity : ComponentActivity() {
         // StressViewModel의 데이터 업로드 메서드 호출
         stressViewModel.uploadDailyStressData()
 
-        initializeFCM() // FCM 초기화
+//        FirebaseApp.initializeApp(this)
+//        Handler(Looper.getMainLooper()).post {
+//            initializeFCM()
+//        }
 
         setContent {
             val navController = rememberNavController()
@@ -169,6 +175,9 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun initializeFCM() {
+
+        FirebaseApp.initializeApp(this)
+
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val token = task.result
