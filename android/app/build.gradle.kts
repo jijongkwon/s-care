@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     id("com.chaquo.python")
     id("com.google.devtools.ksp")
+    id("com.google.gms.google-services") // Google Services Plugin
 }
 
 android {
@@ -98,6 +99,12 @@ chaquopy {
 }
 
 dependencies {
+    // Firebase BOM을 먼저 추가하여 이후 Firebase 의존성들이 이 버전을 따르도록 함
+    implementation(platform(libs.firebase.bom))
+
+    // Firebase
+    implementation(libs.google.firebase.analytics)
+    implementation(libs.firebase.auth.ktx)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -120,10 +127,11 @@ dependencies {
     implementation(libs.play.services.location)
     implementation(libs.naver.map.location)
 
-    implementation(platform(libs.firebase.bom)) // Firebase BOM을 사용하여 버전 관리
-    implementation(libs.firebase.auth.ktx) // Kotlin 확장 프로그램 사용
     implementation(libs.play.services.auth)
     implementation(libs.androidx.runtime.livedata)
+    implementation(libs.firebase.messaging.ktx)
+    implementation(libs.androidx.datastore.core.android)
+    implementation(libs.androidx.datastore.preferences.core.jvm)
 
     // Retrofit
     implementation(libs.retrofit)
@@ -143,6 +151,7 @@ dependencies {
 
     //dataStore
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.firebase.messaging.ktx)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

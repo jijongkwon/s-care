@@ -1,15 +1,18 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    id("com.google.gms.google-services")
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
 }
 
 android {
+    namespace = "com.example.notification"
     namespace = "com.scare.notification"
     compileSdk = 34
 
     defaultConfig {
+        minSdk = 24
         minSdk = 30
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -26,22 +29,18 @@ android {
         }
     }
     compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
+        jvmTarget = "1.8"
         jvmTarget = "11"
     }
 }
 
 dependencies {
-    // Hilt
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
-
-    // Firebase Cloud Messaging
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.messaging.ktx)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
