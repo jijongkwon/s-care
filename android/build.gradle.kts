@@ -15,5 +15,6 @@ buildscript {
     dependencies {
         classpath(libs.gradle)  // Android Gradle Plugin 버전 확인
         classpath(libs.google.services) // Google Services Plugin 추가
+        classpath("com.google.dagger:hilt-android-gradle-plugin:2.44")
     }
 }

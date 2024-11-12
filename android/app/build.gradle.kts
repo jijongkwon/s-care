@@ -4,8 +4,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("com.chaquo.python")
+    id("kotlin-kapt")
     id("com.google.devtools.ksp")
-    id("com.google.gms.google-services") // Google Services Plugin
+    id("dagger.hilt.android.plugin") // Hilt 플러그인 추가
 }
 
 android {
@@ -99,12 +100,6 @@ chaquopy {
 }
 
 dependencies {
-    // Firebase BOM을 먼저 추가하여 이후 Firebase 의존성들이 이 버전을 따르도록 함
-    implementation(platform(libs.firebase.bom))
-
-    // Firebase
-    implementation(libs.google.firebase.analytics)
-    implementation(libs.firebase.auth.ktx)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -127,11 +122,10 @@ dependencies {
     implementation(libs.play.services.location)
     implementation(libs.naver.map.location)
 
+    implementation(platform(libs.firebase.bom)) // Firebase BOM을 사용하여 버전 관리
+    implementation(libs.firebase.auth.ktx) // Kotlin 확장 프로그램 사용
     implementation(libs.play.services.auth)
     implementation(libs.androidx.runtime.livedata)
-    implementation(libs.firebase.messaging.ktx)
-    implementation(libs.androidx.datastore.core.android)
-    implementation(libs.androidx.datastore.preferences.core.jvm)
 
     // Retrofit
     implementation(libs.retrofit)
@@ -174,4 +168,7 @@ dependencies {
 
     // Hilt
     implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler) // Hilt 애노테이션 프로세서 추가
 }
+
+apply(plugin = "dagger.hilt.android.plugin")
