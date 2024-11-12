@@ -8,6 +8,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import com.naver.maps.map.compose.*
+import com.scare.repository.location.LocationRepository
 import com.scare.ui.mobile.common.LocalWalkViewModel
 import com.scare.ui.mobile.common.TheHeader
 import com.scare.ui.mobile.map.component.StartWalkButton
@@ -16,7 +17,10 @@ import java.time.LocalDateTime
 
 @ExperimentalNaverMapApi
 @Composable
-fun Map(context: Context) {
+fun Map(
+    context: Context,
+    locationRepository: LocationRepository
+) {
 
     val localWalkViewModel = LocalWalkViewModel.current
 
@@ -55,10 +59,13 @@ fun Map(context: Context) {
                     if (!isWalk) {
                         localWalkViewModel!!.updateWalkStatus(context, true)
                         localWalkViewModel!!.updateStartTime(context, formatDateTimeToSearch(LocalDateTime.now()))
+                        localWalkViewModel!!.startLocationUpdates(context)
                     } else {
                         localWalkViewModel!!.updateWalkStatus(context, false)
                         localWalkViewModel!!.updateEndTime(context, formatDateTimeToSearch(LocalDateTime.now()))
                         localWalkViewModel!!.fetchHeartRatesWhileWalking(walkStartTime, walkEndTime)
+                        localWalkViewModel!!.stopLocationUpdates()
+                        val walkLocations = locationRepository.getLocations(walkStartTime, walkEndTime)
                     }
                 }
             )

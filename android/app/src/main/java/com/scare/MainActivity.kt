@@ -2,8 +2,6 @@ package com.scare
 
 import GoogleLoginRepository
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -20,11 +18,13 @@ import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.scare.data.RetrofitClient
 import com.scare.data.course.repository.CourseRepository
 import com.scare.data.heartrate.database.AppDatabase
+import com.scare.data.location.database.LocationDatabase
 import com.scare.data.heartrate.database.dataStore.LastSaveData
 import com.scare.data.heartrate.repository.StressRepository
 import com.scare.data.member.repository.Auth.TokenRepository
 import com.scare.data.member.repository.User.UserInfoRepository
 import com.scare.repository.heartrate.HeartRateRepository
+import com.scare.repository.location.LocationRepository
 import com.scare.service.listener.LogInListenerService
 import com.scare.ui.mobile.calender.MyCalender
 import com.scare.ui.mobile.calender.MyReport
@@ -85,13 +85,15 @@ class MainActivity : ComponentActivity() {
             CourseViewModelFactory(courseRepository)
         )[CourseViewModel::class.java]
 
-        val db = AppDatabase.getInstance(this)
+        val hearRateDb = AppDatabase.getInstance(this)
+        val locationDb = LocationDatabase.getInstance(this)
 
-        val heartRateRepository = HeartRateRepository(db)
+        val heartRateRepository = HeartRateRepository(hearRateDb)
+        val locationRepository = LocationRepository(locationDb)
 
         val walkViewModel = ViewModelProvider(
             this,
-            WalkViewModelFactory(this, heartRateRepository)
+            WalkViewModelFactory(this, heartRateRepository, locationRepository)
         ).get(WalkViewModel::class.java)
 
 
@@ -155,7 +157,7 @@ class MainActivity : ComponentActivity() {
                                 MyReport(from = from, to = to) // MyReport에 매개변수 전달
                             }
                             composable("walk") { MyCourse() } // "walk" 경로 추가
-                            composable("map") { Map(this@MainActivity) } // "map" 경로 추가
+                            composable("map") { Map(this@MainActivity, locationRepository) } // "map" 경로 추가
                             composable("mypage") { MyAuthPage(userInfoRepository, tokenRepository) } // "map" 경로 추가
                         }
 
