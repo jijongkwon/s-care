@@ -2,17 +2,14 @@ package com.scare.presentation.home
 
 import android.content.Context
 import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -22,43 +19,33 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.wear.compose.material.Button
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import com.google.android.horologist.compose.layout.ScreenScaffold
 import com.scare.R
 import com.scare.TAG
+import com.scare.presentation.component.PetImage
+import com.scare.presentation.component.WalkButton
 import com.scare.presentation.sensor.HeartRateViewModel
-import com.scare.presentation.sensor.HeartRateViewModelFactory
 import com.scare.presentation.theme.color_stress_bad
 import com.scare.presentation.theme.color_stress_good
 import com.scare.presentation.theme.color_stress_normal
 import com.scare.presentation.walk.WalkViewModel
-import com.scare.presentation.walk.WalkViewModelFactory
-import kotlin.math.roundToInt
 
 @Composable
 fun HomeScreen(
     context: Context,
+    heartRateViewModel: HeartRateViewModel,
+    walkViewModel: WalkViewModel,
     onClickStartWalk: () -> Unit
 ) {
-    val viewModel: HeartRateViewModel = viewModel(
-        factory = HeartRateViewModelFactory()
-    )
-    val hrValue by viewModel.hrValue.collectAsState()
-    Log.d(TAG, "hrValue $hrValue")
-    val scrollState = rememberScrollState()
+    val stress by heartRateViewModel.stress.collectAsState()
 
-    val stressState: StressState = getStressStatus(hrValue)
+    Log.d(TAG, "stress $stress")
 
-    val walkViewModel: WalkViewModel = viewModel(
-        factory = WalkViewModelFactory(context)
-    )
+    val stressState: StressState = getStressStatus(stress)
 
-    ScreenScaffold(
-        scrollState = scrollState,
-    ) {
+    ScreenScaffold {
         Box(
             modifier = Modifier.run {
                 fillMaxSize()
@@ -68,17 +55,12 @@ fun HomeScreen(
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceAround
             ) {
-                Column(
-                    verticalArrangement = Arrangement.Bottom,
-                    modifier = Modifier.height(100.dp)
-                ) {
-                    Image(
-                        painter = stressState.image,
-                        contentDescription = null,
-                        Modifier.size(150.dp)
-                    )
-                }
+                PetImage(
+                    stressState.image
+                )
+
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Bottom,
@@ -92,28 +74,24 @@ fun HomeScreen(
                         horizontalArrangement = Arrangement.spacedBy(3.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        val stressValueText = if (hrValue.isNaN()) "--" else hrValue.roundToInt().toString()
-
                         Text(
-                            text = stressValueText,
+                            text = stress.toString(),
                             fontSize = 24.sp,
                             color = stressState.color
                         )
                         Text(
-                            text = if (hrValue.isNaN()) "" else stressState.text,
+                            text = stressState.text,
                             fontSize = 16.sp,
                             color = stressState.color
                         )
                     }
+
+                    Spacer(modifier = Modifier.height(10.dp))
                 }
-                Button(
-                    onClick = {
-                        onClickStartWalk()
-                        walkViewModel.updateWalkStatus(context, true)
-                    },
-                    Modifier.width(70.dp).height(40.dp)
-                ) {
-                    Text("산책 시작")
+
+                WalkButton("산책 시작") {
+                    onClickStartWalk()
+                    walkViewModel.updateWalkStatus(context, true)
                 }
             }
         }
@@ -121,14 +99,14 @@ fun HomeScreen(
 }
 
 @Composable
-fun getStressStatus(stressValue: Double): StressState {
-    if (stressValue < 60) {
+fun getStressStatus(stress: Int): StressState {
+    if (stress < 20) {
         return StressState(
             text = stringResource(R.string.stress_good),
             color = color_stress_good,
             image = painterResource(R.drawable.happy_dog_face),
         )
-    } else if (stressValue < 100) {
+    } else if (stress < 40) {
         return StressState(
             text = stringResource(R.string.stress_normal),
             color = color_stress_normal,

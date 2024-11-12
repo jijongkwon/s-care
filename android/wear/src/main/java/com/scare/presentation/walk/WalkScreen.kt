@@ -1,40 +1,28 @@
 package com.scare.presentation.walk
 
 import android.content.Context
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.wear.compose.material.Button
 import androidx.wear.compose.material.MaterialTheme
-import androidx.wear.compose.material.Text
 import com.google.android.horologist.compose.layout.ScreenScaffold
 import com.scare.R
+import com.scare.presentation.component.PetImage
+import com.scare.presentation.component.WalkButton
 
 @Composable
 fun WalkScreen(
     context: Context,
+    walkViewModel: WalkViewModel,
     onClickStopWalk: () -> Unit
 ) {
-    val scrollState = rememberScrollState()
-    val walkViewModel: WalkViewModel = viewModel(
-        factory = WalkViewModelFactory(context)
-    )
-
-    ScreenScaffold(
-        scrollState = scrollState
-    ) {
+    ScreenScaffold {
         Box(
             modifier = Modifier.run {
                 fillMaxSize()
@@ -44,20 +32,15 @@ fun WalkScreen(
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceAround
             ) {
-                Image(
-                    painter = painterResource(R.drawable.happy_dog_face),
-                    contentDescription = null,
-                    Modifier.size(100.dp)
+                PetImage(
+                    painterResource(R.drawable.happy_dog_face)
                 )
-                Button(
-                    onClick = {
-                        onClickStopWalk()
-                        walkViewModel.updateWalkStatus(context, false)
-                    },
-                    Modifier.width(70.dp).height(40.dp)
-                ) {
-                    Text("산책 종료")
+
+                WalkButton("산책 종료") {
+                    onClickStopWalk()
+                    walkViewModel.updateWalkStatus(context, false)
                 }
             }
         }

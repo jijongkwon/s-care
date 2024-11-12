@@ -79,12 +79,19 @@ class MainActivity : ComponentActivity() {
                         startDestination = startDestination
                     ) {
                         composable(route = homeRoot) {
-                            HomeScreen(this@MainActivity) {
+                            HomeScreen(
+                                this@MainActivity,
+                                heartRateViewModel,
+                                walkViewModel
+                            ) {
                                 navController.navigate(walkRoot)
                             }
                         }
                         composable(route = walkRoot) {
-                            WalkScreen(this@MainActivity) {
+                            WalkScreen(
+                                this@MainActivity,
+                                walkViewModel
+                            ) {
                                 navController.navigate(homeRoot)
                             }
                         }

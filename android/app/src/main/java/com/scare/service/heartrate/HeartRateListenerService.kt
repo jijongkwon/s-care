@@ -4,9 +4,12 @@ import android.util.Log
 import com.chaquo.python.PyObject
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
+import com.google.android.gms.wearable.DataClient
 import com.google.android.gms.wearable.DataEvent
 import com.google.android.gms.wearable.DataEventBuffer
 import com.google.android.gms.wearable.DataMapItem
+import com.google.android.gms.wearable.PutDataMapRequest
+import com.google.android.gms.wearable.Wearable
 import com.google.android.gms.wearable.WearableListenerService
 import com.scare.TAG
 import com.scare.data.heartrate.database.AppDatabase
@@ -17,6 +20,13 @@ import java.time.Duration
 import java.time.LocalDateTime
 
 class HeartRateListenerService : WearableListenerService() {
+
+    private lateinit var dataClient: DataClient
+
+    override fun onCreate() {
+        super.onCreate()
+        dataClient = Wearable.getDataClient(this)
+    }
 
     override fun onDataChanged(dataEvents: DataEventBuffer) {
         dataEvents.forEach { event ->
@@ -67,6 +77,20 @@ class HeartRateListenerService : WearableListenerService() {
             stress = result.toInt()
         }
         HeartRateManager.updateStress(stress)
+        sendToWearDevice(stress)
     }
 
+    private fun sendToWearDevice(stress: Int) {
+        val putDataReq = PutDataMapRequest.create("/stress").apply {
+            dataMap.putInt("stress", stress)
+            dataMap.putLong("timestamp", System.currentTimeMillis())  // Optional: add a timestamp
+        }.asPutDataRequest()
+            .setUrgent()
+
+        dataClient.putDataItem(putDataReq).addOnSuccessListener {
+            Log.d(TAG, "Stress is sent to wear device successfully")
+        }.addOnFailureListener { e ->
+            Log.e(TAG, "Failed to send stress to wear device", e)
+        }
+    }
 }
