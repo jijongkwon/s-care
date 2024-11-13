@@ -50,8 +50,6 @@ public class WalkingReportQueryService implements ReportService {
 				.walkingCnt(overview.getTotalWalkingCnt())
 				.totalWalkingTime(overview.getTotalWalkingTime())
 				.avgStressChange(overview.getAvgStressChange())
-				.startIdx(-1)
-				.endIdx(-1)
 				.build();
 		} else if (course.hasHealingSection()) {
 			WalkingDetail walkingDetail = walkingDetailRepository.findById(course.getId())
