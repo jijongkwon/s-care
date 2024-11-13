@@ -7,12 +7,12 @@ import lombok.Getter;
 @Getter
 public class WalkingOverviewProjection {
 
-	private Long totalWalkingTime;
+	private Integer totalWalkingTime;
 	private Long totalWalkingCnt;
 	private Double avgStressChange;
 
 	@QueryProjection
-	public WalkingOverviewProjection(Long totalWalkingTime, Long totalWalkingCnt, Double avgStressChange) {
+	public WalkingOverviewProjection(Integer totalWalkingTime, Long totalWalkingCnt, Double avgStressChange) {
 		this.totalWalkingTime = totalWalkingTime;
 		this.totalWalkingCnt = totalWalkingCnt;
 		this.avgStressChange = avgStressChange;

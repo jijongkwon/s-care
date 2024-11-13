@@ -2,6 +2,7 @@ package com.scare.api.report.service.walk;
 
 import static com.scare.api.member.service.helper.MemberServiceHelper.*;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,20 +43,32 @@ public class WalkingReportQueryService implements ReportService {
 		WalkingOverviewProjection overview = walkingReportCustomRepository.getMyWalkingOverviewBetween(member, from,
 			to);
 
-		WalkingReportDto.WalkingReportDtoBuilder builder = WalkingReportDto.builder()
-			.walkingCnt(overview.getTotalWalkingCnt())
-			.totalWalkingTime(overview.getTotalWalkingTime())
-			.avgStressChange(overview.getAvgStressChange());
+		ReportDto dto = WalkingReportDto.builder().build();
 
-		if (course.hasHealingSection()) {
+		if (course == null) {
+			dto = WalkingReportDto.builder()
+				.walkingCnt(overview.getTotalWalkingCnt())
+				.totalWalkingTime(overview.getTotalWalkingTime())
+				.avgStressChange(overview.getAvgStressChange())
+				.build();
+		} else if (course.hasHealingSection()) {
 			WalkingDetail walkingDetail = walkingDetailRepository.findById(course.getId())
 				.orElseThrow(() -> new NoWalkingDetailException());
-			builder.startIdx(course.getStartIdx())
+			dto = WalkingReportDto.builder()
+				.walkingCnt(overview.getTotalWalkingCnt())
+				.totalWalkingTime(overview.getTotalWalkingTime())
+				.avgStressChange(overview.getAvgStressChange())
+				.startIdx(course.getStartIdx())
 				.endIdx(course.getEndIdx())
-				.posList(getPosList(walkingDetail));
+				.posList(getPosList(walkingDetail))
+				.build();
 		}
 
-		return builder.build();
+		return dto;
+	}
+
+	private long calcDiff(LocalDateTime startedAt, LocalDateTime finishedAt) {
+		return Duration.between(startedAt, finishedAt).toMillis();
 	}
 
 	private List<Pos> getPosList(WalkingDetail walkingDetail) {
