@@ -37,8 +37,8 @@ import com.scare.data.heartrate.repository.StressRepository
 import com.scare.data.location.database.LocationDatabase
 import com.scare.data.member.repository.Auth.TokenRepository
 import com.scare.data.member.repository.User.UserInfoRepository
-import com.scare.handpressure.feature.handtracking.ui.HandTrackingScreen
 import com.scare.data.walk.repository.WalkRepository
+import com.scare.handpressure.feature.handtracking.ui.HandTrackingScreen
 import com.scare.repository.heartrate.HeartRateRepository
 import com.scare.repository.location.LocationRepository
 import com.scare.service.listener.LogInListenerService
@@ -157,7 +157,8 @@ class MainActivity : ComponentActivity() {
 
         // MonthlyStressViewModel을 Factory를 사용하여 초기화
         val factory = MonthlyStressViewModelFactory(monthlyStressRepository)
-        monthlyStressViewModel = ViewModelProvider(this, factory)[MonthlyStressViewModel::class.java]
+        monthlyStressViewModel =
+            ViewModelProvider(this, factory)[MonthlyStressViewModel::class.java]
 
         // MonthlyStressRepository 생성
         val weeklyReportRepository = WeeklyReportRepository()
@@ -206,13 +207,14 @@ class MainActivity : ComponentActivity() {
                                 val to = backStackEntry.arguments?.getString("to")
                                 MyReport(from = from, to = to, viewModel = weeklyReportViewModel) // MyReport에 매개변수 전달
                             }
+                            composable("walk") { MyCourse() }
+                            composable("map") { Map(this@MainActivity) }
+                            composable("mypage") { MyAuthPage(userInfoRepository, tokenRepository) }
+
                             // 손 트래킹 화면 추가
                             composable("hand-tracking") {
                                 HandTrackingScreen()
                             }
-                            composable("walk") { MyCourse() } // "walk" 경로 추가
-                            composable("map") { Map(this@MainActivity) } // "map" 경로 추가
-                            composable("mypage") { MyAuthPage(userInfoRepository, tokenRepository) } // "map" 경로 추가
                         }
 
                         // accessToken이 null일 경우 start로 이동
