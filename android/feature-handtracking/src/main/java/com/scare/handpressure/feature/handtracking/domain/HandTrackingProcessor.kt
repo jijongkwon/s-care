@@ -23,7 +23,8 @@ class HandTrackingProcessor @Inject constructor(
 ) {
     private var handLandmarker: HandLandmarker? = null
     private var lastProcessedTimestamp = 0L
-    private val MINIMUM_TIME_BETWEEN_PROCESSING = 50L // 20fps 제한
+    private val MINIMUM_TIME_BETWEEN_PROCESSING = 16L // 약 60fps
+    private val imageProcessingOptions = ImageProcessingUtils.createImageProcessingOptions()
 
     init {
         setupHandLandmarker()
@@ -38,16 +39,16 @@ class HandTrackingProcessor @Inject constructor(
 
             val options = HandLandmarker.HandLandmarkerOptions.builder()
                 .setBaseOptions(baseOptions)
-                .setMinHandDetectionConfidence(0.2f)  // 적절한 감도로 조정
-                .setMinHandPresenceConfidence(0.2f)
-                .setMinTrackingConfidence(0.2f)
+                .setMinHandDetectionConfidence(0.3f)  // 감도 조정
+                .setMinHandPresenceConfidence(0.3f)
+                .setMinTrackingConfidence(0.3f)
                 .setRunningMode(RunningMode.IMAGE)
-                .setNumHands(1)
+                .setNumHands(2)
                 .build()
 
             handLandmarker = HandLandmarker.createFromOptions(context, options)
         } catch (e: Exception) {
-            Log.e("HandTrackingProcessor", "Error setting up HandLandmarker", e)
+            Log.e(TAG, "Error setting up HandLandmarker", e)
         }
     }
 
@@ -87,8 +88,7 @@ class HandTrackingProcessor @Inject constructor(
             )
 
             val mpImage = BitmapImageBuilder(rotatedBitmap).build()
-            val result =
-                handLandmarker?.detect(mpImage, ImageProcessingUtils.createImageProcessingOptions())
+            val result = handLandmarker?.detect(mpImage, imageProcessingOptions)
             lastProcessedTimestamp = currentTimestamp
 
             // 비트맵 리소스 해제
@@ -99,8 +99,12 @@ class HandTrackingProcessor @Inject constructor(
 
             result
         } catch (e: Exception) {
-            Log.e("HandTrackingProcessor", "Error processing image", e)
+            Log.e(TAG, "Error processing image", e)
             null
         }
+    }
+
+    companion object {
+        private const val TAG = "HandTrackingProcessor"
     }
 }
