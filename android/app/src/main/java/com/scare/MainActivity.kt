@@ -17,6 +17,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.scare.data.RetrofitClient
 import com.scare.data.calender.repository.MonthlyStressRepository
+import com.scare.data.calender.repository.WeeklyReportRepository
 import com.scare.data.course.repository.CourseRepository
 import com.scare.data.heartrate.database.AppDatabase
 import com.scare.data.location.database.LocationDatabase
@@ -40,6 +41,8 @@ import com.scare.ui.mobile.main.StartPage
 import com.scare.ui.mobile.map.Map
 import com.scare.ui.mobile.viewmodel.calender.MonthlyStressViewModel
 import com.scare.ui.mobile.viewmodel.calender.MonthlyStressViewModelFactory
+import com.scare.ui.mobile.viewmodel.calender.WeeklyReportViewModel
+import com.scare.ui.mobile.viewmodel.calender.WeeklyReportViewModelFactory
 import com.scare.ui.mobile.viewmodel.course.CourseViewModel
 import com.scare.ui.mobile.viewmodel.course.CourseViewModelFactory
 import com.scare.ui.mobile.viewmodel.login.LoginViewModel
@@ -64,6 +67,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var logInListenerService: LogInListenerService
     private lateinit var stressViewModel: StressViewModel // StressViewModel 추가
     private lateinit var monthlyStressViewModel: MonthlyStressViewModel
+    private lateinit var weeklyReportViewModel: WeeklyReportViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -128,9 +132,16 @@ class MainActivity : ComponentActivity() {
         val monthlyStressRepository = MonthlyStressRepository()
 
         // MonthlyStressViewModel을 Factory를 사용하여 초기화
-        val factory = MonthlyStressViewModelFactory(monthlyStressRepository)
-        monthlyStressViewModel = ViewModelProvider(this, factory)[MonthlyStressViewModel::class.java]
+        val monthlyStressFactory = MonthlyStressViewModelFactory(monthlyStressRepository)
+        monthlyStressViewModel = ViewModelProvider(this, monthlyStressFactory)[MonthlyStressViewModel::class.java]
 
+
+        //주간리포트
+        // WeeklyReportRepository 및 ViewModel 생성
+        val weeklyReportRepository = WeeklyReportRepository()
+
+        val weeklyReportFactory = WeeklyReportViewModelFactory(weeklyReportRepository)
+        weeklyReportViewModel = ViewModelProvider(this, weeklyReportFactory)[WeeklyReportViewModel::class.java]
 
         setContent {
             val navController = rememberNavController()
@@ -169,7 +180,7 @@ class MainActivity : ComponentActivity() {
                                 val from = backStackEntry.arguments?.getString("from")
                                 val to = backStackEntry.arguments?.getString("to")
 
-                                MyReport(from = from, to = to) // MyReport에 매개변수 전달
+                                MyReport(from = from, to = to,  viewModel = weeklyReportViewModel) // MyReport에 매개변수 전달
                             }
                             composable("walk") { MyCourse() } // "walk" 경로 추가
                             composable("map") { Map(this@MainActivity) } // "map" 경로 추가

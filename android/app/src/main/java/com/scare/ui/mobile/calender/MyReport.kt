@@ -16,6 +16,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,12 +27,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.scare.R
+import com.scare.data.calender.repository.WeeklyReportRepository
 import com.scare.ui.mobile.calender.component.CourseReport
 import com.scare.ui.mobile.calender.component.WeeklyStressResult
 import com.scare.ui.mobile.common.LocalNavController
 import com.scare.ui.mobile.common.TheHeader
+import com.scare.ui.mobile.viewmodel.calender.WeeklyReportViewModel
+import com.scare.ui.mobile.viewmodel.calender.WeeklyReportViewModelFactory
 import com.scare.ui.theme.DarkNavy
 import com.scare.ui.theme.Gray
 import com.scare.ui.theme.NeonYellow
@@ -39,14 +45,21 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalNaverMapApi::class)
 @Composable
-fun MyReport(from: String?, to: String?) {
-    val navController = LocalNavController.current
-    val scope = rememberCoroutineScope()
+fun MyReport(
+    from: String?,
+    to: String?,
+    viewModel: WeeklyReportViewModel
+) {
+    val weeklyReport by viewModel.weeklyReport.collectAsState()
 
     LaunchedEffect(from, to) {
-        // 주간 리포트 API 호출
-//      fetchWeeklyReportData(from, to)
+        if (from != null && to != null) {
+            viewModel.fetchWeeklyReport(from, to)
+        }
     }
+
+    val stressData = weeklyReport?.data?.find { it.type == "STRESS" }
+    val walkingData = weeklyReport?.data?.find { it.type == "WALKING" }
 
     Scaffold (
         topBar = { TheHeader(null, isMainPage = false) }
@@ -70,20 +83,12 @@ fun MyReport(from: String?, to: String?) {
                 style = MaterialTheme.typography.titleLarge,
             )
 
-            WeeklyStressResult()
+            WeeklyStressResult(lastStress = stressData?.lastWeekStress, currentStress = stressData?.currentWeekStress)
 
             Spacer(modifier = Modifier.size(12.dp))
 
-            CourseReport()
+            CourseReport(walkingData)
 
         }
-    }
-}
-
-@Preview(showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun MyReportPreview() {
-    ScareTheme {
-        MyReport(from = "20241001", to = "20241004")
     }
 }
