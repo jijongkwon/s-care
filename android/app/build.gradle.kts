@@ -101,6 +101,7 @@ chaquopy {
 dependencies {
     // Module
     implementation(project(":feature-handtracking"))
+    implementation(project(":feature-pressure"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

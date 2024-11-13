@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- MediaPipe 모델 파일 사용을 위한 설정 -->
+    <application>
+        <meta-data
+            android:name="com.google.mediapipe.tasks.vision"
+            android:value="hand_landmarker.task" />
+    </application>
+
 </manifest>
