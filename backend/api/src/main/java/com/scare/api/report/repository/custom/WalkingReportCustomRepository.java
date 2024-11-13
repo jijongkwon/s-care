@@ -24,11 +24,19 @@ public class WalkingReportCustomRepository {
 	private final JPAQueryFactory queryFactory;
 
 	public WalkingOverviewProjection getMyWalkingOverviewBetween(Member member, LocalDateTime from, LocalDateTime to) {
+		NumberTemplate<Integer> totalWalkingTime = Expressions.numberTemplate(Integer.class,
+			"COALESCE(SUM(TIME_TO_SEC(TIMEDIFF({0}, {1}))), 0)",
+			walkingCourse.finishedAt,
+			walkingCourse.startedAt);
+
 		return queryFactory
 			.select(new QWalkingOverviewProjection(
-				totalWalkingTime(),
+				totalWalkingTime,
 				walkingCourse.count(),
-				walkingCourse.maxStress.subtract(walkingCourse.minStress).abs().avg()
+				walkingCourse.maxStress.subtract(walkingCourse.minStress)
+					.abs()
+					.avg()
+					.coalesce(0.0)
 			))
 			.from(walkingCourse)
 			.where(
@@ -47,17 +55,8 @@ public class WalkingReportCustomRepository {
 				memberEq(member)
 			)
 			.orderBy(walkingCourse.maxStress.subtract(walkingCourse.minStress).abs().desc())
-			.limit(1L)
+			.limit(1)
 			.fetchOne();
-	}
-
-	private NumberTemplate<Long> totalWalkingTime() {
-		return Expressions.numberTemplate(
-			Long.class,
-			"SUM(ABS(TIMESTAMPDIFF(SECOND, {0}, {1})))",
-			walkingCourse.startedAt,
-			walkingCourse.finishedAt
-		);
 	}
 
 	private BooleanExpression isBefore(LocalDateTime to) {
