@@ -38,7 +38,7 @@ import com.scare.data.location.database.LocationDatabase
 import com.scare.data.member.repository.Auth.TokenRepository
 import com.scare.data.member.repository.User.UserInfoRepository
 import com.scare.data.walk.repository.WalkRepository
-import com.scare.handpressure.feature.handtracking.ui.HandTrackingScreen
+import com.scare.handpressure.feature.pressure.ui.HandPressureScreen
 import com.scare.repository.heartrate.HeartRateRepository
 import com.scare.repository.location.LocationRepository
 import com.scare.service.listener.LogInListenerService
@@ -213,6 +213,14 @@ class MainActivity : ComponentActivity() {
 
                             // 손 트래킹 화면 추가
                             composable("hand-tracking") {
+                                HandPressureScreen(
+                                    onComplete = {
+                                        // 완료 시 다음 화면으로 이동하거나 필요한 동작 수행
+                                        navController.navigate("main") {
+                                            popUpTo("hand-pressure") { inclusive = true }
+                                        }
+                                    }
+                                )
                                 HandTrackingScreen()
                             }
                         }
