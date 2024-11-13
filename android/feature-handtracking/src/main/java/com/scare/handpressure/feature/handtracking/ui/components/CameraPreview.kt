@@ -1,6 +1,6 @@
 package com.scare.handpressure.feature.handtracking.ui.components
 
-import android.util.Size
+import androidx.camera.core.AspectRatio
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
@@ -35,8 +35,8 @@ fun CameraPreview(
 
     AndroidView(
         modifier = modifier.fillMaxSize(),
-        factory = { context ->
-            PreviewView(context).apply {
+        factory = { ctx ->
+            PreviewView(ctx).apply {
                 implementationMode = PreviewView.ImplementationMode.PERFORMANCE
                 scaleType = PreviewView.ScaleType.FILL_CENTER
             }
@@ -48,19 +48,22 @@ fun CameraPreview(
                 val cameraProvider = cameraProviderFuture.get()
 
                 val preview = Preview.Builder()
-                    .setTargetResolution(Size(640, 480))
+                    .setTargetAspectRatio(AspectRatio.RATIO_4_3)
                     .build()
+                    .also {
+                        it.setSurfaceProvider(previewView.surfaceProvider)
+                    }
 
                 val imageAnalyzer = ImageAnalysis.Builder()
-                    .setTargetResolution(Size(640, 480))
+                    .setTargetAspectRatio(AspectRatio.RATIO_4_3)
                     .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                     .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
                     .build()
-
-                imageAnalyzer.setAnalyzer(cameraExecutor) { imageProxy ->
-                    val rotationDegrees = imageProxy.imageInfo.rotationDegrees
-                    onFrameAvailable(imageProxy)
-                }
+                    .also {
+                        it.setAnalyzer(cameraExecutor) { imageProxy ->
+                            onFrameAvailable(imageProxy)
+                        }
+                    }
 
                 try {
                     cameraProvider.unbindAll()
@@ -70,7 +73,6 @@ fun CameraPreview(
                         preview,
                         imageAnalyzer
                     )
-                    preview.setSurfaceProvider(previewView.surfaceProvider)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
