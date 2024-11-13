@@ -27,6 +27,8 @@ import com.scare.ui.theme.NeonYellow
 
 @Composable
 fun WeeklyStressResult(
+    lastStress: Double?,
+    currentStress: Double?
 ) {
     Box(
         modifier = Modifier
@@ -53,8 +55,8 @@ fun WeeklyStressResult(
                     modifier = Modifier.padding(bottom = 4.dp)
                 )
                 Text(
-                    text = "84",
-                    fontSize = 50.sp,
+                    text = lastStress?.toString() ?: "-",
+                    fontSize = 40.sp,
                     fontWeight = FontWeight.Bold,
                     color = Gray
                 )
@@ -83,9 +85,10 @@ fun WeeklyStressResult(
                     color = DarkNavy,
                     modifier = Modifier.padding(bottom = 4.dp)
                 )
+
                 Text(
-                    text = "82",
-                    fontSize = 50.sp,
+                    text = currentStress?.toString() ?: "-",
+                    fontSize = 40.sp,
                     fontWeight = FontWeight.Bold,
                     color = DarkNavy
                 )

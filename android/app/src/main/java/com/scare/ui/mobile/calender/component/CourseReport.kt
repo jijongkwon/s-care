@@ -35,25 +35,32 @@ import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.naver.maps.map.compose.NaverMap
 import com.naver.maps.map.compose.PathOverlay
 import com.scare.R
+import com.scare.data.calender.dto.WeeklyReportDataDTO
 import com.scare.ui.theme.Gray
 import com.scare.ui.theme.NeonYellow
 
 @ExperimentalNaverMapApi
 @Composable
-fun CourseReport() {
+fun CourseReport(
+    walkingData: WeeklyReportDataDTO?
+) {
     var isExpanded by remember { mutableStateOf(true) }
 
-    // 더미 데이터
-    val totalTime = "1:10:36"
-    val walkCount = 4
-    val averageStressChange = 10
-    val hasMapData = true // 지도 데이터 여부 더미 설정
+    val totalTime = walkingData?.totalWalkingTime.toString()
+    val walkCount = walkingData?.walkingCnt
+    val averageStressChange = walkingData?.avgStressChange
 
-    val coords = listOf(
-        // 더미 좌표 목록
-        LatLng(37.5666102, 126.9783881), // 서울 시청
-        LatLng(37.5652894, 126.9765489),
-    )
+    val startIdx = walkingData?.startIdx ?: 0
+    val endIdx = walkingData?.endIdx ?: 0
+
+    val coords = walkingData?.posList
+        ?.let {
+            val safeEndIdx = minOf(endIdx + 1, it.size)
+            it.subList(startIdx, safeEndIdx).map { pos ->
+                LatLng(pos.lat, pos.lng)
+            }
+        } ?: emptyList()
+
 
     // 위쪽 테두리
     Divider(color = NeonYellow, thickness = 0.75.dp)

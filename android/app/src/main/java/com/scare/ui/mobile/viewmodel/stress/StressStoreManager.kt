@@ -84,7 +84,7 @@ class StressStoreManager(
             val result: PyObject = pyModule.callAttr("get_single_stress", heartRateValues)
             val stress = result.toInt()
 
-            return stress;
+            return stress
         }
 
         return -1

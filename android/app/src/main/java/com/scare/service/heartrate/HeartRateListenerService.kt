@@ -60,6 +60,7 @@ class HeartRateListenerService : WearableListenerService() {
     private fun dispatchStress() {
         val db = getDb()
         val recentHeartRates = HeartRateRepository(db).getRecentHeartRates()
+
         val now = LocalDateTime.now()
         val heartRateValues = recentHeartRates
             .filter { Duration.between(it.createdAt, now).toMinutes() <= 30 }
@@ -74,6 +75,7 @@ class HeartRateListenerService : WearableListenerService() {
             val py = Python.getInstance()
             val pyModule = py.getModule("calc_stress")
             val result: PyObject = pyModule.callAttr("get_single_stress", heartRateValues)
+
             stress = result.toInt()
         }
         HeartRateManager.updateStress(stress)
