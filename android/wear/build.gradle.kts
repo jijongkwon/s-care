@@ -80,7 +80,12 @@ dependencies {
 
     implementation(libs.androidx.wear.tooling.preview)
     // https://developer.android.com/jetpack/androidx/releases/activity?hl=ko
-    implementation(libs.androidx.activity.ktx)
+    val activity_version = "1.9.2"
+    implementation("androidx.activity:activity-ktx:$activity_version")
+
+    // https://developer.android.com/jetpack/androidx/releases/fragment?hl=ko#declaring_dependencies
+    val fragment_version = "1.8.5"
+    implementation("androidx.fragment:fragment-ktx:$fragment_version")
 
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.activity.compose)

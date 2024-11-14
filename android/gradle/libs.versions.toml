@@ -75,7 +75,6 @@ datastorePreferencesCoreJvm = "1.1.1"
 
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
-activity-ktx = { module = "androidx.activity:activity-ktx" }
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx" }
 androidx-compose-foundation = { module = "androidx.wear.compose:compose-foundation", version.ref = "composeFoundation" }
 androidx-compose-navigation = { module = "androidx.wear.compose:compose-navigation" }
