@@ -42,6 +42,8 @@ import com.scare.ui.theme.Gray
 import com.scare.ui.theme.NeonYellow
 import com.scare.ui.theme.ScareTheme
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalNaverMapApi::class)
 @Composable
@@ -51,6 +53,18 @@ fun MyReport(
     viewModel: WeeklyReportViewModel
 ) {
     val weeklyReport by viewModel.weeklyReport.collectAsState()
+
+    // 원하는 날짜 형식 설정
+    val inputFormatter = DateTimeFormatter.ofPattern("yyyyMMdd")
+    val outputFormatter = DateTimeFormatter.ofPattern("MM월 dd일")
+
+    // from과 to를 LocalDate로 변환하고 원하는 형식으로 변경
+    val formattedFrom = from?.let {
+        LocalDate.parse(it, inputFormatter).format(outputFormatter)
+    }
+    val formattedTo = to?.let {
+        LocalDate.parse(it, inputFormatter).format(outputFormatter)
+    }
 
     LaunchedEffect(from, to) {
         if (from != null && to != null) {
@@ -72,7 +86,7 @@ fun MyReport(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                "$from 부터 $to"
+                "$formattedFrom 부터 $formattedTo"
             )
 
             Spacer(modifier = Modifier.size(4.dp))

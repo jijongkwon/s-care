@@ -67,14 +67,11 @@ fun getWeekRangeForDate(selectedDate: LocalDate): Pair<String, String> {
     val startOfWeek = selectedDate.with(weekFields.dayOfWeek(), 1L) // 월요일로 설정
     val endOfWeek = selectedDate.with(weekFields.dayOfWeek(), 7L) // 일요일로 설정
 
-    // 현재 날짜 또는 주차 종료일 선택
-    val endDate = if (endOfWeek.isBefore(LocalDate.now())) endOfWeek else LocalDate.now()
-
     // 날짜 형식 설정
     val dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd")
 
     return Pair(
         startOfWeek.format(dateFormatter), // 시작 날짜
-        endDate.format(dateFormatter) // 종료 날짜
+        endOfWeek.format(dateFormatter) // 종료 날짜
     )
 }
