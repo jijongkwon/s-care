@@ -38,6 +38,8 @@ object WeatherCriteria {
 
     fun isWindSpeedGood(speed: Double) = speed in GOOD_WIND_SPEED_MIN..GOOD_WIND_SPEED_MAX
 
+    fun isWindSpeedBad(speed: Double) = speed > MODERATE_WIND_SPEED_MAX_HIGH
+
     fun isWindSpeedModerate(speed: Double) =
         (speed in MODERATE_WIND_SPEED_MIN_LOW..MODERATE_WIND_SPEED_MAX_LOW) ||
                 (speed in MODERATE_WIND_SPEED_MIN_HIGH..MODERATE_WIND_SPEED_MAX_HIGH)

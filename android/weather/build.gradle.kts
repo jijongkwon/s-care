@@ -3,14 +3,13 @@ import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    id("kotlin-kapt")
     id("com.google.devtools.ksp")
     id("dagger.hilt.android.plugin") // Hilt 플러그인 추가
 }
 
 android {
     namespace = "com.scare.weather"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 30

@@ -171,4 +171,7 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
+    // Weather
+    implementation(project(":weather"))
+
 }
