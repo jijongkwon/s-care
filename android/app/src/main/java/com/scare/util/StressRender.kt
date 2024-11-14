@@ -54,3 +54,17 @@ fun getTextColor(stressLevel: String): Color {
 
     return textColor
 }
+
+fun getStressColor(stress:Int): Pair<Color, Boolean> {
+    val stressColor = when {
+        stress <= 0 -> Pair(Color.Transparent, true)
+        stress <= 20 -> Pair(low, false)
+        stress <= 40 -> Pair(medium, false)
+        else -> Pair(high, false)
+    }
+
+    return stressColor
+}
+
+
+
