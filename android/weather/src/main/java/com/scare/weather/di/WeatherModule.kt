@@ -43,7 +43,7 @@ object WeatherModule {
         gson: Gson
     ): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("http://apis.data.go.kr/")
+            .baseUrl("https://apis.data.go.kr/")
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
