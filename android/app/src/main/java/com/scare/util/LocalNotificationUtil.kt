@@ -16,7 +16,7 @@ import com.scare.R
 
 object LocalNotificationUtil {
 
-    fun showStressNotification(context: Context, message: String) {
+    fun showStressNotification(context: Context, title: String, message: String) {
         val channelId = "StressNotification"
 
         // 알림 채널 생성 (안드로이드 8.0 이상)
@@ -34,7 +34,7 @@ object LocalNotificationUtil {
 
         val notification = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_stress_notification) // 아이콘 설정
-            .setContentTitle("S-care 스트레스 경고")
+            .setContentTitle("$title - S-care")
             .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .build()

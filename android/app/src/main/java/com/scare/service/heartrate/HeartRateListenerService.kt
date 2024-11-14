@@ -21,10 +21,17 @@ import com.scare.data.heartrate.notification.datastore.LastNotificationData
 import com.scare.repository.heartrate.HeartRateRepository
 import com.scare.ui.mobile.viewmodel.sensor.HeartRateManager
 import com.scare.util.LocalNotificationUtil
+import com.scare.weather.core.analyzer.WeatherAnalyzer
+import com.scare.weather.core.analyzer.WeatherCriteria
+import com.scare.weather.di.WeatherModule
+import com.scare.weather.model.WeatherInfo
+import com.scare.weather.model.util.GPSConvertor
+import com.scare.weather.network.WeatherService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -33,11 +40,24 @@ class HeartRateListenerService : WearableListenerService() {
 
     private lateinit var db: AppDatabase
     private lateinit var dataClient: DataClient
+    private lateinit var weatherService: WeatherService
+    private lateinit var weatherAnalyzer: WeatherAnalyzer
 
     override fun onCreate() {
         super.onCreate()
         dataClient = Wearable.getDataClient(this)
         db = AppDatabase.getInstance(this)
+        weatherService
+
+        // WeatherService 초기화
+        val weatherApi = WeatherModule.provideWeatherApi(
+            WeatherModule.provideRetrofit(
+                WeatherModule.provideOkHttpClient(),
+                WeatherModule.provideGson()
+            )
+        )
+        weatherService = WeatherModule.provideWeatherService(weatherApi, WeatherModule.provideApiKey())
+        weatherAnalyzer = WeatherAnalyzer()
     }
 
     override fun onDataChanged(dataEvents: DataEventBuffer) {
@@ -61,13 +81,18 @@ class HeartRateListenerService : WearableListenerService() {
                     
                     CoroutineScope(Dispatchers.IO).launch {
                         if (!isExpiredLastNotificationData()) {
-                            Log.d("Stress Notification is Expried", "알람이 아직 유효함.")
                             return@launch
                         }
 
-                        Log.d("Stress Notification is Expried", "알람 전송 1시간 지남.(만료)")
+                        Log.d("Stress Notification is Expried", "알림 전송 가능 (1시간 지나서 만료)")
+
+                        // 날씨 정보를 가져와 비가 오는지 확인
+                        if (isBadWeather()) {
+                            return@launch
+                        }
+
                         // 알람 전송
-                        showStressNotificationIfPermitted(stress)
+                        showStressNotificationIfPermitted(stress, isBadWeather())
                         // 데이터 저장
                         LastNotificationData(this@HeartRateListenerService).updateLastNotificationDate(LocalDateTime.now())
                     }
@@ -125,10 +150,10 @@ class HeartRateListenerService : WearableListenerService() {
         }
     }
 
-    private fun showStressNotificationIfPermitted(stress: Int) {
+    private fun showStressNotificationIfPermitted(stress: Int, isBadWeather: Boolean) {
         // 권한이 있는지 확인
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-            LocalNotificationUtil.showStressNotification(this, "스트레스 지수 $stress (${LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"))})")
+            LocalNotificationUtil.showStressNotification(this, "스트레스 매우 높음!! $stress (${ LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"))})", if (isBadWeather) "날씨 안 좋음!" else "날씨 좋음!")
         } else {
             Log.e("HeartRateListenerService", "알림 권한이 없어 알림을 표시하지 못했습니다.")
         }
@@ -142,9 +167,50 @@ class HeartRateListenerService : WearableListenerService() {
         val now = LocalDateTime.now()
 
         // 마지막 알림 날짜가 null이 아니고, 1시간 이상 차이가 나는지 확인
-        return lastDate?.let {
-            Duration.between(it, now).toHours() >= 1
-        } ?: true // lastDate가 null인 경우 true 반환 (즉, 알림이 만료됨을 의미)
+        val result = lastDate?.let {
+//            Duration.between(it, now).toHours() >= 1
+            Duration.between(it, now).seconds >= 30 // 테스트 단계에서는 30초로 설정
+        } ?: true
+
+        if (!result) {
+            Log.d("Stress Notification", "알림을 보낸지 1시간이 지나지 않았음!")
+        }
+
+        return result
     }
 
+    private suspend fun isBadWeather(): Boolean = withContext(Dispatchers.IO) {
+        var result = true;
+
+        try {
+            // 사용자의 현재 위치 넣기
+            val request = GPSConvertor.createWeatherRequest(37.552987017, 126.972591728) // GPS 좌표 입력
+            val response = weatherService.getWeather(request).execute()
+
+            if (response.isSuccessful) {
+                val weatherResponse = response.body() ?: throw NullPointerException("날씨 응답이 null입니다.")
+                val weatherInfo = WeatherInfo.fromWeatherResponse(weatherResponse)
+//                val weatherStatus = weatherAnalyzer.analyzeWeather(weatherInfo)
+
+                if (WeatherCriteria.isBadWeather(weatherInfo)) {
+                    Log.d("checkWeather", "날씨가 좋지 않습니다!")
+
+                } else {
+                    Log.d("checkWeather", "날씨가 매우 좋습니다!")
+                    result = false
+                }
+
+            } else {
+                Log.e("checkWeather", "날씨 정보를 가져오는 데 실패했습니다.")
+            }
+
+        } catch (e: NullPointerException) {
+            Log.e("checkWeather", "날씨 응답이 null입니다.")
+        } catch (e: Exception) {
+            Log.e("checkWeather", "날씨 정보 조회 중 오류 발생", e)
+        }
+
+        result
+    }
+    
 }

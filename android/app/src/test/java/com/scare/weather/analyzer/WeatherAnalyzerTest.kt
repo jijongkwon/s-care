@@ -1,7 +1,8 @@
 package com.scare.weather.analyzer
 
-import com.scare.weather.enums.WeatherStatus
+import com.scare.weather.core.analyzer.WeatherAnalyzer
 import com.scare.weather.model.WeatherInfo
+import com.scare.weather.model.enums.WeatherStatus
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
