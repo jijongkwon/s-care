@@ -4,7 +4,9 @@ import android.Manifest
 import android.app.Activity
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
@@ -12,6 +14,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import com.scare.MainActivity
 import com.scare.R
 
 object LocalNotificationUtil {
@@ -32,11 +35,21 @@ object LocalNotificationUtil {
             notificationManager.createNotificationChannel(channel)
         }
 
+        // 알림을 누르면 앱의 MainActivity를 실행하도록 설정
+        val intent = Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        val pendingIntent = PendingIntent.getActivity(
+            context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
         val notification = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_stress_notification) // 아이콘 설정
             .setContentTitle("$title - S-care")
             .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setContentIntent(pendingIntent) // 클릭 시 실행될 PendingIntent
+            .setAutoCancel(true) // 클릭 후 알림이 자동으로 닫히도록 설정
             .build()
 
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
