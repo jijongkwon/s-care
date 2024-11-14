@@ -72,9 +72,9 @@ val happySentence = listOf("기분이 좋은 날이네", "완전 행복해")
 
 fun getStressSentence(stress: Int): String {
     val stressSentence = when {
-        stress <= 20 -> groomySentence.random()  // 스트레스가 낮을 때 groomySentence에서 랜덤으로 선택
-        stress in 21..50 -> normalSentence.random()  // 스트레스가 중간일 때 normalSentence에서 랜덤 선택
-        else -> happySentence.random()  // 스트레스가 높을 때 happySentence에서 랜덤 선택
+        stress <= 20 -> happySentence.random()
+        stress in 21..50 -> normalSentence.random()
+        else -> groomySentence.random()
     }
     return stressSentence
 }
