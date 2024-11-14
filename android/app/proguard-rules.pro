@@ -20,5 +20,7 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+
 -keep class com.google.android.gms.wearable.** { *; }
 -keep interface com.google.android.gms.wearable.** { *; }
+
