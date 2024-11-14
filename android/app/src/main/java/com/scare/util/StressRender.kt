@@ -66,5 +66,17 @@ fun getStressColor(stress:Int): Pair<Color, Boolean> {
     return stressColor
 }
 
+val groomySentence = listOf("내가 항상 곁에 있어", "바람이라도 쐬볼까?", "내일은 더 좋을거야", "손 꾹꾹이할까?")
+val normalSentence = listOf("오늘도 파이팅이야!", "좋은 일이 가득하길!")
+val happySentence = listOf("기분이 좋은 날이네", "완전 행복해")
+
+fun getStressSentence(stress: Int): String {
+    val stressSentence = when {
+        stress <= 20 -> groomySentence.random()  // 스트레스가 낮을 때 groomySentence에서 랜덤으로 선택
+        stress in 21..50 -> normalSentence.random()  // 스트레스가 중간일 때 normalSentence에서 랜덤 선택
+        else -> happySentence.random()  // 스트레스가 높을 때 happySentence에서 랜덤 선택
+    }
+    return stressSentence
+}
 
 
