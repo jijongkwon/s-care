@@ -118,9 +118,8 @@ class MainActivity : ComponentActivity() {
     companion object {
         private val PERMISSIONS = arrayOf(
             Manifest.permission.BODY_SENSORS,
+            Manifest.permission.FOREGROUND_SERVICE,
             Manifest.permission.POST_NOTIFICATIONS,
-            Manifest.permission.
         )
-
     }
 }
