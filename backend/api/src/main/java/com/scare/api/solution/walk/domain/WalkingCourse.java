@@ -37,7 +37,7 @@ public class WalkingCourse extends BaseTimeEntity {
 	private double maxStress;
 
 	@Column(name = "healing_stress_avg", nullable = false)
-	private double healingStressAvg;
+	private Double healingStressAvg;
 
 	@Column(name = "start_idx")
 	private Integer startIdx;
