@@ -12,8 +12,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.google.firebase.FirebaseApp
-import com.google.firebase.messaging.FirebaseMessaging
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.scare.data.RetrofitClient
 import com.scare.data.calender.repository.MonthlyStressRepository
@@ -54,13 +52,11 @@ import com.scare.ui.mobile.viewmodel.stress.StressViewModel
 import com.scare.ui.mobile.viewmodel.walk.WalkViewModel
 import com.scare.ui.mobile.viewmodel.walk.WalkViewModelFactory
 import com.scare.ui.theme.ScareTheme
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 const val TAG = "scare mobile"
 
 class MainActivity : ComponentActivity() {
+
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var tokenRepository: TokenRepository // 클래스 필드로 선언
     private val heartRateViewModel: HeartRateViewModel by viewModels()
@@ -122,26 +118,14 @@ class MainActivity : ComponentActivity() {
         // StressViewModel의 데이터 업로드 메서드 호출
         stressViewModel.uploadDailyStressData()
 
-//        FirebaseApp.initializeApp(this)
-//        Handler(Looper.getMainLooper()).post {
-//            initializeFCM()
-//        }
-
         //한달 스트레스
         // MonthlyStressRepository 생성
         val monthlyStressRepository = MonthlyStressRepository()
 
         // MonthlyStressViewModel을 Factory를 사용하여 초기화
-        val monthlyStressFactory = MonthlyStressViewModelFactory(monthlyStressRepository)
-        monthlyStressViewModel = ViewModelProvider(this, monthlyStressFactory)[MonthlyStressViewModel::class.java]
+        val factory = MonthlyStressViewModelFactory(monthlyStressRepository)
+        monthlyStressViewModel = ViewModelProvider(this, factory)[MonthlyStressViewModel::class.java]
 
-
-        //주간리포트
-        // WeeklyReportRepository 및 ViewModel 생성
-        val weeklyReportRepository = WeeklyReportRepository()
-
-        val weeklyReportFactory = WeeklyReportViewModelFactory(weeklyReportRepository)
-        weeklyReportViewModel = ViewModelProvider(this, weeklyReportFactory)[WeeklyReportViewModel::class.java]
 
         setContent {
             val navController = rememberNavController()
@@ -217,22 +201,4 @@ class MainActivity : ComponentActivity() {
         signInLauncher.launch(loginViewModel.getSignInIntent())
     }
 
-    private fun initializeFCM() {
-
-        FirebaseApp.initializeApp(this)
-
-        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val token = task.result
-                Log.d("FCM Token", "FCM Token: $token")
-
-                // CoroutineScope를 사용하여 saveFcmToken 호출
-                CoroutineScope(Dispatchers.IO).launch {
-                    tokenRepository.saveFcmToken(token)
-                }
-            } else {
-                Log.e("FCM Token", "Failed to get FCM token", task.exception)
-            }
-        }
-    }
 }
