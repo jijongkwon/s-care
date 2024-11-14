@@ -19,9 +19,14 @@ import com.scare.R
 import com.scare.ui.theme.Typography
 import com.scare.ui.theme.White
 import com.scare.util.getPetImage
+import com.scare.util.getStressSentence
 
 @Composable
-fun PetSentence() {
+fun PetSentence(
+    stress: Int
+) {
+    val sentense = getStressSentence(stress);
+
     Box(
         modifier = Modifier,
     ) {
@@ -33,7 +38,7 @@ fun PetSentence() {
                 .width(250.dp).height(100.dp)
         )
         Text(
-            text = "기분이 좋은 날이에요",
+            text = sentense,
             style = Typography.titleLarge.copy( // TextStyle 적용
                 fontSize = 18.sp, // 크기 변경
                 color = White, // 색깔 변경

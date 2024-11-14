@@ -171,9 +171,8 @@ fun CourseReport(
                                 )
                             }
                         } else {
-                            // 지도 데이터가 없을 때 대체 메시지
                             Text(
-                                text = "코스 데이터가 없습니다",
+                                text = "베스트 코스가 없습니다",
                                 style = MaterialTheme.typography.bodyMedium,
                                 modifier = Modifier.align(Alignment.Center)
                             )

@@ -1,9 +1,9 @@
 package com.scare.ui.mobile.calender.component
 
 import android.util.Log
-import android.widget.ImageView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,11 +38,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import coil.ImageLoader
-import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
 import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import com.scare.R
@@ -51,11 +48,10 @@ import com.scare.ui.theme.DarkNavy
 import com.scare.ui.theme.NeonYellow
 import com.scare.ui.theme.White
 import com.scare.util.getPetFace
+import com.scare.util.getStressColor
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
-import java.time.format.TextStyle
-import java.util.Locale
 
 //달력
 @Composable
@@ -179,17 +175,21 @@ fun Calender(
                                     .padding(4.dp)
                             ) {
                                 if (date.isBefore(today)) {
-                                    val petFace = getPetFace(stress)
+                                    val (color, hasBorder) = getStressColor(stress)
 
-                                    Image(
-                                        painter = petFace,
-                                        contentDescription = "Stress",
-                                        modifier = Modifier.size(40.dp),
-                                        contentScale = ContentScale.Fit
+                                    Box(
+                                        modifier = Modifier
+                                            .size(30.dp)
+                                            .background(color = color,
+                                                shape = MaterialTheme.shapes.small)
+                                            .then(
+                                                if (hasBorder) Modifier.border(0.75.dp, White, shape = MaterialTheme.shapes.small)
+                                                else Modifier
+                                            )
                                     )
                                 } else {
                                     // 이미지가 없는 경우 빈 공간 유지
-                                    Spacer(modifier = Modifier.size(40.dp))
+                                    Spacer(modifier = Modifier.size(30.dp))
                                 }
 
                                 Spacer(modifier = Modifier.height(4.dp))
@@ -237,6 +237,7 @@ fun DayItem(date: LocalDate, isSelected: Boolean, onDaySelected: (LocalDate) -> 
 
     Box(
         modifier = Modifier
+            .padding(4.dp)
             .size(50.dp)
             .background(backgroundColor)
             .clickable { onDaySelected(date) },
@@ -250,6 +251,7 @@ fun DayItem(date: LocalDate, isSelected: Boolean, onDaySelected: (LocalDate) -> 
     }
 }
 
+//로딩중
 @Composable
 fun LoadingAnimation(
     modifier: Modifier = Modifier

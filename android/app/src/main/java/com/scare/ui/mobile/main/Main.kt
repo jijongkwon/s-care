@@ -20,7 +20,7 @@ import com.scare.ui.mobile.viewmodel.sensor.HeartRateViewModel
 fun MainPage(loginViewModel: LoginViewModel, heartRateViewModel: HeartRateViewModel) {
 
     val profileUrl by loginViewModel.profileUrl.collectAsState()
-    val hrValue by heartRateViewModel.stress.collectAsState()
+    val stress by heartRateViewModel.stress.collectAsState()
 
     Scaffold(
         topBar = { TheHeader(profileUrl, isMainPage = true) }
@@ -34,9 +34,9 @@ fun MainPage(loginViewModel: LoginViewModel, heartRateViewModel: HeartRateViewMo
                 .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            PetSentence()
-            MyPetImage(hrValue)
-            MyStressRate(hrValue)
+            PetSentence(stress)
+            MyPetImage(stress)
+            MyStressRate(stress)
             ButtonContainer()
             SolutionCardList(solutions)
         }
