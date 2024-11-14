@@ -1,12 +1,17 @@
 package com.scare.service.heartrate
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.location.Location
 import android.util.Log
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.chaquo.python.PyObject
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.wearable.DataClient
 import com.google.android.gms.wearable.DataEvent
 import com.google.android.gms.wearable.DataEventBuffer
@@ -31,6 +36,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.time.Duration
 import java.time.LocalDateTime
@@ -42,6 +48,7 @@ class HeartRateListenerService : WearableListenerService() {
     private lateinit var dataClient: DataClient
     private lateinit var weatherService: WeatherService
     private lateinit var weatherAnalyzer: WeatherAnalyzer
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     override fun onCreate() {
         super.onCreate()
@@ -58,6 +65,8 @@ class HeartRateListenerService : WearableListenerService() {
         )
         weatherService = WeatherModule.provideWeatherService(weatherApi, WeatherModule.provideApiKey())
         weatherAnalyzer = WeatherAnalyzer()
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
     }
 
     override fun onDataChanged(dataEvents: DataEventBuffer) {
@@ -183,8 +192,11 @@ class HeartRateListenerService : WearableListenerService() {
         var result = true;
 
         try {
+            // 현재 위치를 가져오기 전에 위치 권한 확인
+            val location = getLastKnownLocation()
+
             // 사용자의 현재 위치 넣기
-            val request = GPSConvertor.createWeatherRequest(37.552987017, 126.972591728) // GPS 좌표 입력
+            val request = GPSConvertor.createWeatherRequest(location.latitude, location.longitude)
             val response = weatherService.getWeather(request).execute()
 
             if (response.isSuccessful) {
@@ -212,5 +224,22 @@ class HeartRateListenerService : WearableListenerService() {
 
         result
     }
-    
+
+    @SuppressLint("MissingPermission")
+    private suspend fun getLastKnownLocation() = withContext(Dispatchers.IO) {
+        // 위치 권한이 있는지 확인
+        if (ActivityCompat.checkSelfPermission(this@HeartRateListenerService, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(this@HeartRateListenerService, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Log.e("getLastKnownLocation", "위치 권한이 필요함!!")
+            throw SecurityException("위치 권한이 필요합니다!!")
+        }
+
+        // 마지막으로 알려진 위치를 가져옴
+        // 마지막 알려진 위치가 없을 경우 기본 값으로 대체
+        fusedLocationClient.lastLocation.await() ?: Location("default").apply {
+            latitude = 37.552987017
+            longitude = 126.972591728
+        }
+    }
+
 }
