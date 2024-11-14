@@ -1,13 +1,11 @@
 package com.scare.presentation.home
 
-import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
@@ -25,19 +23,14 @@ import com.google.android.horologist.compose.layout.ScreenScaffold
 import com.scare.R
 import com.scare.TAG
 import com.scare.presentation.component.PetImage
-import com.scare.presentation.component.WalkButton
 import com.scare.presentation.sensor.HeartRateViewModel
 import com.scare.presentation.theme.color_stress_bad
 import com.scare.presentation.theme.color_stress_good
 import com.scare.presentation.theme.color_stress_normal
-import com.scare.presentation.walk.WalkViewModel
 
 @Composable
 fun HomeScreen(
-    context: Context,
     heartRateViewModel: HeartRateViewModel,
-    walkViewModel: WalkViewModel,
-    onClickStartWalk: () -> Unit
 ) {
     val stress by heartRateViewModel.stress.collectAsState()
 
@@ -85,13 +78,6 @@ fun HomeScreen(
                             color = stressState.color
                         )
                     }
-
-                    Spacer(modifier = Modifier.height(10.dp))
-                }
-
-                WalkButton("산책 시작") {
-                    onClickStartWalk()
-                    walkViewModel.updateWalkStatus(context, true)
                 }
             }
         }

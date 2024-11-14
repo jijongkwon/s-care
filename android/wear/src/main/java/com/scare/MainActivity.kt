@@ -27,9 +27,6 @@ import com.scare.presentation.sensor.HeartRateManager
 import com.scare.presentation.sensor.HeartRateViewModel
 import com.scare.presentation.sensor.HeartRateViewModelFactory
 import com.scare.presentation.theme.ScareTheme
-import com.scare.presentation.walk.WalkScreen
-import com.scare.presentation.walk.WalkViewModel
-import com.scare.presentation.walk.WalkViewModelFactory
 import com.scare.service.listener.AuthRequestService
 import com.scare.viewmodel.auth.AuthViewModel
 import com.scare.viewmodel.auth.AuthViewModelFactory
@@ -41,10 +38,6 @@ class MainActivity : ComponentActivity() {
     // AuthViewModel 생성에 AuthViewModelFactory 사용
     private val authViewModel: AuthViewModel by viewModels {
         AuthViewModelFactory(this)
-    }
-
-    private val walkViewModel: WalkViewModel by viewModels {
-        WalkViewModelFactory(this)
     }
 
     private val heartRateViewModel: HeartRateViewModel by viewModels {
@@ -66,12 +59,10 @@ class MainActivity : ComponentActivity() {
         setContent {
             // 로그인 상태를 관찰하여 UI를 업데이트
             val isLoggedIn by authViewModel.isLoggedIn.collectAsState(initial = false)
-            val isWalk by walkViewModel.isWalk.collectAsState(initial = false)
             val homeRoot = stringResource(R.string.home_root)
-            val walkRoot = stringResource(R.string.walk_root)
             val authRoot = stringResource(R.string.auth_root)
 
-            val startDestination = if (!isLoggedIn) authRoot else if (isWalk) walkRoot else homeRoot
+            val startDestination = if (!isLoggedIn) authRoot else homeRoot
 
             Log.d("MainActivity", "$isLoggedIn")
 
@@ -84,20 +75,8 @@ class MainActivity : ComponentActivity() {
                     ) {
                         composable(route = homeRoot) {
                             HomeScreen(
-                                this@MainActivity,
                                 heartRateViewModel,
-                                walkViewModel
-                            ) {
-                                navController.navigate(walkRoot)
-                            }
-                        }
-                        composable(route = walkRoot) {
-                            WalkScreen(
-                                this@MainActivity,
-                                walkViewModel
-                            ) {
-                                navController.navigate(homeRoot)
-                            }
+                            )
                         }
                         composable(route = authRoot) {
                             HomeAuth {
@@ -139,8 +118,8 @@ class MainActivity : ComponentActivity() {
     companion object {
         private val PERMISSIONS = arrayOf(
             Manifest.permission.BODY_SENSORS,
-            Manifest.permission.POST_NOTIFICATIONS
+            Manifest.permission.FOREGROUND_SERVICE,
+            Manifest.permission.POST_NOTIFICATIONS,
         )
-
     }
 }
