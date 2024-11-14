@@ -54,7 +54,6 @@ class HeartRateListenerService : WearableListenerService() {
         super.onCreate()
         dataClient = Wearable.getDataClient(this)
         db = AppDatabase.getInstance(this)
-        weatherService
 
         // WeatherService 초기화
         val weatherApi = WeatherModule.provideWeatherApi(
