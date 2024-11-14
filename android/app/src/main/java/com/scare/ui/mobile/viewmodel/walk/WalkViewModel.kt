@@ -7,16 +7,18 @@ import android.location.LocationManager
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
-import com.scare.TAG
-import com.scare.data.walk.datastore.*
+import com.scare.data.walk.datastore.getWalkEndTime
+import com.scare.data.walk.datastore.getWalkStartTime
+import com.scare.data.walk.datastore.getWalkStatus
+import com.scare.data.walk.datastore.saveWalkEndTime
+import com.scare.data.walk.datastore.saveWalkStartTime
+import com.scare.data.walk.datastore.saveWalkStatus
 import com.scare.data.walk.dto.LocationDTO
 import com.scare.data.walk.dto.WalkRequestDTO
 import com.scare.data.walk.repository.WalkRepository
 import com.scare.repository.heartrate.HeartRateRepository
 import com.scare.repository.location.LocationRepository
-import com.scare.util.WearableUtils
 import com.scare.util.formatDateTimeToSearch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -71,11 +73,6 @@ class WalkViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             saveWalkStatus(context, isWalk)
             _isWalk.value = isWalk
-
-            val isConnected = WearableUtils.isWatchConnected(context)
-            if (isConnected) {
-                sendToHandheldDevice(isWalk)
-            }
         }
     }
 
@@ -90,20 +87,6 @@ class WalkViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             saveWalkEndTime(context, endTime)
             _walkEndTime.value = endTime
-        }
-    }
-
-    private fun sendToHandheldDevice(isWalk: Boolean) {
-        val putDataReq = PutDataMapRequest.create("/walkState").apply {
-            dataMap.putBoolean("isWalk", isWalk)
-            dataMap.putLong("timestamp", System.currentTimeMillis())  // Optional: add a timestamp
-        }.asPutDataRequest()
-            .setUrgent()
-
-        dataClient.putDataItem(putDataReq).addOnSuccessListener {
-            Log.d(TAG, "Walk state is sent to handheld device successfully")
-        }.addOnFailureListener { e ->
-            Log.e(TAG, "Failed to send walk state to handheld device", e)
         }
     }
 

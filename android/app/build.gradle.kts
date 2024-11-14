@@ -161,8 +161,6 @@ dependencies {
     // wearable service
     implementation(libs.gms.play.services.wearable)
 
-    implementation(project(":walk"))
-
     // Room
     val room_version = "2.6.1"
     implementation("androidx.room:room-runtime:$room_version")
