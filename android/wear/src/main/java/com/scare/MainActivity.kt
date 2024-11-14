@@ -6,14 +6,17 @@
 
 package com.scare
 
+import android.Manifest
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions
 import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
+import androidx.core.content.ContextCompat
 import androidx.wear.compose.material3.AppScaffold
 import androidx.wear.compose.navigation.SwipeDismissableNavHost
 import androidx.wear.compose.navigation.composable
@@ -50,6 +53,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        checkPermission()
 
         HeartRateManager.setViewModel(heartRateViewModel)
 
@@ -104,5 +108,39 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    private val requestPermissionLauncher = registerForActivityResult(RequestMultiplePermissions()) { permissions ->
+        permissions.entries.forEach { permission ->
+            when {
+                permission.value -> {
+                    Log.d(TAG, "permission granted")
+                }
+                shouldShowRequestPermissionRationale(permission.key) -> {
+                    Log.d(TAG, "permission required")
+                }
+                else -> {
+                    Log.d(TAG, "permission denied")
+                }
+            }
+        }
+    }
+
+    private fun checkPermission() {
+        val isAllPermissionGranted = PERMISSIONS.all { permission ->
+            ContextCompat.checkSelfPermission(this, permission) == 0
+        }
+
+        if (!isAllPermissionGranted) {
+            requestPermissionLauncher.launch(PERMISSIONS)
+        }
+    }
+
+    companion object {
+        private val PERMISSIONS = arrayOf(
+            Manifest.permission.BODY_SENSORS,
+            Manifest.permission.POST_NOTIFICATIONS
+        )
+
     }
 }
