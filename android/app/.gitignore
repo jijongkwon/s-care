@@ -1,1 +1,3 @@
 /build
+/py310/release
+/py310/debug
