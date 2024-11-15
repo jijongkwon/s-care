@@ -99,9 +99,10 @@ public class WalkingCommandService {
 		return WalkingCourse.builder()
 			.minStress(dto.getStressData().getMinStress())
 			.maxStress(dto.getStressData().getMaxStress())
-			.startIdx(dto.getStressData().getStartIdx())
-			.endIdx(dto.getStressData().getEndIdx())
-			.healingStressAvg(dto.getStressData().getHealingStressAvg())
+			.startIdx(dto.getStressData().getStartIdx() != null ? dto.getStressData().getStartIdx() : 0)
+			.endIdx(dto.getStressData().getEndIdx() != null ? dto.getStressData().getEndIdx() : 0)
+			.healingStressAvg(
+				dto.getStressData().getHealingStressAvg() != null ? dto.getStressData().getHealingStressAvg() : 0)
 			.startedAt(dto.getStartedAt())
 			.finishedAt(dto.getFinishedAt())
 			.member(member)

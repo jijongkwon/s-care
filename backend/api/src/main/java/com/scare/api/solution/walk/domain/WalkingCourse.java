@@ -37,13 +37,13 @@ public class WalkingCourse extends BaseTimeEntity {
 	private double maxStress;
 
 	@Column(name = "healing_stress_avg", nullable = false)
-	private Double healingStressAvg;
+	private double healingStressAvg;
 
-	@Column(name = "start_idx")
-	private Integer startIdx;
+	@Column(name = "start_idx", nullable = false)
+	private int startIdx;
 
-	@Column(name = "end_idx")
-	private Integer endIdx;
+	@Column(name = "end_idx", nullable = false)
+	private int endIdx;
 
 	@Column(name = "started_at", nullable = false)
 	private LocalDateTime startedAt;
@@ -56,8 +56,8 @@ public class WalkingCourse extends BaseTimeEntity {
 	private Member member;
 
 	@Builder
-	public WalkingCourse(double minStress, double maxStress, double healingStressAvg, Integer startIdx,
-		Integer endIdx, LocalDateTime startedAt, LocalDateTime finishedAt, Member member) {
+	public WalkingCourse(double minStress, double maxStress, double healingStressAvg, int startIdx,
+		int endIdx, LocalDateTime startedAt, LocalDateTime finishedAt, Member member) {
 		this.minStress = minStress;
 		this.maxStress = maxStress;
 		this.healingStressAvg = healingStressAvg;
