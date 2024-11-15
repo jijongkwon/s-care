@@ -22,7 +22,7 @@ val WALK_START_TIME = stringPreferencesKey("walkStartTime")
 val WALK_END_TIME = stringPreferencesKey("walkEndTime")
 
 // 산책 상태 저장 함수
-fun saveWalkStatus(context: Context, isWalk: Boolean) {
+suspend fun saveWalkStatus(context: Context, isWalk: Boolean) {
     Log.d(TAG, "isWalk: $isWalk")
     CoroutineScope(Dispatchers.IO).launch {
         context.walkStore.edit { preferences ->
@@ -39,7 +39,7 @@ fun getWalkStatus(context: Context): Flow<Boolean> {
 }
 
 // 산책 시작 시간 저장 함수
-fun saveWalkStartTime(context: Context, startTime: String) {
+suspend fun saveWalkStartTime(context: Context, startTime: String) {
     Log.d(TAG, "isWalk: $startTime")
     CoroutineScope(Dispatchers.IO).launch {
         context.walkStore.edit { preferences ->
@@ -56,7 +56,7 @@ fun getWalkStartTime(context: Context): Flow<String> {
 }
 
 // 산책 완료 시간 저장 함수
-fun saveWalkEndTime(context: Context, endTime: String) {
+suspend fun saveWalkEndTime(context: Context, endTime: String) {
     Log.d(TAG, "isWalk: $endTime")
     CoroutineScope(Dispatchers.IO).launch {
         context.walkStore.edit { preferences ->

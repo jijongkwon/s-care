@@ -20,7 +20,7 @@ class HeartRateRepository @Inject constructor(
         return appDatabase.getHeartRateDao().getRecentHeartRates()
     }
 
-    fun getHeartRatesWhileWalking(startDate: String, endDate: String): List<HeartRate> {
+    suspend fun getHeartRatesWhileWalking(startDate: String, endDate: String): List<HeartRate> {
         return appDatabase.getHeartRateDao().getHeartRatesWhileWalking(startDate, endDate)
     }
 
