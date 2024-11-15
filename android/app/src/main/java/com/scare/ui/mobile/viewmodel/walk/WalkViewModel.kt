@@ -9,12 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.wearable.Wearable
 import com.scare.TAG
-import com.scare.data.walk.datastore.getWalkEndTime
-import com.scare.data.walk.datastore.getWalkStartTime
-import com.scare.data.walk.datastore.getWalkStatus
-import com.scare.data.walk.datastore.saveWalkEndTime
-import com.scare.data.walk.datastore.saveWalkStartTime
-import com.scare.data.walk.datastore.saveWalkStatus
+import com.scare.data.walk.datastore.*
 import com.scare.data.walk.dto.LocationDTO
 import com.scare.data.walk.dto.WalkRequestDTO
 import com.scare.data.walk.repository.WalkRepository
@@ -22,6 +17,7 @@ import com.scare.repository.heartrate.HeartRateRepository
 import com.scare.repository.location.LocationRepository
 import com.scare.util.formatDateTimeToSearch
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -147,8 +143,8 @@ class WalkViewModel(
             Log.d(TAG, "before update")
             _locationManager?.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER, // GPS를 사용
-                5000L, // 최소 업데이트 간격 (1초)
-                1f, // 최소 거리 변화 (1미터)
+                1000L, // 최소 업데이트 간격 (1초)
+                0f, // 최소 거리 변화 (1미터)
                 _locationListener!!
             )
             Log.d(TAG, "after update ")
@@ -188,6 +184,7 @@ class WalkViewModel(
             fetchHeartRatesWhileWalking(_walkStartTime.value, currentTime)
             Log.d(TAG, "walk - fetchLocationsWhileWalking")
             fetchLocationsWhileWalking(_walkStartTime.value, currentTime)
+            delay(300)
             Log.d(TAG, "walk - postWalking")
             postWalking()
         }
