@@ -23,7 +23,7 @@ class HandTrackingProcessor @Inject constructor(
 ) {
     private var handLandmarker: HandLandmarker? = null
     private var lastProcessedTimestamp = 0L
-    private val MINIMUM_TIME_BETWEEN_PROCESSING = 16L // 약 60fps
+    private val MINIMUM_TIME_BETWEEN_PROCESSING = 33L // 30fps
     private val imageProcessingOptions = ImageProcessingUtils.createImageProcessingOptions()
 
     init {
@@ -39,9 +39,9 @@ class HandTrackingProcessor @Inject constructor(
 
             val options = HandLandmarker.HandLandmarkerOptions.builder()
                 .setBaseOptions(baseOptions)
-                .setMinHandDetectionConfidence(0.3f)  // 감도 조정
-                .setMinHandPresenceConfidence(0.3f)
-                .setMinTrackingConfidence(0.3f)
+                .setMinHandDetectionConfidence(0.2f)  // 감도 조정
+                .setMinHandPresenceConfidence(0.2f)
+                .setMinTrackingConfidence(0.2f)
                 .setRunningMode(RunningMode.IMAGE)
                 .setNumHands(2)
                 .build()
@@ -55,6 +55,7 @@ class HandTrackingProcessor @Inject constructor(
     fun processImage(imageProxy: ImageProxy): HandLandmarkerResult? {
         val currentTimestamp = System.currentTimeMillis()
         if (currentTimestamp - lastProcessedTimestamp < MINIMUM_TIME_BETWEEN_PROCESSING) {
+            imageProxy.close()
             return null
         }
 
@@ -77,14 +78,18 @@ class HandTrackingProcessor @Inject constructor(
                 postScale(-1f, 1f, bitmap.width / 2f, bitmap.height / 2f)
             }
 
+            val scaledWidth = imageProxy.width
+            val scaledHeight = imageProxy.height
+            val scaledBitmap = Bitmap.createScaledBitmap(bitmap, scaledWidth, scaledHeight, false)
+
             val rotatedBitmap = Bitmap.createBitmap(
-                bitmap,
+                scaledBitmap,
                 0,
                 0,
-                bitmap.width,
-                bitmap.height,
+                scaledWidth,
+                scaledHeight,
                 matrix,
-                true
+                false
             )
 
             val mpImage = BitmapImageBuilder(rotatedBitmap).build()
