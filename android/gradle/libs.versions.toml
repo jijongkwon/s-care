@@ -1,6 +1,9 @@
 [versions]
 agp = "8.2.0"
 accompanistPermissions = "0.31.2-alpha"
+cameraCamera2 = "1.3.1"
+cameraLifecycle = "1.3.1"
+cameraView = "1.3.1"
 coilCompose = "2.4.0"
 coilComposeVersion = "2.0.0"
 coilGif = "2.4.0"
@@ -9,10 +12,9 @@ converterGson = "2.9.0"
 datastorePreferences = "1.1.1"
 firebaseBom = "33.5.1"
 concurrentFuturesKtx = "1.2.0"
+hands = "1.0.0"
 firebaseBomVersion = "32.2.2"
 firebaseMessagingKtx = "24.0.3"
-googleServices = "4.4.2"
-gradle = "8.2.2"
 healthServicesClient = "1.1.0-alpha04"
 hiltAndroid = "2.44"
 hiltAndroidGradlePlugin = "2.48"
@@ -31,6 +33,7 @@ kotlinxCoroutinesAndroid = "1.7.3"
 kotlinxCoroutinesCore = "1.7.3"
 kotlinxCoroutinesGuava = "1.9.0"
 kotlinxCoroutinesTest = "1.9.0"
+lifecycleRuntimeCompose = "2.8.7"
 lifecycleRuntimeKtx = "2.8.6"
 activityCompose = "1.9.3"
 composeBom = "2024.04.01"
@@ -55,6 +58,9 @@ playServicesWearable = "18.2.0"
 playServicesWearableVersion = "18.0.0"
 retrofit = "2.9.0"
 retrofit2KotlinCoroutinesAdapter = "0.9.2"
+tasksVision = "1.0.0"
+uiTooling = "1.7.5"
+uiVersion = "1.6.0"
 wearToolingPreview = "1.0.0"
 coreSplashscreen = "1.0.1"
 navigationRuntimeKtx = "2.8.3"
@@ -68,20 +74,29 @@ appcompat = "1.7.0"
 material = "1.12.0"
 compiler = "3.2.0-alpha11"
 hilt = "2.48"
+gradle = "8.2.2"
+googleServices = "4.4.2"
 firebaseMessagingKtxVersion = "24.0.3"
 composeMaterial3 = "1.0.0-alpha28"
 datastoreCoreAndroid = "1.1.1"
 datastorePreferencesCoreJvm = "1.1.1"
 
 [libraries]
+google-services = { module = "com.google.gms:google-services", version.ref = "googleServices" }
+gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx" }
+androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraCamera2" }
+androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "cameraView" }
+androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "cameraLifecycle" }
 androidx-compose-foundation = { module = "androidx.wear.compose:compose-foundation", version.ref = "composeFoundation" }
 androidx-compose-navigation = { module = "androidx.wear.compose:compose-navigation" }
 androidx-concurrent-futures-ktx = { module = "androidx.concurrent:concurrent-futures-ktx", version.ref = "concurrentFuturesKtx" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
+androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+androidx-ui-v160 = { module = "androidx.compose.ui:ui", version.ref = "uiVersion" }
 coil-compose-v200 = { module = "io.coil-kt:coil-compose", version.ref = "coilComposeVersion" }
 coil-compose-v240 = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 coil-gif = { module = "io.coil-kt:coil-gif", version.ref = "coilGif" }
@@ -98,13 +113,12 @@ androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-
 gms-play-services-wearable = { module = "com.google.android.gms:play-services-wearable", version.ref = "playServicesWearable" }
 hilt-android-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hiltAndroidGradlePlugin" }
 hilt-android-v244 = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
+hands = { module = "com.google.mediapipe:hands", version.ref = "hands" }
 horologist-composables = { module = "com.google.android.horologist:horologist-composables", version.ref = "horologistComposables" }
 horologist-compose-layout = { module = "com.google.android.horologist:horologist-compose-layout", version.ref = "horologistComposeLayout" }
 horologist-compose-material = { module = "com.google.android.horologist:horologist-compose-material", version.ref = "horologistComposeMaterial" }
 firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
 google-firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
-google-services = { module = "com.google.gms:google-services", version.ref = "googleServices" }
-gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -148,7 +162,9 @@ androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtim
 play-services-wearable-v1800 = { module = "com.google.android.gms:play-services-wearable", version.ref = "playServicesWearableVersion" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 kotlinx-coroutines-guava = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-guava", version.ref = "kotlinxCoroutinesGuava" }
+tasks-vision = { module = "com.google.mediapipe:tasks-vision", version.ref = "tasksVision" }
 ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
+ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "uiTooling" }
 ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "uiToolingPreview" }
 work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
 androidx-ui-tooling-preview-android = { group = "androidx.compose.ui", name = "ui-tooling-preview-android", version.ref = "uiToolingPreviewAndroid" }

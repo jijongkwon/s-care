@@ -16,24 +16,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.scare.ui.mobile.common.LocalNavController
+import com.scare.ui.mobile.viewmodel.pressure.Solution
 import com.scare.ui.theme.DarkNavy
 import com.scare.ui.theme.NeonYellow
 import com.scare.ui.theme.White
 
 @Composable
-fun SolutionCardList(solutions: List<String>) {
-    LazyRow( // LazyRow를 사용하여 가로 스크롤 가능한 리스트 표시
+fun SolutionCardList(solutions: List<Solution>) {
+    LazyRow(
         contentPadding = PaddingValues(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp) // 카드 사이 간격 설정
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(solutions) { solution -> // 솔루션 데이터를 순회하며 카드 표시
-            SolutionCard(solution) // SolutionCard에 솔루션 데이터 전달
+        items(solutions) { solution ->
+            SolutionCard(solution)
         }
     }
 }
 
 @Composable
-fun SolutionCard(solution: String) {
+fun SolutionCard(solution: Solution) {
     val navController = LocalNavController.current
     val cardColor = if (isSystemInDarkTheme()) {
         DarkNavy
@@ -48,11 +49,12 @@ fun SolutionCard(solution: String) {
         border = BorderStroke(1.dp, NeonYellow),
         modifier = Modifier
             .size(width = 150.dp, height = 200.dp),
-        // TODO : 솔루션에 맞는 경로 연결
-        onClick = { navController?.navigate("map") },
+        onClick = {
+            navController?.navigate(solution.path)
+        },
     ) {
         Text(
-            text = solution,
+            text = solution.title,
             modifier = Modifier
                 .padding(16.dp),
             textAlign = TextAlign.Center,

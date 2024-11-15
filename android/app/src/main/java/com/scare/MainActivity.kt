@@ -23,6 +23,7 @@ import androidx.navigation.compose.rememberNavController
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.scare.data.RetrofitClient
 import com.scare.data.calender.repository.MonthlyStressRepository
+import com.scare.data.calender.repository.WeeklyReportRepository
 import com.scare.data.course.repository.CourseRepository
 import com.scare.data.heartrate.database.AppDatabase
 import com.scare.data.heartrate.database.dataStore.LastSaveData
@@ -31,6 +32,7 @@ import com.scare.data.location.database.LocationDatabase
 import com.scare.data.member.repository.Auth.TokenRepository
 import com.scare.data.member.repository.User.UserInfoRepository
 import com.scare.data.walk.repository.WalkRepository
+import com.scare.handpressure.feature.pressure.ui.HandPressureScreen
 import com.scare.repository.heartrate.HeartRateRepository
 import com.scare.repository.location.LocationRepository
 import com.scare.service.listener.LogInListenerService
@@ -47,6 +49,7 @@ import com.scare.ui.mobile.map.Map
 import com.scare.ui.mobile.viewmodel.calender.MonthlyStressViewModel
 import com.scare.ui.mobile.viewmodel.calender.MonthlyStressViewModelFactory
 import com.scare.ui.mobile.viewmodel.calender.WeeklyReportViewModel
+import com.scare.ui.mobile.viewmodel.calender.WeeklyReportViewModelFactory
 import com.scare.ui.mobile.viewmodel.course.CourseViewModel
 import com.scare.ui.mobile.viewmodel.course.CourseViewModelFactory
 import com.scare.ui.mobile.viewmodel.login.LoginViewModel
@@ -58,9 +61,11 @@ import com.scare.ui.mobile.viewmodel.stress.StressViewModel
 import com.scare.ui.mobile.viewmodel.walk.WalkViewModel
 import com.scare.ui.mobile.viewmodel.walk.WalkViewModelFactory
 import com.scare.ui.theme.ScareTheme
+import dagger.hilt.android.AndroidEntryPoint
 
 const val TAG = "scare mobile"
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private lateinit var loginViewModel: LoginViewModel
@@ -71,16 +76,29 @@ class MainActivity : ComponentActivity() {
     private lateinit var monthlyStressViewModel: MonthlyStressViewModel
     private lateinit var weeklyReportViewModel: WeeklyReportViewModel
 
+    private val requestCameraPermission = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            Log.d(TAG, "Camera permission granted")
+        } else {
+            Log.d(TAG, "Camera permission denied")
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         checkPermission()
         HeartRateManager.setViewModel(heartRateViewModel)
 
+        // 카메라 권한 요청
+        requestCameraPermission.launch(Manifest.permission.CAMERA)
+
         // TokenRepository 초기화 및 RetrofitClient 초기화
         tokenRepository = TokenRepository.getInstance(this)
         RetrofitClient.init(tokenRepository)
 
-        val googleLoginRepository = GoogleLoginRepository(this) // GoogleLoginRepository 초기화
+        val googleLoginRepository = GoogleLoginRepository(this)
         loginViewModel = ViewModelProvider(
             this, LoginViewModelFactory(googleLoginRepository, tokenRepository)
         )[LoginViewModel::class.java]
@@ -131,19 +149,21 @@ class MainActivity : ComponentActivity() {
 
         // MonthlyStressViewModel을 Factory를 사용하여 초기화
         val factory = MonthlyStressViewModelFactory(monthlyStressRepository)
-        monthlyStressViewModel = ViewModelProvider(this, factory)[MonthlyStressViewModel::class.java]
+        monthlyStressViewModel =
+            ViewModelProvider(this, factory)[MonthlyStressViewModel::class.java]
 
         // MonthlyStressRepository 생성
         val weeklyReportRepository = WeeklyReportRepository()
 
         // MonthlyStressViewModel을 Factory를 사용하여 초기화
         val weeklyFactory = WeeklyReportViewModelFactory(weeklyReportRepository)
-        weeklyReportViewModel = ViewModelProvider(this, weeklyFactory)[WeeklyReportViewModel::class.java]
+        weeklyReportViewModel =
+            ViewModelProvider(this, weeklyFactory)[WeeklyReportViewModel::class.java]
 
 
         setContent {
             val navController = rememberNavController()
-            var isInitialized by remember { mutableStateOf(false) } // 초기화 상태 변수
+            var isInitialized by remember { mutableStateOf(false) }
 
             CompositionLocalProvider(
                 LocalNavController provides navController,
@@ -157,7 +177,7 @@ class MainActivity : ComponentActivity() {
                     // 초기화 완료 여부 설정
                     LaunchedEffect(accessToken) {
                         if (accessToken != null || accessToken == null) {
-                            isInitialized = true // accessToken 상태가 안정화된 후에만 표시
+                            isInitialized = true
                         }
                     }
 
@@ -170,6 +190,7 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                             startDestination = startDestination
                         ) {
+                            // 기존 라우트들
                             composable("start") { StartPage(loginViewModel) { launchLogin() } }
                             composable("main") { MainPage(loginViewModel, heartRateViewModel) }
                             composable("statistics") { MyCalender(monthlyStressViewModel) } // "statistics" 경로 추가
@@ -177,12 +198,27 @@ class MainActivity : ComponentActivity() {
                                 // from과 to를 정확히 가져옵니다.
                                 val from = backStackEntry.arguments?.getString("from")
                                 val to = backStackEntry.arguments?.getString("to")
-
-                                MyReport(from = from, to = to, viewModel = weeklyReportViewModel) // MyReport에 매개변수 전달
+                                MyReport(
+                                    from = from,
+                                    to = to,
+                                    viewModel = weeklyReportViewModel
+                                ) // MyReport에 매개변수 전달
                             }
-                            composable("walk") { MyCourse() } // "walk" 경로 추가
-                            composable("map") { Map(this@MainActivity) } // "map" 경로 추가
-                            composable("mypage") { MyAuthPage(userInfoRepository, tokenRepository) } // "map" 경로 추가
+                            composable("walk") { MyCourse() }
+                            composable("map") { Map(this@MainActivity) }
+                            composable("mypage") { MyAuthPage(userInfoRepository, tokenRepository) }
+
+                            // 손 트래킹 화면 추가
+                            composable("hand-tracking") {
+                                HandPressureScreen(
+                                    onComplete = {
+                                        // 완료 시 다음 화면으로 이동하거나 필요한 동작 수행
+                                        navController.navigate("main") {
+                                            popUpTo("hand-pressure") { inclusive = true }
+                                        }
+                                    }
+                                )
+                            }
                         }
 
                         // accessToken이 null일 경우 start로 이동
@@ -215,21 +251,24 @@ class MainActivity : ComponentActivity() {
         signInLauncher.launch(loginViewModel.getSignInIntent())
     }
 
-    private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-        permissions.entries.forEach { permission ->
-            when {
-                permission.value -> {
-                    Log.d(TAG, "permission granted")
-                }
-                shouldShowRequestPermissionRationale(permission.key) -> {
-                    Log.d(TAG, "permission required")
-                }
-                else -> {
-                    Log.d(TAG, "permission denied")
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            permissions.entries.forEach { permission ->
+                when {
+                    permission.value -> {
+                        Log.d(TAG, "permission granted")
+                    }
+
+                    shouldShowRequestPermissionRationale(permission.key) -> {
+                        Log.d(TAG, "permission required")
+                    }
+
+                    else -> {
+                        Log.d(TAG, "permission denied")
+                    }
                 }
             }
         }
-    }
 
     private fun checkPermission() {
         val isAllPermissionGranted = PERMISSIONS.all { permission ->

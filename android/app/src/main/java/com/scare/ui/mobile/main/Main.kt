@@ -11,8 +11,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.scare.ui.mobile.common.TheHeader
-import com.scare.ui.mobile.main.component.*
+import com.scare.ui.mobile.main.component.ButtonContainer
+import com.scare.ui.mobile.main.component.MyPetImage
+import com.scare.ui.mobile.main.component.MyStressRate
+import com.scare.ui.mobile.main.component.PetSentence
+import com.scare.ui.mobile.main.component.SolutionCardList
 import com.scare.ui.mobile.viewmodel.login.LoginViewModel
+import com.scare.ui.mobile.viewmodel.pressure.Solution
 import com.scare.ui.mobile.viewmodel.sensor.HeartRateViewModel
 
 
@@ -22,11 +27,15 @@ fun MainPage(loginViewModel: LoginViewModel, heartRateViewModel: HeartRateViewMo
     val profileUrl by loginViewModel.profileUrl.collectAsState()
     val stress by heartRateViewModel.stress.collectAsState()
 
+    val solutions = listOf(
+        Solution("산책하기", "map"),
+        Solution("ASMR", "asmr"),
+        Solution("지압하기", "hand-tracking")  // 손 트래킹 경로 추가
+    )
+
     Scaffold(
         topBar = { TheHeader(profileUrl, isMainPage = true) }
     ) { innerPadding ->
-        val solutions = listOf("산책하기", "ASMR")
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
