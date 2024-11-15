@@ -49,7 +49,11 @@ fun CourseDetailMap(course: CourseResponseDTO) {
 
     val cameraPositionState = rememberCameraPositionState()
 
-    Box(Modifier.fillMaxWidth().height(600.dp)) {
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .height(600.dp)
+    ) {
         NaverMap(
             properties = mapProperties,
             uiSettings = mapUiSettings,
@@ -84,6 +88,15 @@ fun CourseDetailMap(course: CourseResponseDTO) {
                     ),
                     icon = OverlayImage.fromResource(R.drawable.last_marker)
                 )
+                if (coords.size >= 2) {
+                    ArrowheadPathOverlay(
+                        coords = coords,
+                        color = Gray,
+                        outlineColor = Gray,
+                        width = 5.dp,
+                        globalZIndex = 0
+                    )
+                }
                 val bestCourse = coords.slice(course.startIdx..course.endIdx)
                 if (bestCourse.size >= 2) {
                     PathOverlay(
@@ -94,13 +107,6 @@ fun CourseDetailMap(course: CourseResponseDTO) {
                         globalZIndex = 1
                     )
                 }
-                ArrowheadPathOverlay(
-                    coords = coords,
-                    color = Gray,
-                    outlineColor = Gray,
-                    width = 5.dp,
-                    globalZIndex = 0
-                )
             }
         }
         CourseDetailInfo(

@@ -133,6 +133,13 @@ class MainActivity : ComponentActivity() {
         val factory = MonthlyStressViewModelFactory(monthlyStressRepository)
         monthlyStressViewModel = ViewModelProvider(this, factory)[MonthlyStressViewModel::class.java]
 
+        // MonthlyStressRepository 생성
+        val weeklyReportRepository = WeeklyReportRepository()
+
+        // MonthlyStressViewModel을 Factory를 사용하여 초기화
+        val weeklyFactory = WeeklyReportViewModelFactory(weeklyReportRepository)
+        weeklyReportViewModel = ViewModelProvider(this, weeklyFactory)[WeeklyReportViewModel::class.java]
+
 
         setContent {
             val navController = rememberNavController()
@@ -165,13 +172,13 @@ class MainActivity : ComponentActivity() {
                         ) {
                             composable("start") { StartPage(loginViewModel) { launchLogin() } }
                             composable("main") { MainPage(loginViewModel, heartRateViewModel) }
-                            composable("statistics") { MyCalender( monthlyStressViewModel ) } // "statistics" 경로 추가
+                            composable("statistics") { MyCalender(monthlyStressViewModel) } // "statistics" 경로 추가
                             composable("report?from={from}&to={to}") { backStackEntry ->
                                 // from과 to를 정확히 가져옵니다.
                                 val from = backStackEntry.arguments?.getString("from")
                                 val to = backStackEntry.arguments?.getString("to")
 
-                                MyReport(from = from, to = to,  viewModel = weeklyReportViewModel) // MyReport에 매개변수 전달
+                                MyReport(from = from, to = to, viewModel = weeklyReportViewModel) // MyReport에 매개변수 전달
                             }
                             composable("walk") { MyCourse() } // "walk" 경로 추가
                             composable("map") { Map(this@MainActivity) } // "map" 경로 추가
