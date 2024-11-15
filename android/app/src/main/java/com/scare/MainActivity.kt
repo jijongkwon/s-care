@@ -15,13 +15,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.NavHost
@@ -30,6 +23,7 @@ import androidx.navigation.compose.rememberNavController
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.scare.data.RetrofitClient
 import com.scare.data.calender.repository.MonthlyStressRepository
+import com.scare.data.calender.repository.WeeklyReportRepository
 import com.scare.data.course.repository.CourseRepository
 import com.scare.data.heartrate.database.AppDatabase
 import com.scare.data.heartrate.database.dataStore.LastSaveData
@@ -55,6 +49,7 @@ import com.scare.ui.mobile.map.Map
 import com.scare.ui.mobile.viewmodel.calender.MonthlyStressViewModel
 import com.scare.ui.mobile.viewmodel.calender.MonthlyStressViewModelFactory
 import com.scare.ui.mobile.viewmodel.calender.WeeklyReportViewModel
+import com.scare.ui.mobile.viewmodel.calender.WeeklyReportViewModelFactory
 import com.scare.ui.mobile.viewmodel.course.CourseViewModel
 import com.scare.ui.mobile.viewmodel.course.CourseViewModelFactory
 import com.scare.ui.mobile.viewmodel.login.LoginViewModel
@@ -67,9 +62,6 @@ import com.scare.ui.mobile.viewmodel.walk.WalkViewModel
 import com.scare.ui.mobile.viewmodel.walk.WalkViewModelFactory
 import com.scare.ui.theme.ScareTheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 const val TAG = "scare mobile"
 
@@ -165,7 +157,8 @@ class MainActivity : ComponentActivity() {
 
         // MonthlyStressViewModel을 Factory를 사용하여 초기화
         val weeklyFactory = WeeklyReportViewModelFactory(weeklyReportRepository)
-        weeklyReportViewModel = ViewModelProvider(this, weeklyFactory)[WeeklyReportViewModel::class.java]
+        weeklyReportViewModel =
+            ViewModelProvider(this, weeklyFactory)[WeeklyReportViewModel::class.java]
 
 
         setContent {
@@ -205,7 +198,11 @@ class MainActivity : ComponentActivity() {
                                 // from과 to를 정확히 가져옵니다.
                                 val from = backStackEntry.arguments?.getString("from")
                                 val to = backStackEntry.arguments?.getString("to")
-                                MyReport(from = from, to = to, viewModel = weeklyReportViewModel) // MyReport에 매개변수 전달
+                                MyReport(
+                                    from = from,
+                                    to = to,
+                                    viewModel = weeklyReportViewModel
+                                ) // MyReport에 매개변수 전달
                             }
                             composable("walk") { MyCourse() }
                             composable("map") { Map(this@MainActivity) }
@@ -221,7 +218,6 @@ class MainActivity : ComponentActivity() {
                                         }
                                     }
                                 )
-                                HandTrackingScreen()
                             }
                         }
 
@@ -255,21 +251,24 @@ class MainActivity : ComponentActivity() {
         signInLauncher.launch(loginViewModel.getSignInIntent())
     }
 
-    private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-        permissions.entries.forEach { permission ->
-            when {
-                permission.value -> {
-                    Log.d(TAG, "permission granted")
-                }
-                shouldShowRequestPermissionRationale(permission.key) -> {
-                    Log.d(TAG, "permission required")
-                }
-                else -> {
-                    Log.d(TAG, "permission denied")
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            permissions.entries.forEach { permission ->
+                when {
+                    permission.value -> {
+                        Log.d(TAG, "permission granted")
+                    }
+
+                    shouldShowRequestPermissionRationale(permission.key) -> {
+                        Log.d(TAG, "permission required")
+                    }
+
+                    else -> {
+                        Log.d(TAG, "permission denied")
+                    }
                 }
             }
         }
-    }
 
     private fun checkPermission() {
         val isAllPermissionGranted = PERMISSIONS.all { permission ->
