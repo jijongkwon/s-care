@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.scare.handpressure.feature.handtracking.ui.components.CameraPreview
+import com.scare.handpressure.feature.handtracking.ui.components.HandLandmarksOverlay
 import com.scare.handpressure.feature.pressure.domain.model.StepState
 import com.scare.handpressure.feature.pressure.ui.components.PressureTimer
 import com.scare.handpressure.feature.pressure.ui.components.StepGuide
@@ -51,10 +52,10 @@ fun HandPressureScreen(
         )
 
         // 손 랜드마크 오버레이
-//        HandLandmarksOverlay(
-//            result = handPosition?.landmarks?.firstOrNull(),
-//            modifier = Modifier.fillMaxSize()
-//        )
+        HandLandmarksOverlay(
+            landmarks = handPosition?.landmarks,
+            modifier = Modifier.fillMaxSize()
+        )
 
         // 상단 진행 상태
         Column(
