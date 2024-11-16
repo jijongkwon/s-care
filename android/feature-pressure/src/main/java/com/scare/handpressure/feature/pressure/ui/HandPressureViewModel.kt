@@ -106,6 +106,38 @@ class HandPressureViewModel @Inject constructor(
     private fun completeCurrentStep() {
         val currentStepIndex = PressureStepConfig.steps.indexOf(_currentStep.value)
 
+        viewModelScope.launch {
+            if (currentStepIndex < PressureStepConfig.steps.size - 1) {
+                // 현재 단계 완료 표시
+                _stepState.value = StepState.COMPLETED
+                delay(2000) // 2초 동안 완료 메시지 표시
+
+                // 다음 단계로 이동
+                _currentStep.value = PressureStepConfig.steps[currentStepIndex + 1]
+                _stepState.value = StepState.DETECTING_POSITION
+                _remainingTime.value = _currentStep.value.duration
+                _progress.value = 0f
+            } else {
+                // 모든 단계 완료
+                _stepState.value = StepState.COMPLETED_ALL
+                delay(3000) // 3초 동안 최종 완료 메시지 표시`
+                _isCompleted.value = true
+            }
+        }
+    }
+
+    fun skipCurrentStep() {
+        stopTimer()
+        viewModelScope.launch {
+            _stepState.value = StepState.SKIPPED
+            delay(1500) // 1.5초 동안 스킵 메시지 표시
+            proceedToNextStep()
+        }
+    }
+
+    private fun proceedToNextStep() {
+        val currentStepIndex = PressureStepConfig.steps.indexOf(_currentStep.value)
+
         if (currentStepIndex < PressureStepConfig.steps.size - 1) {
             // 다음 단계로 이동
             _currentStep.value = PressureStepConfig.steps[currentStepIndex + 1]
@@ -114,14 +146,12 @@ class HandPressureViewModel @Inject constructor(
             _progress.value = 0f
         } else {
             // 모든 단계 완료
-            _stepState.value = StepState.COMPLETED
-            _isCompleted.value = true
+            viewModelScope.launch {
+                _stepState.value = StepState.COMPLETED_ALL
+                delay(3000) // 3초 동안 최종 완료 메시지 표시
+                _isCompleted.value = true
+            }
         }
-    }
-
-    fun skipCurrentStep() {
-        stopTimer()
-        completeCurrentStep()
     }
 
     fun retryCurrentStep() {
