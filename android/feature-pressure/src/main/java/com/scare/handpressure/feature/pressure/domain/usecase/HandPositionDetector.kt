@@ -26,7 +26,6 @@ class HandPositionDetector @Inject constructor() {
             )
         }
 
-        // 모든 단계에서 두 손 인식 여부 확인
         if (result.landmarks().size < 2) {
             return HandPosition(
                 isCorrect = false,
@@ -37,60 +36,54 @@ class HandPositionDetector @Inject constructor() {
         }
 
         return when (currentStep.id) {
-            1 -> checkUnionValleyPosition(result, currentStep)
-            2 -> checkUnionValleyPosition(result, currentStep)
+            1 -> checkUnionValleyPosition(result, isLeftHand = true)
+            2 -> checkUnionValleyPosition(result, isLeftHand = false)
             else -> HandPosition(false, 0f, "알 수 없는 단계입니다", result.landmarks())
         }
     }
 
     private fun checkUnionValleyPosition(
         result: HandLandmarkerResult,
-        step: PressureStep
+        isLeftHand: Boolean
     ): HandPosition {
-        val hand1 = result.landmarks()[0]
-        val hand2 = result.landmarks()[1]
+        val leftHand = result.landmarks()[0]  // 왼손
+        val rightHand = result.landmarks()[1]  // 오른손
 
-        // 첫 번째 손의 웹 스페이스 위치 계산
-        val hand1WebCenter = Pair(
-            (hand1[1].x() + hand1[5].x()) / 2,
-            (hand1[1].y() + hand1[5].y()) / 2
+        // 각 손의 웹 스페이스 중심점 계산
+        val leftWebCenter = Pair(
+            (leftHand[1].x() + leftHand[5].x()) / 2,
+            (leftHand[1].y() + leftHand[5].y()) / 2
         )
-
-        // 두 번째 손의 웹 스페이스 위치 계산
-        val hand2WebCenter = Pair(
-            (hand2[1].x() + hand2[5].x()) / 2,
-            (hand2[1].y() + hand2[5].y()) / 2
+        val rightWebCenter = Pair(
+            (rightHand[1].x() + rightHand[5].x()) / 2,
+            (rightHand[1].y() + rightHand[5].y()) / 2
         )
 
         // 웹 스페이스 간의 거리 계산
         val webSpaceDistance = calculateDistance(
-            hand1WebCenter.first, hand1WebCenter.second,
-            hand2WebCenter.first, hand2WebCenter.second
+            leftWebCenter.first, leftWebCenter.second,
+            rightWebCenter.first, rightWebCenter.second
         )
 
-        // 첫 번째 손의 검지가 두 번째 손의 웹 스페이스 안에 있는지 확인
-        val isHand1InWebSpace = isPointInWebSpace(
-            hand1[8].x(), hand1[8].y(),
-            hand2[1].x(), hand2[1].y(),
-            hand2[5].x(), hand2[5].y()
-        )
-
-        // 두 번째 손의 검지가 첫 번째 손의 웹 스페이스 안에 있는지 확인
-        val isHand2InWebSpace = isPointInWebSpace(
-            hand2[8].x(), hand2[8].y(),
-            hand1[1].x(), hand1[1].y(),
-            hand1[5].x(), hand1[5].y()
-        )
-
-        // 거리 기준을 더 관대하게 조정
-        val distanceThreshold = DISTANCE_THRESHOLD * 2f
-
-        // 웹 스페이스 안에 있으면 거리 기준을 더 관대하게 적용
-        val isCorrect = if (isHand1InWebSpace || isHand2InWebSpace) {
-            webSpaceDistance < distanceThreshold
+        // 왼손 단계인지 오른손 단계인지에 따라 다른 검사
+        val isCorrectHandPosition = if (isLeftHand) {
+            // 왼손 단계: 왼손 검지가 오른손 웹스페이스에 있어야 함
+            isPointInWebSpace(
+                leftHand[8].x(), leftHand[8].y(),
+                rightHand[1].x(), rightHand[1].y(),
+                rightHand[5].x(), rightHand[5].y()
+            )
         } else {
-            false
+            // 오른손 단계: 오른손 검지가 왼손 웹스페이스에 있어야 함
+            isPointInWebSpace(
+                rightHand[8].x(), rightHand[8].y(),
+                leftHand[1].x(), leftHand[1].y(),
+                leftHand[5].x(), leftHand[5].y()
+            )
         }
+
+        val distanceThreshold = DISTANCE_THRESHOLD * 2f
+        val isCorrect = isCorrectHandPosition && webSpaceDistance < distanceThreshold
 
         val accuracy = if (isCorrect) {
             1f - (webSpaceDistance / distanceThreshold).coerceIn(0f, 1f)
@@ -99,7 +92,11 @@ class HandPositionDetector @Inject constructor() {
         }
 
         val feedback = when {
-            !isHand1InWebSpace && !isHand2InWebSpace -> "손가락을 서로의 웹 스페이스 안으로 넣어주세요"
+            !isCorrectHandPosition -> if (isLeftHand)
+                "왼손 검지로 오른손 웹 스페이스를 자극해주세요"
+            else
+                "오른손 검지로 왼손 웹 스페이스를 자극해주세요"
+
             isCorrect -> "자세가 정확합니다"
             else -> "자세를 유지한 채로 두 손을 더 가깝게 해주세요"
         }
