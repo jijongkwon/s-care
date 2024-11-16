@@ -6,7 +6,7 @@ object PressureStepConfig {
     val steps = listOf(
         PressureStep(
             id = 1,
-            title = "유니온 밸리 포인트 (왼손)",
+            title = "유니온 밸리 포인트 (오른손 웹)",
             description = "엄지와 검지 사이의 웹 부분을 자극합니다",
             duration = 30,
             targetLandmarks = listOf(1, 2, 4),
@@ -21,7 +21,7 @@ object PressureStepConfig {
 
         PressureStep(
             id = 2,
-            title = "유니온 밸리 포인트 (오른손)",
+            title = "유니온 밸리 포인트 (왼손 웹)",
             description = "엄지와 검지 사이의 웹 부분을 자극합니다",
             duration = 30,  // 시간만 30초로 변경
             targetLandmarks = listOf(1, 2, 4),
