@@ -11,6 +11,7 @@ import com.naver.maps.map.compose.*
 import com.scare.ui.mobile.common.LocalWalkViewModel
 import com.scare.ui.mobile.common.TheHeader
 import com.scare.ui.mobile.map.component.StartWalkButton
+import com.scare.ui.mobile.map.component.WalkEndModal
 
 @ExperimentalNaverMapApi
 @Composable
@@ -19,6 +20,8 @@ fun Map(context: Context) {
     val localWalkViewModel = LocalWalkViewModel.current
 
     val isWalk by localWalkViewModel!!.isWalk.collectAsState()
+
+    var isWalkEnd by remember { mutableStateOf(false) }
 
     Scaffold(topBar = {
         TheHeader(isMainPage = false)
@@ -51,9 +54,16 @@ fun Map(context: Context) {
                         localWalkViewModel!!.handleWalkStart(context)
                     } else {
                         localWalkViewModel!!.handleWalkEnd(context)
+                        isWalkEnd = true
                     }
                 }
             )
+            if (isWalkEnd) {
+                WalkEndModal(
+                    modifier = Modifier.fillMaxSize(),
+                    onClose = { isWalkEnd = false }
+                )
+            }
         }
     }
 }
