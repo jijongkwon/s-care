@@ -19,11 +19,8 @@ fun formatDateTimeToSearch(dateTime: LocalDateTime): String {
     return dateTime.format(formatter)
 }
 
-fun calculateTimeDifference(startDateTime: Long, endDateTime: Long): String {
-    val start = LocalDateTime.ofInstant(Instant.ofEpochMilli(startDateTime), ZoneId.systemDefault())
-    val end = LocalDateTime.ofInstant(Instant.ofEpochMilli(endDateTime), ZoneId.systemDefault())
-
-    val duration = Duration.between(start, end)
+fun formatTimeDifference(startDateTime: Long, endDateTime: Long): String {
+    val duration = calculateTimeDifference(startDateTime, endDateTime)
 
     val hours = duration.toHours()
     val minutes = duration.toMinutes() % 60
@@ -34,4 +31,18 @@ fun calculateTimeDifference(startDateTime: Long, endDateTime: Long): String {
         minutes > 0 -> String.format("00:%02d:%02d", minutes, seconds)           // 분, 초만 표시
         else -> String.format("00:00:%02d", seconds)                                // 초만 표시
     }
+}
+
+fun calculateTimeDifference(startDateTime: Long, endDateTime: Long): Duration {
+    val start = LocalDateTime.ofInstant(Instant.ofEpochMilli(startDateTime), ZoneId.systemDefault())
+    val end = LocalDateTime.ofInstant(Instant.ofEpochMilli(endDateTime), ZoneId.systemDefault())
+
+    return Duration.between(start, end)
+}
+
+fun convertToMillis(dateTimeString: String): Long {
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+    val localDateTime = LocalDateTime.parse(dateTimeString, formatter)
+
+    return localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 }

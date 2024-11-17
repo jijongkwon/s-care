@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.sp
 import com.scare.R
 import com.scare.data.course.dto.CourseResponseDTO
 import com.scare.ui.theme.Typography
-import com.scare.util.calculateTimeDifference
+import com.scare.util.formatTimeDifference
 
 @Composable
 fun CourseDetailInfo(
@@ -44,7 +44,7 @@ fun CourseDetailInfo(
                     color = MaterialTheme.colorScheme.background,
                 )
                 Text(
-                    text = calculateTimeDifference(
+                    text = formatTimeDifference(
                         course.startedAt,
                         course.finishedAt
                     ),

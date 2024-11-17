@@ -8,7 +8,6 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.wearable.Wearable
-import com.scare.TAG
 import com.scare.data.walk.datastore.*
 import com.scare.data.walk.dto.LocationDTO
 import com.scare.data.walk.dto.WalkRequestDTO
@@ -91,7 +90,6 @@ class WalkViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val heartRates = heartRateRepository.getHeartRatesWhileWalking(startDate, endDate)
-                Log.d("WalkViewModel", heartRates.toString())
                 _heartRates.value = heartRates.map { heartRate -> heartRate.heartRate }
             } catch (e: Exception) {
                 Log.e("WalkViewModel", "Error fetching heartrates while walking", e)
@@ -104,12 +102,6 @@ class WalkViewModel(
             try {
                 val locations = locationRepository.getLocations(startDate, endDate)
                 _locations.value = locations.map { location -> LocationDTO(location.latitude, location.longitude) }
-                locations.forEach { location ->
-                    Log.d(TAG, "location $location")
-                }
-                _locations.value.forEach { location ->
-                    Log.d(TAG, "_location $location")
-                }
             } catch (e: Exception) {
                 Log.e("WalkViewModel", "Error fetching locations while walking", e)
             }
@@ -119,14 +111,11 @@ class WalkViewModel(
     // 위치 업데이트 초기화
     suspend fun startLocationUpdates(context: Context) {
         // LocationManager 초기화
-        Log.d(TAG, "init before")
         _locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        Log.d(TAG, "init after")
         // LocationListener 정의
         _locationListener = object : LocationListener {
             override fun onLocationChanged(location: Location) {
                 // 위치가 변경될 때 호출
-                Log.d(TAG, "before save location $location")
                 locationRepository.save(
                     com.scare.data.location.database.entity.Location(
                         latitude = location.latitude,
@@ -134,20 +123,17 @@ class WalkViewModel(
                         createdAt = LocalDateTime.now(),
                     )
                 )
-                Log.d(TAG, "save success location $location")
             }
         }
 
         // 위치 업데이트 요청
         try {
-            Log.d(TAG, "before update")
             _locationManager?.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER, // GPS를 사용
                 1000L, // 최소 업데이트 간격 (1초)
                 0f, // 최소 거리 변화 (1미터)
                 _locationListener!!
             )
-            Log.d(TAG, "after update ")
         } catch (e: SecurityException) {
             // 위치 권한 예외 처리
             e.printStackTrace()
@@ -171,36 +157,28 @@ class WalkViewModel(
         }
     }
 
-    fun handleWalkEnd(context: Context) {
+    fun handleWalkEnd(context: Context, isWalkComplete: Boolean) {
         viewModelScope.launch {
             val currentTime = formatDateTimeToSearch(LocalDateTime.now())
-            Log.d(TAG, "@@@@@@@@@@time = ${_walkStartTime.value} #### $currentTime")
             updateWalkStatus(context, false)
             updateEndTime(context, currentTime)
-            Log.d(TAG, "handleWalkEnd ${_walkStartTime.value} $currentTime")
-            Log.d(TAG, "walk - stopLocationUpdates")
             stopLocationUpdates()
-            Log.d(TAG, "walk - fetchHeartRatesWhileWalking")
-            fetchHeartRatesWhileWalking(_walkStartTime.value, currentTime)
-            Log.d(TAG, "walk - fetchLocationsWhileWalking")
-            fetchLocationsWhileWalking(_walkStartTime.value, currentTime)
-            delay(300)
-            Log.d(TAG, "walk - postWalking")
-            postWalking()
+            if (isWalkComplete) {
+                fetchHeartRatesWhileWalking(_walkStartTime.value, currentTime)
+                fetchLocationsWhileWalking(_walkStartTime.value, currentTime)
+                delay(300)
+                postWalking()
+            }
         }
     }
 
     fun postWalking() {
         viewModelScope.launch {
             try {
-                val walk = WalkRequestDTO(_walkStartTime.value, _walkEndTime.value, _heartRates.value, _locations.value)
-                Log.d(TAG, "walk dto $walk")
-                Log.d(TAG, "before post walking ${_locations.value.size} ${_heartRates.value.size}")
                 if (_locations.value.size < 2 || _heartRates.value.size < 6) {
                     return@launch
                 }
-//                val walk = WalkRequestDTO(_walkStartTime.value, _walkEndTime.value, _heartRates.value, _locations.value)
-//                Log.d(TAG, "walk dto $walk")
+                val walk = WalkRequestDTO(_walkStartTime.value, _walkEndTime.value, _heartRates.value, _locations.value)
                 walkRepository.postWalk(walk)
             } catch (e: Exception) {
                 Log.e("WalkViewModel", "Error posting walk", e)
