@@ -40,7 +40,6 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.time.Duration
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 class HeartRateListenerService : WearableListenerService() {
 
@@ -161,7 +160,16 @@ class HeartRateListenerService : WearableListenerService() {
     private fun showStressNotificationIfPermitted(stress: Int, isBadWeather: Boolean) {
         // 권한이 있는지 확인
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-            LocalNotificationUtil.showStressNotification(this, "스트레스 매우 높음!! $stress (${ LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"))})", if (isBadWeather) "날씨 안 좋음!" else "날씨 좋음!")
+            val title = "스트레스가 매우 높아요!"
+            var content: String
+            if (isBadWeather) {
+                // 날씨가 안좋으면 지압 추천
+                content = "날씨가 안 좋으니 지압을 하면서 스트레스를 낮추어 보아요"
+            } else {
+                // 날씨가 좋으면 산책 추천
+                content = "날씨가 좋으니 산책을 하면서 스트레스를 낮추어 보아요"
+            }
+            LocalNotificationUtil.showStressNotification(this, title, content)
         } else {
             Log.e("HeartRateListenerService", "알림 권한이 없어 알림을 표시하지 못했습니다.")
         }
