@@ -14,6 +14,8 @@ import com.scare.ui.mobile.map.component.StartWalkButton
 import com.scare.ui.mobile.map.component.WalkEndModal
 import com.scare.util.calculateTimeDifference
 import com.scare.util.convertToMillis
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.ZoneId
 
@@ -40,6 +42,7 @@ fun Map(context: Context) {
     val isWalk by localWalkViewModel!!.isWalk.collectAsState()
 
     var isModalOpen by remember { mutableStateOf(false) }
+    var isLoading by remember { mutableStateOf(false) }
     val MINIMUM_WALK_TIME = 300 // 최소 산책 시간(초)
 
     Scaffold(topBar = {
@@ -58,6 +61,7 @@ fun Map(context: Context) {
                     MapUiSettings(isLocationButtonEnabled = true)
                 )
             }
+            val coroutineScope = rememberCoroutineScope()
             NaverMap(
                 locationSource = rememberFusedLocationSource(),
                 properties = mapProperties,
@@ -77,10 +81,15 @@ fun Map(context: Context) {
                     if (!isWalk) {
                         localWalkViewModel!!.handleWalkStart(context)
                     } else {
-                        if (duration.value >= MINIMUM_WALK_TIME) {
-                            localWalkViewModel!!.handleWalkEnd(context, true)
+                        coroutineScope.launch {
+                            isModalOpen = true
+                            if (duration.value >= MINIMUM_WALK_TIME) {
+                                isLoading = true
+                                localWalkViewModel!!.handleWalkEnd(context, true)
+                                delay(2000)
+                            }
+                            isLoading = false
                         }
-                        isModalOpen = true
                     }
                 }
             )
@@ -92,7 +101,8 @@ fun Map(context: Context) {
                         localWalkViewModel!!.handleWalkEnd(context, false)
                         isModalOpen = false
                     },
-                    isWalkComplete = (duration.value >= MINIMUM_WALK_TIME)
+                    isWalkComplete = (duration.value >= MINIMUM_WALK_TIME),
+                    isLoading = isLoading
                 )
             }
         }
