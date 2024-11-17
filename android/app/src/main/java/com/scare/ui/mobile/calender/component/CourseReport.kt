@@ -1,5 +1,6 @@
 package com.scare.ui.mobile.calender.component
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -36,7 +37,7 @@ fun CourseReport(
 ) {
     var isExpanded by remember { mutableStateOf(true) }
 
-    val totalTime = walkingData?.totalWalkingTime.toString()
+    val totalTime = formatSecondsToHMS(walkingData?.totalWalkingTime)
     val walkCount = walkingData?.walkingCnt
     val averageStressChange = walkingData?.avgStressChange
 
@@ -126,7 +127,7 @@ fun CourseReport(
 
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
-                            text = "$averageStressChange",
+                            text = averageStressChange?.let { Math.round(it).toString() } ?: "0",
                             style = MaterialTheme.typography.titleLarge,
                             color = NeonYellow,
                             modifier = Modifier.padding(bottom = 4.dp)
@@ -188,4 +189,17 @@ fun CourseReport(
 
     // 위쪽 테두리
     Divider(color = NeonYellow, thickness = 0.75.dp)
+}
+
+@SuppressLint("DefaultLocale")
+fun formatSecondsToHMS(seconds: Int?): String {
+    if (seconds == null) {
+        return "00:00:00"
+    }
+
+    val hours = seconds / 3600
+    val minutes = (seconds % 3600) / 60
+    val secs = seconds % 60
+
+    return String.format("%02d:%02d:%02d", hours, minutes, secs)
 }

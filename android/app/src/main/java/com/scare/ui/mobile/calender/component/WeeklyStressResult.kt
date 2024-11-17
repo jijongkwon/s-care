@@ -55,7 +55,7 @@ fun WeeklyStressResult(
                     modifier = Modifier.padding(bottom = 4.dp)
                 )
                 Text(
-                    text = lastStress?.toString() ?: "-",
+                    text = lastStress?.let { Math.round(it).toString() } ?: "-",
                     fontSize = 40.sp,
                     fontWeight = FontWeight.Bold,
                     color = Gray
@@ -87,7 +87,7 @@ fun WeeklyStressResult(
                 )
 
                 Text(
-                    text = currentStress?.toString() ?: "-",
+                    text = currentStress?.let { Math.round(it).toString() } ?: "-",
                     fontSize = 40.sp,
                     fontWeight = FontWeight.Bold,
                     color = DarkNavy
