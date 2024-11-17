@@ -19,8 +19,8 @@ import androidx.compose.ui.unit.sp
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.scare.data.course.dto.CourseResponseDTO
 import com.scare.ui.theme.Typography
-import com.scare.util.calculateTimeDifference
 import com.scare.util.formatDateTimeToRender
+import com.scare.util.formatTimeDifference
 
 @ExperimentalNaverMapApi
 @Composable
@@ -57,7 +57,7 @@ fun CourseItem(course: CourseResponseDTO) {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = calculateTimeDifference(
+                            text = formatTimeDifference(
                                 course.startedAt,
                                 course.finishedAt
                             ),
