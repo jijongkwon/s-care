@@ -39,3 +39,10 @@ fun calculateTimeDifference(startDateTime: Long, endDateTime: Long): Duration {
 
     return Duration.between(start, end)
 }
+
+fun convertToMillis(dateTimeString: String): Long {
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+    val localDateTime = LocalDateTime.parse(dateTimeString, formatter)
+
+    return localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+}

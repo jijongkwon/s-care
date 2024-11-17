@@ -12,6 +12,10 @@ import com.scare.ui.mobile.common.LocalWalkViewModel
 import com.scare.ui.mobile.common.TheHeader
 import com.scare.ui.mobile.map.component.StartWalkButton
 import com.scare.ui.mobile.map.component.WalkEndModal
+import com.scare.util.calculateTimeDifference
+import com.scare.util.convertToMillis
+import java.time.LocalDateTime
+import java.time.ZoneId
 
 @ExperimentalNaverMapApi
 @Composable
@@ -19,9 +23,24 @@ fun Map(context: Context) {
 
     val localWalkViewModel = LocalWalkViewModel.current
 
+    val startTime by localWalkViewModel!!.walkStartTime.collectAsState()
+    var currentTime = remember {
+        mutableStateOf(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
+    }
+    val duration = remember(currentTime.value, startTime) {
+        derivedStateOf {
+            if (startTime !== "") {
+                calculateTimeDifference(convertToMillis(startTime), currentTime.value).seconds
+            } else {
+                0
+            }
+        }
+    }
+
     val isWalk by localWalkViewModel!!.isWalk.collectAsState()
 
-    var isWalkEnd by remember { mutableStateOf(false) }
+    var isModalOpen by remember { mutableStateOf(false) }
+    val MINIMUM_WALK_TIME = 300 // 최소 산책 시간(초)
 
     Scaffold(topBar = {
         TheHeader(isMainPage = false)
@@ -40,7 +59,9 @@ fun Map(context: Context) {
                 )
             }
             NaverMap(
-                locationSource = rememberFusedLocationSource(), properties = mapProperties, uiSettings = mapUiSettings
+                locationSource = rememberFusedLocationSource(),
+                properties = mapProperties,
+                uiSettings = mapUiSettings
             )
             StartWalkButton(
                 modifier = Modifier.fillMaxSize(),
@@ -50,18 +71,28 @@ fun Map(context: Context) {
                     "산책이 끝나면\n저를 눌러주세요"
                 },
                 onClick = {
+                    currentTime.value =
+                        LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+
                     if (!isWalk) {
                         localWalkViewModel!!.handleWalkStart(context)
                     } else {
-                        localWalkViewModel!!.handleWalkEnd(context)
-                        isWalkEnd = true
+                        if (duration.value >= MINIMUM_WALK_TIME) {
+                            localWalkViewModel!!.handleWalkEnd(context, true)
+                        }
+                        isModalOpen = true
                     }
                 }
             )
-            if (isWalkEnd) {
+            if (isModalOpen) {
                 WalkEndModal(
                     modifier = Modifier.fillMaxSize(),
-                    onClose = { isWalkEnd = false }
+                    onClose = { isModalOpen = false },
+                    handleWalkStop = {
+                        localWalkViewModel!!.handleWalkEnd(context, false)
+                        isModalOpen = false
+                    },
+                    isWalkComplete = (duration.value >= MINIMUM_WALK_TIME)
                 )
             }
         }

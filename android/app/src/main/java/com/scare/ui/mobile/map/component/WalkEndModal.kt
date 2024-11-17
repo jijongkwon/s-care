@@ -18,7 +18,9 @@ import com.scare.ui.theme.Gray
 @Composable
 fun WalkEndModal(
     modifier: Modifier = Modifier,
-    onClose: () -> Unit
+    onClose: () -> Unit,
+    handleWalkStop: () -> Unit,
+    isWalkComplete: Boolean
 ) {
 
     val navController = LocalNavController.current
@@ -48,47 +50,94 @@ fun WalkEndModal(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Image(
-                        painter = painterResource(R.drawable.happy_dog_face),
-                        contentDescription = "dog_face",
-                        modifier = Modifier
-                            .width(60.dp)
-                            .height(60.dp)
-                    )
-                    Text(
-                        text = "산책을 종료했습니다!",
-                        fontSize = 20.sp,
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
+                    if (isWalkComplete) {
+                        Image(
+                            painter = painterResource(R.drawable.happy_dog_face),
+                            contentDescription = "happy_dog_face",
+                            modifier = Modifier
+                                .width(60.dp)
+                                .height(60.dp)
+                        )
+                    } else {
+                        Image(
+                            painter = painterResource(R.drawable.gloomy_dog_face),
+                            contentDescription = "gloomy_dog_face",
+                            modifier = Modifier
+                                .width(60.dp)
+                                .height(60.dp)
+                        )
+                    }
+                    if (isWalkComplete) {
+                        Text(
+                            text = "산책을 종료했습니다!",
+                            fontSize = 20.sp,
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    } else {
+                        Text(
+                            text = "5분 이상의 산책만 기록됩니다.\n산책을 종료할까요?",
+                            fontSize = 16.sp,
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Button(
-                        onClick = { onClose() },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.background,
-                            contentColor = MaterialTheme.colorScheme.onSurface
-                        )
-                    ) {
-                        Text(
-                            text = "닫기",
-                        )
+                    if (isWalkComplete) {
+                        Button(
+                            onClick = { onClose() },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.background,
+                                contentColor = MaterialTheme.colorScheme.onSurface
+                            )
+                        ) {
+                            Text(
+                                text = "닫기",
+                            )
+                        }
+                    } else {
+                        Button(
+                            onClick = { handleWalkStop() },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.background,
+                                contentColor = MaterialTheme.colorScheme.onSurface
+                            )
+                        ) {
+                            Text(
+                                text = "산책 그만하기",
+                            )
+                        }
                     }
                     Spacer(modifier = Modifier.width(8.dp))
-                    Button(
-                        onClick = { navController?.navigate("walk") },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.tertiary,
-                            contentColor = MaterialTheme.colorScheme.background
-                        )
-                    ) {
-                        Text(
-                            text = "기록 보기",
-                        )
+                    if (isWalkComplete) {
+                        Button(
+                            onClick = { navController?.navigate("walk") },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.tertiary,
+                                contentColor = MaterialTheme.colorScheme.background
+                            )
+                        ) {
+                            Text(
+                                text = "기록 보기",
+                            )
+                        }
+                    } else {
+                        Button(
+                            onClick = { onClose() },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.tertiary,
+                                contentColor = MaterialTheme.colorScheme.background
+                            )
+                        ) {
+                            Text(
+                                text = "산책 계속하기",
+                            )
+                        }
                     }
                 }
             }
