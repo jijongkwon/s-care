@@ -1,8 +1,9 @@
 package com.scare.api.solution.walk.service.command;
 
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,10 +38,9 @@ public class WalkingCommandService {
 	@Transactional
 	public Long saveWalkingCourse(Long memberId, SaveWalkingCourseDto dto) {
 		log.info("[WalkingCommandService] 산책 코스 저장 시작, 산책 시간");
-		long walkingTime = getWalkingTime(dto);
 		Member member = MemberServiceHelper.findExistingMember(memberRepository, memberId);
+		long walkingTime = getWalkingTime(dto.getStartedAt(), dto.getFinishedAt());
 		List<WalkingDetail.LocationPoint> locationPoints = processLocationData(dto.getLocations());
-
 		try {
 			return saveWithStressData(dto, walkingTime, member, locationPoints);
 		} catch (RestClientException e) {
@@ -50,6 +50,10 @@ public class WalkingCommandService {
 			log.error("[ERROR] 산책 코스 저장 중 예외 발생", e);
 			throw new WalkingCourseDataSaveException();
 		}
+	}
+
+	private long getWalkingTime(LocalDateTime startedAt, LocalDateTime finishedAt) {
+		return ChronoUnit.SECONDS.between(startedAt, finishedAt);
 	}
 
 	private Long saveWithStressData(SaveWalkingCourseDto dto, long walkingTime,
@@ -75,24 +79,13 @@ public class WalkingCommandService {
 		return walkingCourseId;
 	}
 
-	private long getWalkingTime(SaveWalkingCourseDto walkingCourseSaveDto) {
-		return ChronoUnit.SECONDS.between(
-			walkingCourseSaveDto.getStartedAt(),
-			walkingCourseSaveDto.getFinishedAt()
-		);
-	}
-
 	private List<WalkingDetail.LocationPoint> processLocationData(List<SaveWalkingCourseLocationDto> locationPoints) {
-		List<WalkingDetail.LocationPoint> newLocationPoints = new ArrayList<>();
-		for (int i = 3; i < locationPoints.size(); i++) {
-			SaveWalkingCourseLocationDto location = locationPoints.get(i);
-			newLocationPoints.add(WalkingDetail.LocationPoint.builder()
+		return locationPoints.stream()
+			.map(location -> WalkingDetail.LocationPoint.builder()
 				.latitude(location.getLatitude())
 				.longitude(location.getLongitude())
-				.build());
-		}
-
-		return newLocationPoints;
+				.build())
+			.collect(Collectors.toList());
 	}
 
 	private WalkingCourse createWalkingCourseWithStressData(SaveWalkingCourseDto dto, Member member) {
