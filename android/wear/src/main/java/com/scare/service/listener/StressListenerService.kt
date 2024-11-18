@@ -56,7 +56,7 @@ class StressListenerService : WearableListenerService() {
                 "스트레스 지수 경고 알림",
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
-                description = "워치에서 알림을 수신합니다. (1시간 주기)"
+                description = "워치에서 알림을 수신합니다. (30분 주기)"
             }
 
             val notificationManager = getSystemService(NotificationManager::class.java)

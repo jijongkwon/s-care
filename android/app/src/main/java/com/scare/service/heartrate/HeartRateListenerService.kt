@@ -176,10 +176,11 @@ class HeartRateListenerService : WearableListenerService() {
         // 현재 시간을 가져옵니다.
         val now = LocalDateTime.now()
 
-        // 마지막 알림 날짜가 null이 아니고, 1시간 이상 차이가 나는지 확인
+        // 마지막 알림 날짜가 null이 아니고, 30분 이상 차이가 나는지 확인
         val result = lastDate?.let {
 //            Duration.between(it, now).toHours() >= 1
-            Duration.between(it, now).seconds >= 30 // 테스트 단계에서는 30초로 설정
+//            Duration.between(it, now).seconds >= 30 // 테스트 단계에서는 30초로 설정
+            Duration.between(it, now).toMinutes() >= 30
         } ?: true
 
         if (!result) {
