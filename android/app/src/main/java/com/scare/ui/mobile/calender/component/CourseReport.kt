@@ -28,7 +28,6 @@ import com.naver.maps.map.compose.rememberCameraPositionState
 import com.scare.R
 import com.scare.data.calender.dto.WeeklyReportDataDTO
 import com.scare.ui.theme.Gray
-import com.scare.ui.theme.NeonYellow
 
 @ExperimentalNaverMapApi
 @Composable
@@ -54,7 +53,7 @@ fun CourseReport(
 
 
     // 위쪽 테두리
-    Divider(color = NeonYellow, thickness = 0.75.dp)
+    Divider(color = MaterialTheme.colorScheme.tertiary, thickness = 0.75.dp)
 
     Box(
         modifier = Modifier
@@ -109,7 +108,7 @@ fun CourseReport(
                         Text(
                             text = totalTime,
                             style = MaterialTheme.typography.titleLarge,
-                            color = NeonYellow,
+                            color = MaterialTheme.colorScheme.tertiary,
                             modifier = Modifier.padding(bottom = 4.dp)
                         )
                         Text("총 산책 시간", style = MaterialTheme.typography.bodySmall)
@@ -119,7 +118,7 @@ fun CourseReport(
                         Text(
                             text = "$walkCount",
                             style = MaterialTheme.typography.titleLarge,
-                            color = NeonYellow,
+                            color = MaterialTheme.colorScheme.tertiary,
                             modifier = Modifier.padding(bottom = 4.dp)
                         )
                         Text("산책 횟수", style = MaterialTheme.typography.bodySmall)
@@ -129,7 +128,7 @@ fun CourseReport(
                         Text(
                             text = averageStressChange?.let { Math.round(it).toString() } ?: "0",
                             style = MaterialTheme.typography.titleLarge,
-                            color = NeonYellow,
+                            color = MaterialTheme.colorScheme.tertiary,
                             modifier = Modifier.padding(bottom = 4.dp)
                         )
 
@@ -170,7 +169,7 @@ fun CourseReport(
                             // 전체 경로를 PathOverlay로 표시
                             PathOverlay(
                                 coords = coords,
-                                color = NeonYellow,
+                                color = MaterialTheme.colorScheme.tertiary,
                                 width = 5.dp
                             )
                         }
@@ -188,7 +187,7 @@ fun CourseReport(
     }
 
     // 위쪽 테두리
-    Divider(color = NeonYellow, thickness = 0.75.dp)
+    Divider(color = MaterialTheme.colorScheme.tertiary, thickness = 0.75.dp)
 }
 
 @SuppressLint("DefaultLocale")

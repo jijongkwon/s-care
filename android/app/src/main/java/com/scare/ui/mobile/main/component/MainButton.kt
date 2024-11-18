@@ -2,12 +2,13 @@ package com.scare.ui.mobile.main.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -50,6 +51,11 @@ fun MainTextButton(
     text: String,
     onClick: () -> Unit
 ) {
+    val buttonImage = if (isSystemInDarkTheme()) {
+        R.drawable.button_dark
+    } else {
+        R.drawable.button_light
+    }
     Row(
         modifier = Modifier
             .clickable(onClick = onClick) // 버튼 클릭 동작 설정
@@ -57,7 +63,7 @@ fun MainTextButton(
 
     ) {
         Image(
-            painter = painterResource(R.drawable.button),
+            painter = painterResource(buttonImage),
             contentDescription = null,
             modifier = Modifier.size(32.dp) // 아이콘 크기 설정
         )
@@ -66,7 +72,7 @@ fun MainTextButton(
 
         Text(
             text = text,
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onSurface,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(top = 4.dp)
         )

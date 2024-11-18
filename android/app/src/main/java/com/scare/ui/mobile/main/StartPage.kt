@@ -2,6 +2,7 @@ package com.scare.ui.mobile.main
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
@@ -59,7 +60,11 @@ fun GoogleLoginButton(onClick: () -> Unit, modifier: Modifier) {
 
 @Composable
 fun StartImage(modifier: Modifier = Modifier) {
-    val startImage = painterResource(R.drawable.startpage)
+    val startImage = if (isSystemInDarkTheme()) {
+        painterResource(R.drawable.startpage_dark)
+    } else {
+        painterResource(R.drawable.startpage_light)
+    }
 
     Image(
         painter = startImage,
