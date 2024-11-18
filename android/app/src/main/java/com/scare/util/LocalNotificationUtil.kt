@@ -29,7 +29,7 @@ object LocalNotificationUtil {
                 "스트레스 지수 경고 알림",
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
-                description = "스트레스 지수가 높을 때마다 알림을 수신합니다. (1시간 주기)"
+                description = "스트레스 지수가 높을 때마다 알림을 수신합니다. (30분 주기)"
             }
             val notificationManager = context.getSystemService(NotificationManager::class.java)
             notificationManager.createNotificationChannel(channel)
