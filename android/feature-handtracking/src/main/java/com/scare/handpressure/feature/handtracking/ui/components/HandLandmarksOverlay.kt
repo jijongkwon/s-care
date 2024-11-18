@@ -11,53 +11,66 @@ import com.google.mediapipe.tasks.components.containers.NormalizedLandmark
 
 @Composable
 fun HandLandmarksOverlay(
-    landmarks: List<List<NormalizedLandmark>>?,
+    landmarks: List<List<NormalizedLandmark>>?, // 손 랜드마크 데이터
+    currentStep: Int, // 현재 단계 (1: 왼손, 2: 오른손)
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier) {
         Canvas(modifier = Modifier.fillMaxSize()) {
+            val centerX = size.width / 2  // Canvas의 가로 중심
+            val centerY = size.height / 2 // Canvas의 세로 중심
+
             val scaleFactorX = 2f
             val scaleFactorY = 1f
 
+            // 현재 단계에 따라 렌더링할 손 선택
+            val handToRender = when (currentStep) {
+                1 -> listOf(1) // 왼손만
+                2 -> listOf(0) // 오른손만
+                else -> listOf(0, 1) // 기본적으로 두 손 모두
+            }
+
             landmarks?.forEachIndexed { handIndex, handLandmarks ->
-                // 첫 번째 손은 초록색, 두 번째 손은 파란색으로 표시
-                val handColor = when (handIndex) {
-                    0 -> Color(0xFF00FF00) // 밝은 초록색
-                    1 -> Color(0xFF00BFFF) // 밝은 파란색
-                    else -> Color.Yellow   // 추가 손이 있을 경우 노란색
-                }
+                if (handIndex in handToRender) { // 현재 단계에 해당하는 손만 렌더링
+                    val handColor = when (handIndex) {
+                        0 -> Color(0xFF00FF00) // 왼손: 밝은 초록색
+                        1 -> Color(0xFF00BFFF) // 오른손: 밝은 파란색
+                        else -> Color.Yellow
+                    }
 
-                handLandmarks.forEach { landmark ->
-                    val centerX = size.width / 2
-                    val centerY = size.height / 2
-
-                    val offsetX = if (handIndex == 0) -50f else 50f  // 왼손/오른손 구분을 위한 오프셋
+                    // 왼손/오른손 구분 오프셋
+                    val offsetX = if (handIndex == 0) -50f else 50f
                     val offsetY = -30f
 
-                    val scaledX =
-                        centerX + (landmark.x() * size.width - centerX) * scaleFactorX + offsetX
-                    val scaledY =
-                        centerY + (landmark.y() * size.height - centerY) * scaleFactorY + offsetY
+                    handLandmarks.forEach { landmark ->
+                        val scaledX =
+                            centerX + (landmark.x() * size.width - centerX) * scaleFactorX + offsetX
+                        val scaledY =
+                            centerY + (landmark.y() * size.height - centerY) * scaleFactorY + offsetY
 
-                    // 랜드마크 포인트 그리기
-                    drawCircle(
-                        color = handColor,
-                        radius = 12f,
-                        center = androidx.compose.ui.geometry.Offset(
-                            scaledX,
-                            scaledY
-                        ),
-                        style = Stroke(width = 3f)
-                    )
+                        // 랜드마크 포인트 그리기
+                        drawCircle(
+                            color = handColor,
+                            radius = 12f,
+                            center = androidx.compose.ui.geometry.Offset(
+                                scaledX,
+                                scaledY
+                            ),
+                            style = Stroke(width = 3f)
+                        )
+                    }
 
                     // 랜드마크 연결선 그리기
                     val connections = getHandConnections()
                     connections.forEach { (start, end) ->
                         if (start < handLandmarks.size && end < handLandmarks.size) {
+                            // 시작 점
                             val startX =
                                 centerX + (handLandmarks[start].x() * size.width - centerX) * scaleFactorX + offsetX
                             val startY =
                                 centerY + (handLandmarks[start].y() * size.height - centerY) * scaleFactorY + offsetY
+
+                            // 끝 점
                             val endX =
                                 centerX + (handLandmarks[end].x() * size.width - centerX) * scaleFactorX + offsetX
                             val endY =
@@ -76,6 +89,8 @@ fun HandLandmarksOverlay(
         }
     }
 }
+
+
 
 // 손가락 관절을 연결하는 선을 위한 인덱스 쌍 정의
 private fun getHandConnections(): List<Pair<Int, Int>> {

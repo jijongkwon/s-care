@@ -29,7 +29,6 @@ fun MainPage(loginViewModel: LoginViewModel, heartRateViewModel: HeartRateViewMo
 
     val solutions = listOf(
         Solution("산책하기", "map"),
-        Solution("ASMR", "asmr"),
         Solution("지압하기", "hand-tracking")  // 손 트래킹 경로 추가
     )
 

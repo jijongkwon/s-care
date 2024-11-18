@@ -1,5 +1,6 @@
 package com.scare.handpressure.feature.pressure.ui.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -32,7 +33,7 @@ fun StepProgressIndicator(
         PressureStepConfig.steps.forEach { step ->
             Box(
                 modifier = Modifier
-                    .size(40.dp)
+                    .size(50.dp)
                     .padding(4.dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -42,9 +43,9 @@ fun StepProgressIndicator(
                     color = if (step.id < currentStepId) {
                         MaterialTheme.colorScheme.primary
                     } else {
-                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
+                        Color.White
                     },
-                    strokeWidth = 3.dp
+                    strokeWidth = 5.dp
                 )
 
                 Text(
@@ -52,7 +53,7 @@ fun StepProgressIndicator(
                     style = MaterialTheme.typography.bodyLarge.copy(
                         fontWeight = FontWeight.Bold,
                     ),
-                    color = Color.Black,
+                    color = Color.White,
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
