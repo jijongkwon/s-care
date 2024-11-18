@@ -79,6 +79,7 @@ class StressListenerService : WearableListenerService() {
             .setContentTitle(title)
             .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setContentIntent(pendingIntent) // 클릭 시 실행
             .setAutoCancel(true) // 클릭 후 알림이 자동으로 닫히도록 설정
             .setOngoing(false) // 알림 고정 해제
             .build()
