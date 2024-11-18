@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -54,45 +56,50 @@ fun HandPressureScreen(
         // 손 랜드마크 오버레이
         HandLandmarksOverlay(
             landmarks = handPosition?.landmarks,
+            currentStep = currentStep.id, // 단계 ID 전달
             modifier = Modifier.fillMaxSize()
         )
 
         // 상단 진행 상태
         Column(
             modifier = Modifier
-                .align(Alignment.TopCenter)
-                .padding(top = 16.dp)
-                .background(Color.White.copy(alpha = 0.8f)),
-
+                .fillMaxWidth() // Column이 화면 너비를 차지하도록 설정
+                .padding(top = 16.dp),
+            verticalArrangement = Arrangement.Center,
             ) {
+
             StepProgressIndicator(
                 currentStepId = currentStep.id
             )
+
+            Spacer(modifier = Modifier.padding(8.dp))
+
+            // 피드백 메시지
+            handPosition?.feedback?.let { feedback ->
+                Text(
+                    text = feedback,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = White,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.DarkGray.copy(alpha = 0.5f))
+                        .padding(16.dp),
+                    textAlign = TextAlign.Center,
+                )
+            }
         }
 
         // 하단 컨트롤
         Column(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(bottom = 32.dp)
+                .padding(bottom = 32.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             if (stepState == StepState.HOLDING_POSITION) {
                 PressureTimer(
                     remainingTime = remainingTime,
                     totalTime = currentStep.duration
-                )
-            }
-
-            // 피드백 메시지
-            handPosition?.feedback?.let { feedback ->
-                Text(
-                    text = feedback,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color.Black,
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .background(Color.White.copy(alpha = 0.8f)),
-                    textAlign = TextAlign.Center
                 )
             }
 
