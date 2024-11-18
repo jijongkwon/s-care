@@ -38,11 +38,11 @@ class HandPressureViewModel @Inject constructor(
     val remainingTime: StateFlow<Int> = _remainingTime.asStateFlow()
 
     private var timerJob: Job? = null
+    private var lastPausedTime: Int? = null  // 마지막으로 일시정지된 시간을 저장
 
     private val _isCompleted = MutableStateFlow(false)
     val isCompleted: StateFlow<Boolean> = _isCompleted.asStateFlow()
 
-    // 현재 스텝의 진행률 (0f ~ 1f)
     private val _progress = MutableStateFlow(0f)
 
     fun startSession() {
@@ -51,6 +51,7 @@ class HandPressureViewModel @Inject constructor(
         _remainingTime.value = _currentStep.value.duration
         _progress.value = 0f
         _isCompleted.value = false
+        lastPausedTime = null
     }
 
     private fun processFrame(result: HandLandmarkerResult?) {
@@ -60,17 +61,17 @@ class HandPressureViewModel @Inject constructor(
 
             when (_stepState.value) {
                 StepState.DETECTING_POSITION, StepState.POSITION_INCORRECT -> {
-                    // 자세가 정확할 때 타이머 시작 또는 재시작
                     if (position.isCorrect) {
                         _stepState.value = StepState.HOLDING_POSITION
-                        startTimer()
+                        // 이전에 중단된 시간이 있으면 그 시간부터, 없으면 처음부터 시작
+                        startTimer(lastPausedTime ?: _currentStep.value.duration)
                     }
                 }
 
                 StepState.HOLDING_POSITION -> {
                     if (!position.isCorrect) {
                         _stepState.value = StepState.POSITION_INCORRECT
-                        stopTimer()
+                        pauseTimer()
                     }
                 }
 
@@ -80,13 +81,13 @@ class HandPressureViewModel @Inject constructor(
         }
     }
 
-    private fun startTimer() {
+    private fun startTimer(startFromSeconds: Int) {
         timerJob?.cancel()
         timerJob = viewModelScope.launch {
             val totalDuration = _currentStep.value.duration
-            _remainingTime.value = totalDuration
+            _remainingTime.value = startFromSeconds
 
-            for (i in totalDuration downTo 0) {
+            for (i in startFromSeconds downTo 0) {
                 _remainingTime.value = i
                 _progress.value = 1f - (i.toFloat() / totalDuration)
                 delay(1000) // 1초 딜레이
@@ -98,8 +99,14 @@ class HandPressureViewModel @Inject constructor(
         }
     }
 
+    private fun pauseTimer() {
+        lastPausedTime = _remainingTime.value  // 현재 남은 시간을 저장
+        timerJob?.cancel()
+    }
+
     private fun stopTimer() {
         timerJob?.cancel()
+        lastPausedTime = null
         _progress.value = 0f
     }
 
@@ -108,19 +115,17 @@ class HandPressureViewModel @Inject constructor(
 
         viewModelScope.launch {
             if (currentStepIndex < PressureStepConfig.steps.size - 1) {
-                // 현재 단계 완료 표시
                 _stepState.value = StepState.COMPLETED
-                delay(2000) // 2초 동안 완료 메시지 표시
+                delay(2000)
 
-                // 다음 단계로 이동
                 _currentStep.value = PressureStepConfig.steps[currentStepIndex + 1]
                 _stepState.value = StepState.DETECTING_POSITION
                 _remainingTime.value = _currentStep.value.duration
                 _progress.value = 0f
+                lastPausedTime = null  // 새로운 스텝을 시작할 때 리셋
             } else {
-                // 모든 단계 완료
                 _stepState.value = StepState.COMPLETED_ALL
-                delay(3000) // 3초 동안 최종 완료 메시지 표시`
+                delay(3000)
                 _isCompleted.value = true
             }
         }
@@ -130,7 +135,7 @@ class HandPressureViewModel @Inject constructor(
         stopTimer()
         viewModelScope.launch {
             _stepState.value = StepState.SKIPPED
-            delay(1500) // 1.5초 동안 스킵 메시지 표시
+            delay(1500)
             proceedToNextStep()
         }
     }
@@ -139,16 +144,15 @@ class HandPressureViewModel @Inject constructor(
         val currentStepIndex = PressureStepConfig.steps.indexOf(_currentStep.value)
 
         if (currentStepIndex < PressureStepConfig.steps.size - 1) {
-            // 다음 단계로 이동
             _currentStep.value = PressureStepConfig.steps[currentStepIndex + 1]
             _stepState.value = StepState.DETECTING_POSITION
             _remainingTime.value = _currentStep.value.duration
             _progress.value = 0f
+            lastPausedTime = null  // 새로운 스텝으로 넘어갈 때 리셋
         } else {
-            // 모든 단계 완료
             viewModelScope.launch {
                 _stepState.value = StepState.COMPLETED_ALL
-                delay(3000) // 3초 동안 최종 완료 메시지 표시
+                delay(3000)
                 _isCompleted.value = true
             }
         }
@@ -159,6 +163,7 @@ class HandPressureViewModel @Inject constructor(
         _stepState.value = StepState.DETECTING_POSITION
         _remainingTime.value = _currentStep.value.duration
         _progress.value = 0f
+        lastPausedTime = null  // 재시도할 때 리셋
     }
 
     override fun onCleared() {
