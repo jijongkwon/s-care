@@ -40,9 +40,17 @@ public class WalkingCommandService {
 		log.info("[WalkingCommandService] 산책 코스 저장 시작, 산책 시간");
 		Member member = MemberServiceHelper.findExistingMember(memberRepository, memberId);
 		long walkingTime = getWalkingTime(dto.getStartedAt(), dto.getFinishedAt());
-		List<WalkingDetail.LocationPoint> locationPoints = processLocationData(dto.getLocations());
+
+		List<Double> heartRates = dto.getHeartRates();
+		List<SaveWalkingCourseLocationDto> walkingLocations = dto.getLocations();
+
+		// 두 리스트 중 더 짧은 길이 계산
+		int minSize = Math.min(heartRates.size(), walkingLocations.size());
+		heartRates = heartRates.subList(0, minSize);
+		walkingLocations = walkingLocations.subList(0, minSize);
+		List<WalkingDetail.LocationPoint> locationPoints = processLocationData(walkingLocations);
 		try {
-			return saveWithStressData(dto, walkingTime, member, locationPoints);
+			return saveWithStressData(dto, heartRates, walkingTime, member, locationPoints);
 		} catch (RestClientException e) {
 			log.warn("[ERROR] FAST API 스트레스 데이터 불러오기 실패. 기본 데이터만 저장.", e);
 			return saveWithoutStressData(dto, member, locationPoints);
@@ -56,9 +64,9 @@ public class WalkingCommandService {
 		return ChronoUnit.SECONDS.between(startedAt, finishedAt);
 	}
 
-	private Long saveWithStressData(SaveWalkingCourseDto dto, long walkingTime,
+	private Long saveWithStressData(SaveWalkingCourseDto dto, List<Double> heartRates, long walkingTime,
 		Member member, List<WalkingDetail.LocationPoint> locationPoints) {
-		SaveWalkingCourseStressDto stressData = stressApiClient.getStressData(dto, walkingTime);
+		SaveWalkingCourseStressDto stressData = stressApiClient.getStressData(heartRates, walkingTime);
 		SaveWalkingCourseDto walkingCourseWithStressDto = dto.withStressData(stressData);
 
 		Long walkingCourseId = walkingCourseRepository.save(
