@@ -1,7 +1,6 @@
 package com.scare.handpressure.feature.pressure.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.scare.handpressure.feature.handtracking.ui.theme.DarkNavy
 import com.scare.handpressure.feature.pressure.domain.model.PressureStep
 import com.scare.handpressure.feature.pressure.domain.model.StepState
 
@@ -33,7 +33,7 @@ fun StepGuide(
             .fillMaxWidth()
             .padding(16.dp)
             .background(
-                color = Color.DarkGray.copy(alpha = 0.5f),
+                color = DarkNavy.copy(alpha = 0.5f),
                 shape = RoundedCornerShape(16.dp)
             )
             .padding(16.dp),

@@ -121,7 +121,7 @@ class HandPositionDetector @Inject constructor() {
         val radius = calculateDistance(x1, y1, x2, y2) / 1.5f  // 반경을 더 크게
 
         val distanceToCenter = calculateDistance(px, py, centerX, centerY)
-        return distanceToCenter <= radius * 1.3f  // 판정 범위를 더 크게
+        return distanceToCenter <= radius * 1.35f  // 판정 범위를 더 크게
     }
 
     private fun calculateDistance(x1: Float, y1: Float, x2: Float, y2: Float): Float {

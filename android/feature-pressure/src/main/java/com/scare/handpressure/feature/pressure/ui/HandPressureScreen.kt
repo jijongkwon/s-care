@@ -1,6 +1,7 @@
 package com.scare.handpressure.feature.pressure.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,6 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.scare.handpressure.feature.handtracking.ui.components.CameraPreview
 import com.scare.handpressure.feature.handtracking.ui.components.HandLandmarksOverlay
+import com.scare.handpressure.feature.handtracking.ui.theme.DarkNavy
+import com.scare.handpressure.feature.handtracking.ui.theme.NeonYellow
 import com.scare.handpressure.feature.pressure.domain.model.StepState
 import com.scare.handpressure.feature.pressure.ui.components.PressureTimer
 import com.scare.handpressure.feature.pressure.ui.components.StepGuide
@@ -82,7 +86,7 @@ fun HandPressureScreen(
                     color = White,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color.DarkGray.copy(alpha = 0.5f))
+                        .background(DarkNavy.copy(alpha = 0.5f))
                         .padding(16.dp),
                     textAlign = TextAlign.Center,
                 )
@@ -119,15 +123,22 @@ fun HandPressureScreen(
             ) {
                 Button(
                     onClick = { viewModel.retryCurrentStep() },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = DarkNavy // 버튼 배경색 설정
+                    ),
                     modifier = Modifier.padding(end = 8.dp)
                 ) {
-                    Text("다시 시도")
+                    Text("다시 시도", color = White)
                 }
 
                 Button(
-                    onClick = { viewModel.skipCurrentStep() }
+                    onClick = { viewModel.skipCurrentStep() },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = DarkNavy // 버튼 배경색 설정
+                    ),
+                    modifier = Modifier.padding(end = 8.dp)
                 ) {
-                    Text("다음 단계")
+                    Text("다음 단계", color = White)
                 }
             }
         }
