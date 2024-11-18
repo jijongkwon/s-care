@@ -1,4 +1,4 @@
-package com.scare.ui.mobile.viewmodel.walk
+package com.scare.service.location
 
 import android.annotation.SuppressLint
 import android.app.NotificationChannel

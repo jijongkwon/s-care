@@ -16,6 +16,7 @@ import com.scare.data.walk.dto.WalkRequestDTO
 import com.scare.data.walk.repository.WalkRepository
 import com.scare.repository.heartrate.HeartRateRepository
 import com.scare.repository.location.LocationRepository
+import com.scare.service.location.LocationService
 import com.scare.util.formatDateTimeToSearch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

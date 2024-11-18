@@ -73,6 +73,11 @@
             </intent-filter>
         </service>
 
+        <service
+                android:name=".service.location.LocationService"
+                android:foregroundServiceType="location"
+                android:exported="false"/>
+
         <meta-data
                 android:name="com.naver.maps.map.CLIENT_ID"
                 android:value="@string/map_api_key"/>
