@@ -2,14 +2,7 @@ package com.scare.ui.mobile.calender.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,7 +16,6 @@ import androidx.compose.ui.unit.sp
 import com.scare.R
 import com.scare.ui.theme.DarkNavy
 import com.scare.ui.theme.Gray
-import com.scare.ui.theme.NeonYellow
 
 @Composable
 fun WeeklyStressResult(
@@ -35,7 +27,7 @@ fun WeeklyStressResult(
             .fillMaxWidth()
             .padding(16.dp)
             .clip(MaterialTheme.shapes.medium) // 둥근 모서리 적용
-            .background(NeonYellow) // 배경색 적용
+            .background(MaterialTheme.colorScheme.tertiary) // 배경색 적용
             .padding(24.dp)
     ) {
         Row(

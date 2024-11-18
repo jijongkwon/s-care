@@ -15,7 +15,7 @@ val DarkColorScheme = darkColorScheme(
     )
 
 val LightColorScheme = lightColorScheme(
-    background = White,
+    background = Ivory,
     tertiary = Green,
     onSurface = DarkNavy,
 
