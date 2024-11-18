@@ -48,7 +48,7 @@ fun Map(context: Context) {
     var isModalOpen by remember { mutableStateOf(false) }
     var isLoading by remember { mutableStateOf(false) }
     val MINIMUM_WALK_TIME = 180 // 최소 산책 시간(초)
-    val LOADING_TIME = 3000L // 최소 로딩 시간(밀리초)
+    val LOADING_TIME = 15000L // 최소 로딩 시간(밀리초)
 
     LaunchedEffect(Unit) {
         localWalkViewModel!!.resetLocations()
