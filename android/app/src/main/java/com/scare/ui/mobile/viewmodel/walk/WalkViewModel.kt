@@ -16,6 +16,7 @@ import com.scare.repository.location.LocationRepository
 import com.scare.service.location.LocationService
 import com.scare.util.formatDateTimeToSearch
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -46,6 +47,9 @@ class WalkViewModel(
     private val _locations = MutableStateFlow<List<LocationDTO>>(emptyList())
     val locations: StateFlow<List<LocationDTO>> get() = _locations
 
+    private var locationFetchJob: Job? = null
+    private var isFetchingLocations = false
+
     init {
         // DataStore에서 산책 상태를 관찰
         viewModelScope.launch {
@@ -59,6 +63,10 @@ class WalkViewModel(
                 _walkEndTime.value = walkEndTime
             }
         }
+    }
+
+    fun resetLocations() {
+        _locations.value = listOf()
     }
 
     // 산책 상태 저장
@@ -107,11 +115,22 @@ class WalkViewModel(
 
     fun handleWalkStart(context: Context) {
         viewModelScope.launch {
+            resetLocations()
             updateWalkStatus(context, true)
             updateStartTime(context, formatDateTimeToSearch(LocalDateTime.now()))
-//            startLocationUpdates(context)
+
             val serviceIntent = Intent(context, LocationService::class.java)
             ContextCompat.startForegroundService(context, serviceIntent)
+
+            // 반복 작업 시작
+            isFetchingLocations = true
+            locationFetchJob = viewModelScope.launch {
+                while (isFetchingLocations) {
+                    val currentTime = formatDateTimeToSearch(LocalDateTime.now())
+                    fetchLocationsWhileWalking(_walkStartTime.value, currentTime)
+                    delay(1000) // 1초 대기
+                }
+            }
         }
     }
 
@@ -125,6 +144,10 @@ class WalkViewModel(
             val serviceIntent = Intent(context, LocationService::class.java)
             context.stopService(serviceIntent)
 
+            // 반복 작업 중지
+            isFetchingLocations = false
+            locationFetchJob?.cancel()
+
             if (isWalkComplete) {
                 fetchHeartRatesWhileWalking(_walkStartTime.value, currentTime)
                 fetchLocationsWhileWalking(_walkStartTime.value, currentTime)
@@ -132,7 +155,6 @@ class WalkViewModel(
                 postWalking()
             }
             delay(300)
-            _locations.value = emptyList()
         }
     }
 

@@ -49,6 +49,10 @@ fun Map(context: Context) {
     var isLoading by remember { mutableStateOf(false) }
     val MINIMUM_WALK_TIME = 180 // 최소 산책 시간(초)
 
+    LaunchedEffect(Unit) {
+        localWalkViewModel!!.resetLocations()
+    }
+
     Scaffold(topBar = {
         TheHeader(isMainPage = false)
     }) { innerPadding ->
