@@ -94,12 +94,15 @@ class HeartRateListenerService : WearableListenerService() {
                         Log.d("Stress Notification is Expried", "알림 전송 가능 (1시간 지나서 만료)")
 
                         // 날씨 정보를 가져와 비가 오는지 확인
-                        if (isBadWeather()) {
-                            return@launch
-                        }
+                        val isBadWeatherResult = isBadWeather()
+                        val title = "스트레스가 매우 높아요!"
+                        val message = if (isBadWeatherResult) { "날씨가 안 좋으니 지압을 하면서 스트레스를 낮추어 보아요" }
+                                        else { "날씨가 좋으니 산책을 하면서 스트레스를 낮추어 보아요" }
 
-                        // 알람 전송
-                        showStressNotificationIfPermitted(stress, isBadWeather())
+                        // 휴대폰 푸쉬 알림 전송
+                        showStressNotificationIfPermitted(title, message)
+                        // 와치 알림 전송
+                        sendNotificationToWatch(title, message)
                         // 데이터 저장
                         LastNotificationData(this@HeartRateListenerService).updateLastNotificationDate(LocalDateTime.now())
                     }
@@ -157,19 +160,10 @@ class HeartRateListenerService : WearableListenerService() {
         }
     }
 
-    private fun showStressNotificationIfPermitted(stress: Int, isBadWeather: Boolean) {
+    private fun showStressNotificationIfPermitted(title: String, message: String) {
         // 권한이 있는지 확인
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-            val title = "스트레스가 매우 높아요!"
-            var content: String
-            if (isBadWeather) {
-                // 날씨가 안좋으면 지압 추천
-                content = "날씨가 안 좋으니 지압을 하면서 스트레스를 낮추어 보아요"
-            } else {
-                // 날씨가 좋으면 산책 추천
-                content = "날씨가 좋으니 산책을 하면서 스트레스를 낮추어 보아요"
-            }
-            LocalNotificationUtil.showStressNotification(this, title, content)
+            LocalNotificationUtil.showStressNotification(this, title, message)
         } else {
             Log.e("HeartRateListenerService", "알림 권한이 없어 알림을 표시하지 못했습니다.")
         }
@@ -247,6 +241,23 @@ class HeartRateListenerService : WearableListenerService() {
             latitude = 37.552987017
             longitude = 126.972591728
         }
+    }
+
+    private fun sendNotificationToWatch(title: String, message: String) {
+        val dataMapRequest = PutDataMapRequest.create("/stress/notification").apply {
+            dataMap.putString("title", title)
+            dataMap.putString("message", message)
+            dataMap.putLong("timestamp", System.currentTimeMillis()) // 고유 데이터 보장
+        }
+        val putDataRequest = dataMapRequest.asPutDataRequest().setUrgent()
+
+        Wearable.getDataClient(this).putDataItem(putDataRequest)
+            .addOnSuccessListener {
+                Log.d("Wearable Notification", "알림 데이터 전송 성공")
+            }
+            .addOnFailureListener { e ->
+                Log.e("Wearable Notification", "알림 데이터 전송 실패", e)
+            }
     }
 
 }
