@@ -36,6 +36,7 @@ fun SolutionCardList(solutions: List<Solution>) {
 @Composable
 fun SolutionCard(solution: Solution) {
     val navController = LocalNavController.current
+
     val cardColor = if (isSystemInDarkTheme()) {
         DarkNavy
     } else {
