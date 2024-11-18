@@ -1,10 +1,12 @@
 package com.scare.ui.mobile.viewmodel.walk
 
 import android.content.Context
+import android.content.Intent
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.util.Log
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.wearable.Wearable
@@ -123,6 +125,8 @@ class WalkViewModel(
                         createdAt = LocalDateTime.now(),
                     )
                 )
+                // 좌표를 조회한 후 지도에 경로를 렌더링
+                fetchLocationsWhileWalking(_walkStartTime.value, LocalDateTime.now().toString())
             }
         }
 
@@ -154,6 +158,8 @@ class WalkViewModel(
             updateWalkStatus(context, true)
             updateStartTime(context, formatDateTimeToSearch(LocalDateTime.now()))
             startLocationUpdates(context)
+            val serviceIntent = Intent(context, LocationService::class.java)
+            ContextCompat.startForegroundService(context, serviceIntent)
         }
     }
 
@@ -163,11 +169,18 @@ class WalkViewModel(
             updateWalkStatus(context, false)
             updateEndTime(context, currentTime)
             stopLocationUpdates()
+
+            // Stop Foreground Service
+            val serviceIntent = Intent(context, LocationService::class.java)
+            context.stopService(serviceIntent)
+
             if (isWalkComplete) {
                 fetchHeartRatesWhileWalking(_walkStartTime.value, currentTime)
                 fetchLocationsWhileWalking(_walkStartTime.value, currentTime)
                 delay(300)
                 postWalking()
+                delay(300)
+                _locations.value = emptyList()
             }
         }
     }

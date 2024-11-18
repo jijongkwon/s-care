@@ -7,11 +7,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.compose.*
 import com.scare.ui.mobile.common.LocalWalkViewModel
 import com.scare.ui.mobile.common.TheHeader
 import com.scare.ui.mobile.map.component.StartWalkButton
 import com.scare.ui.mobile.map.component.WalkEndModal
+import com.scare.ui.theme.Gray
 import com.scare.util.calculateTimeDifference
 import com.scare.util.convertToMillis
 import kotlinx.coroutines.delay
@@ -26,6 +29,7 @@ fun Map(context: Context) {
     val localWalkViewModel = LocalWalkViewModel.current
 
     val startTime by localWalkViewModel!!.walkStartTime.collectAsState()
+    val locations by localWalkViewModel!!.locations.collectAsState()
     var currentTime = remember {
         mutableStateOf(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
     }
@@ -43,7 +47,7 @@ fun Map(context: Context) {
 
     var isModalOpen by remember { mutableStateOf(false) }
     var isLoading by remember { mutableStateOf(false) }
-    val MINIMUM_WALK_TIME = 300 // 최소 산책 시간(초)
+    val MINIMUM_WALK_TIME = 180 // 최소 산책 시간(초)
 
     Scaffold(topBar = {
         TheHeader(isMainPage = false)
@@ -66,7 +70,22 @@ fun Map(context: Context) {
                 locationSource = rememberFusedLocationSource(),
                 properties = mapProperties,
                 uiSettings = mapUiSettings
-            )
+            ) {
+                if (locations.size >= 2) {
+                    ArrowheadPathOverlay(
+                        coords = locations.map { locations ->
+                            LatLng(
+                                locations.latitude,
+                                locations.longitude
+                            )
+                        },
+                        color = Gray,
+                        outlineColor = Gray,
+                        width = 5.dp,
+                        globalZIndex = 0
+                    )
+                }
+            }
             StartWalkButton(
                 modifier = Modifier.fillMaxSize(),
                 text = if (!isWalk) {
