@@ -1,4 +1,10 @@
 from pydantic import BaseModel
 
-class HeartRateRequest(BaseModel):
-    hr_data: list[int]
+
+class SingleStressRequest(BaseModel):
+    hr_data: list[float]
+
+
+class StressOverviewRequest(BaseModel):
+    hr_data: list[float]
+    walking_time: int
