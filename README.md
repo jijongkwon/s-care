@@ -2,7 +2,7 @@
 # 🚚 S-Care
 
 <div align='center'>
-    <img src='https://github.com/user-attachments/assets/7712564e-c3b3-42f4-af0c-9a0e2b25896c' width='600px' />
+    <img src='https://private-user-images.githubusercontent.com/48800281/387512612-f61c26e1-a085-4f78-95c8-070064b99973.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MzE5OTQ4OTcsIm5iZiI6MTczMTk5NDU5NywicGF0aCI6Ii80ODgwMDI4MS8zODc1MTI2MTItZjYxYzI2ZTEtYTA4NS00Zjc4LTk1YzgtMDcwMDY0Yjk5OTczLnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDExMTklMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQxMTE5VDA1MzYzN1omWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTdjZTE3OTIyODA4YWNlMDEyYjQzODU1YTljYWUxMzU4YTM2NjY5OTZiY2I2YTk3OTIyYTQzMzIwYzNjNjUxOWMmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.pj8Dq7MtPHdmF7nETnTFFVGvYLrMyzwr80FFVqUaR2U' width='600px' />
 </div>
 
 ## ✨ 주제
@@ -47,7 +47,7 @@
 
 #### 🛠 Front-End 🛠
 
-![Android]](https://img.shields.io/badge/android-%2320232a.svg?style=for-the-badge&logo=android&logoColor=%#34A853)
+![Android](https://img.shields.io/badge/android-%2320232a.svg?style=for-the-badge&logo=android&logoColor=%#34A853)
 
 #### 🛠 Back-End 🛠
 
@@ -78,11 +78,11 @@
 ### 2️⃣ Architecture
 
 <div align='center'>
-  <img src='https://github.com/user-attachments/assets/5a233754-150a-47ba-813c-0f1c0c0cac2a' width='600px'>
+  <img src='https://private-user-images.githubusercontent.com/48800281/387512768-c4bd45c9-772a-46a5-a17e-c8fdda8bcf54.jpg?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MzE5OTQ4OTcsIm5iZiI6MTczMTk5NDU5NywicGF0aCI6Ii80ODgwMDI4MS8zODc1MTI3NjgtYzRiZDQ1YzktNzcyYS00NmE1LWExN2UtYzhmZGRhOGJjZjU0LmpwZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDExMTklMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQxMTE5VDA1MzYzN1omWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWE0NmY2MDNhOGIwMTA4NDc4MmYwMDhhYTVjOGE3MzVlMjNlMDQzNjc5OTExZmRlNjU3MGY0Yjk3NTc4ZDQzODYmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.271OVKmMTn8dOPo68BnkF0oVca79R_RvrZXnDpoyLAQ' width='600px'>
 </div>
 
 ### 3️⃣ ERD
 
 <div align='center'>
-  <img src='https://github.com/user-attachments/assets/26a7ae1f-672d-456c-86e6-a5eb5fcda963' width='600px'>
+  <img src='https://private-user-images.githubusercontent.com/48800281/387512788-8ab230ed-ae56-4062-bd32-fc00ab4410fe.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MzE5OTQ4OTcsIm5iZiI6MTczMTk5NDU5NywicGF0aCI6Ii80ODgwMDI4MS8zODc1MTI3ODgtOGFiMjMwZWQtYWU1Ni00MDYyLWJkMzItZmMwMGFiNDQxMGZlLnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDExMTklMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQxMTE5VDA1MzYzN1omWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTJjMWRjM2I4ZWNiNzdmMmVhODllMzYwN2EyY2UzMTE2MmQ5NzE0OWEwNTYzMDI2YTUwZmY3MDQ0Y2FkZmVlNGQmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.G9pnj_ZrbKXB0nLTd_OQ0XH4TJWALrCgVMfnfHrWhxo' width='600px'>
 </div>
