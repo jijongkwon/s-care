@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">s-care</string>
+
+    <string name="stress">스트레스</string>
+    <string name="stress_good">좋음</string>
+    <string name="stress_normal">보통</string>
+    <string name="stress_bad">나쁨</string>
+
+    <string name="heartRateChannelId">HeartRateServiceChannel</string>
+    <string name="heartRateChannelName">Heart Rate Monitoring</string>
+
+    <string name="home_root">/home</string>
+    <string name="walk_root">/walk</string>
+    <string name="auth_root">/auth</string>
+</resources>
