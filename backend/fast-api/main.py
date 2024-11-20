@@ -13,7 +13,7 @@ from services.stress_overview_service import *
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # RabbitMQ 연결 및 큐 선언
-    connection = await connect_robust('amqp://user:password@k11a408.p.ssafy.io:8006/')
+    connection = await connect_robust('amqp://user:password@rabbitmq:8006/')
     channel = await connection.channel()
 
     # 요청 및 응답 큐 설정
