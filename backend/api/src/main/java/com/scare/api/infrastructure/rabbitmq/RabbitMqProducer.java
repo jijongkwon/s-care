@@ -17,11 +17,12 @@ public final class RabbitMqProducer {
 	private final RabbitTemplate rabbitTemplate;
 	private final ObjectMapper objectMapper; // JSON 변환기
 
-	public void sendMessage(Long courseId, List<Double> heartRates) {
+	public void sendMessage(Long courseId, Long walkingTime, List<Double> heartRates) {
 		try {
 			Map<String, Object> message = Map.of(
 				"courseId", courseId,
-				"heartRates", heartRates
+				"heartRates", heartRates,
+				"walkingTime", walkingTime
 			);
 
 			String jsonMessage = objectMapper.writeValueAsString(message);

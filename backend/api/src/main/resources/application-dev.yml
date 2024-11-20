@@ -5,10 +5,10 @@ spring:
       on-profile: dev
 
   rabbitmq:
-    host: localhost
-    port: 5672
-    username: user
-    password: password
+    host: ${RABBITMQ_URL}
+    port: ${RABBITMQ_PORT}
+    username: ${RABBITMQ_USER}
+    password: ${RABBITMQ_PWD}
 
   datasource:
     url: ${DEV_MYSQL_URL}

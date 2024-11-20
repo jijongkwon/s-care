@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.scare.api.infrastructure.external.stress.StressApiClient;
 import com.scare.api.infrastructure.rabbitmq.RabbitMqProducer;
 import com.scare.api.member.domain.Member;
 import com.scare.api.member.repository.MemberRepository;
@@ -20,7 +19,6 @@ import com.scare.api.solution.walk.repository.WalkingCourseRepository;
 import com.scare.api.solution.walk.repository.WalkingDetailRepository;
 import com.scare.api.solution.walk.service.command.dto.SaveWalkingCourseDto;
 import com.scare.api.solution.walk.service.command.dto.SaveWalkingCourseLocationDto;
-import com.scare.api.solution.walk.service.command.dto.SaveWalkingCourseStressDto;
 import com.scare.api.solution.walk.service.command.dto.UpdateBestSectionDto;
 
 import lombok.RequiredArgsConstructor;
@@ -32,7 +30,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class WalkingCommandService {
 
-	private final StressApiClient stressApiClient;
 	private final RabbitMqProducer rabbitMqProducer;
 	private final MemberRepository memberRepository;
 	private final WalkingCourseRepository walkingCourseRepository;
@@ -52,34 +49,12 @@ public class WalkingCommandService {
 		walkingLocations = walkingLocations.subList(0, minSize);
 		List<WalkingDetail.LocationPoint> locationPoints = processLocationData(walkingLocations);
 		Long courseId = saveWithoutStressData(dto, member, locationPoints);
-		rabbitMqProducer.sendMessage(courseId, heartRates);
+		rabbitMqProducer.sendMessage(courseId, walkingTime, heartRates);
 		return courseId;
-		// try {
-		// 	return saveWithStressData(dto, heartRates, walkingTime, member, locationPoints);
-		// } catch (RestClientException e) {
-		// 	log.warn("[ERROR] FAST API 스트레스 데이터 불러오기 실패. 기본 데이터만 저장.", e);
-		// 	return saveWithoutStressData(dto, member, locationPoints);
-		// } catch (Exception e) {
-		// 	log.error("[ERROR] 산책 코스 저장 중 예외 발생", e);
-		// 	throw new WalkingCourseDataSaveException();
-		// }
 	}
 
 	private long getWalkingTime(LocalDateTime startedAt, LocalDateTime finishedAt) {
 		return ChronoUnit.SECONDS.between(startedAt, finishedAt);
-	}
-
-	private Long saveWithStressData(SaveWalkingCourseDto dto, List<Double> heartRates, long walkingTime,
-		Member member, List<WalkingDetail.LocationPoint> locationPoints) {
-		SaveWalkingCourseStressDto stressData = stressApiClient.getStressData(heartRates, walkingTime);
-		SaveWalkingCourseDto walkingCourseWithStressDto = dto.withStressData(stressData);
-
-		Long walkingCourseId = walkingCourseRepository.save(
-			createWalkingCourseWithStressData(walkingCourseWithStressDto, member)).getId();
-		walkingDetailRepository.save(createWalkingCourseDetail(walkingCourseId, locationPoints));
-		log.info("[WalkingCommandService] 스트레스 데이터를 포함하여 산책 코스 저장 성공");
-
-		return walkingCourseId;
 	}
 
 	private Long saveWithoutStressData(SaveWalkingCourseDto dto,

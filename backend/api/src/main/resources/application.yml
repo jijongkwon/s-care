@@ -7,6 +7,12 @@ spring:
     username: ${LOCAL_MYSQL_USER}
     password: ${LOCAL_MYSQL_PASSWORD}
 
+  rabbitmq:
+    host: ${RABBITMQ_URL}
+    port: ${RABBITMQ_PORT}
+    username: ${RABBITMQ_USER}
+    password: ${RABBITMQ_PWD}
+
   jpa:
     hibernate:
       ddl-auto: create-drop
