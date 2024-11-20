@@ -3,6 +3,13 @@ spring:
     import: optional:file:.env[.properties]
     activate:
       on-profile: dev
+
+  rabbitmq:
+    host: ${RABBITMQ_URL}
+    port: ${RABBITMQ_PORT}
+    username: ${RABBITMQ_USER}
+    password: ${RABBITMQ_PWD}
+
   datasource:
     url: ${DEV_MYSQL_URL}
     driver-class-name: com.mysql.cj.jdbc.Driver
