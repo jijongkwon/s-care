@@ -11,7 +11,7 @@ interface LocationDao {
     @Insert
     fun save(vararg location: Location)
 
-    @Query("SELECT * FROM location WHERE created_at BETWEEN :startDate AND :endDate ORDER BY created_at DESC")
+    @Query("SELECT * FROM location WHERE created_at BETWEEN :startDate AND :endDate ORDER BY created_at ASC")
     fun getLocations(startDate: String, endDate: String): List<Location>
 
     @Query("DELETE FROM location")

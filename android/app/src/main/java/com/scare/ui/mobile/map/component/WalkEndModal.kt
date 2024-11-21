@@ -87,7 +87,7 @@ fun WalkEndModal(
                             )
                         } else {
                             Text(
-                                text = "3분 이상의 산책만 기록됩니다.\n산책을 종료할까요?",
+                                text = "5분 이상의 산책만 기록됩니다.\n산책을 종료할까요?",
                                 fontSize = 16.sp,
                                 textAlign = TextAlign.Center,
                                 color = MaterialTheme.colorScheme.onSurface
