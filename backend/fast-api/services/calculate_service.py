@@ -271,6 +271,6 @@ def get_multiple_stress_index(hr_data: list[float]):
     stress_arr = []
     for i in range(4, len(hr_data) + 1):
         partial_hr_data = hr_data[:i]
-        stress_index = get_single_stress_pyhrv(partial_hr_data)
+        stress_index = get_single_stress(partial_hr_data)
         stress_arr.append(stress_index)
     return stress_arr
