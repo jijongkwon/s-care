@@ -33,6 +33,18 @@ fun formatTimeDifference(startDateTime: Long, endDateTime: Long): String {
     }
 }
 
+fun formatDuration(duration: Long): String {
+    val hours = duration / 3600
+    val minutes = (duration % 3600) / 60
+    val seconds = duration % 60
+
+    return when {
+        hours > 0 -> String.format("%02d:%02d:%02d", hours, minutes, seconds)
+        minutes > 0 -> String.format("00:%02d:%02d", minutes, seconds)
+        else -> String.format("00:00:%02d", seconds)
+    }
+}
+
 fun calculateTimeDifference(startDateTime: Long, endDateTime: Long): Duration {
     val start = LocalDateTime.ofInstant(Instant.ofEpochMilli(startDateTime), ZoneId.systemDefault())
     val end = LocalDateTime.ofInstant(Instant.ofEpochMilli(endDateTime), ZoneId.systemDefault())

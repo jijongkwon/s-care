@@ -14,6 +14,7 @@ import com.scare.ui.mobile.common.LocalWalkViewModel
 import com.scare.ui.mobile.common.TheHeader
 import com.scare.ui.mobile.map.component.StartWalkButton
 import com.scare.ui.mobile.map.component.WalkEndModal
+import com.scare.ui.mobile.map.component.WalkInfo
 import com.scare.ui.theme.Gray
 import com.scare.util.calculateTimeDifference
 import com.scare.util.convertToMillis
@@ -54,6 +55,16 @@ fun Map(context: Context) {
         localWalkViewModel!!.resetLocations()
     }
 
+    LaunchedEffect(isWalk) {
+        if (isWalk) {
+            while (isWalk) {
+                currentTime.value = LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+                delay(1000) // 1초마다 갱신
+            }
+        }
+    }
+
+
     Scaffold(topBar = {
         TheHeader(isMainPage = false)
     }) { innerPadding ->
@@ -90,6 +101,9 @@ fun Map(context: Context) {
                         globalZIndex = 0
                     )
                 }
+            }
+            if (isWalk) {
+                WalkInfo(modifier = Modifier.fillMaxSize(), duration)
             }
             StartWalkButton(
                 modifier = Modifier.fillMaxSize(),
