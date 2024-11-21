@@ -35,7 +35,7 @@ async def lifespan(app: FastAPI):
             response = {
                 'courseId': course_id,
                 'maxStress': max(heart_rates),
-                'minStress': min(heart_rates),
+                'minStress': result.healing_stress_avg,
                 'healingStressAvg': result.healing_stress_avg,
                 'startIdx': result.start_idx,
                 'endIdx': result.end_idx
