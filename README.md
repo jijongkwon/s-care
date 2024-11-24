@@ -2,7 +2,7 @@
 # 🚚 S-Care
 
 <div align='center'>
-    <img src='https://private-user-images.githubusercontent.com/48800281/387512612-f61c26e1-a085-4f78-95c8-070064b99973.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MzE5OTQ4OTcsIm5iZiI6MTczMTk5NDU5NywicGF0aCI6Ii80ODgwMDI4MS8zODc1MTI2MTItZjYxYzI2ZTEtYTA4NS00Zjc4LTk1YzgtMDcwMDY0Yjk5OTczLnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDExMTklMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQxMTE5VDA1MzYzN1omWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTdjZTE3OTIyODA4YWNlMDEyYjQzODU1YTljYWUxMzU4YTM2NjY5OTZiY2I2YTk3OTIyYTQzMzIwYzNjNjUxOWMmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.pj8Dq7MtPHdmF7nETnTFFVGvYLrMyzwr80FFVqUaR2U' width='600px' />
+    <img src='https://github.com/user-attachments/assets/1669732b-f465-4727-b02a-d9bb2174f361' />
 </div>
 
 ## ✨ 주제
@@ -75,14 +75,15 @@
 ![Jira](https://img.shields.io/badge/jira-%230A0FFF.svg?style=for-the-badge&logo=jira&logoColor=white)
 [![Notion](https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=notion&logoColor=white)](https://imminent-hamburger-1d8.notion.site/8-0-4-0fbd317ef9d840bc9d31ea8adfa50ceb)
 [![Figma](https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white)](https://www.figma.com/design/7WUqXjKvUcDPLKYMUa9P4Y/%EC%98%B7%EC%A7%B1?node-id=0-1&t=K68NqokoRcvm5jnd-0)
+
 ### 2️⃣ Architecture
 
 <div align='center'>
-  <img src='https://private-user-images.githubusercontent.com/48800281/387512768-c4bd45c9-772a-46a5-a17e-c8fdda8bcf54.jpg?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MzE5OTQ4OTcsIm5iZiI6MTczMTk5NDU5NywicGF0aCI6Ii80ODgwMDI4MS8zODc1MTI3NjgtYzRiZDQ1YzktNzcyYS00NmE1LWExN2UtYzhmZGRhOGJjZjU0LmpwZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDExMTklMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQxMTE5VDA1MzYzN1omWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWE0NmY2MDNhOGIwMTA4NDc4MmYwMDhhYTVjOGE3MzVlMjNlMDQzNjc5OTExZmRlNjU3MGY0Yjk3NTc4ZDQzODYmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.271OVKmMTn8dOPo68BnkF0oVca79R_RvrZXnDpoyLAQ' width='600px'>
+  <img src='https://github.com/user-attachments/assets/201a1aa8-7dc9-4552-9386-2524ee520d06' >
 </div>
 
 ### 3️⃣ ERD
 
 <div align='center'>
-  <img src='https://private-user-images.githubusercontent.com/48800281/387512788-8ab230ed-ae56-4062-bd32-fc00ab4410fe.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MzE5OTQ4OTcsIm5iZiI6MTczMTk5NDU5NywicGF0aCI6Ii80ODgwMDI4MS8zODc1MTI3ODgtOGFiMjMwZWQtYWU1Ni00MDYyLWJkMzItZmMwMGFiNDQxMGZlLnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDExMTklMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQxMTE5VDA1MzYzN1omWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTJjMWRjM2I4ZWNiNzdmMmVhODllMzYwN2EyY2UzMTE2MmQ5NzE0OWEwNTYzMDI2YTUwZmY3MDQ0Y2FkZmVlNGQmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.G9pnj_ZrbKXB0nLTd_OQ0XH4TJWALrCgVMfnfHrWhxo' width='600px'>
+  <img src='https://github.com/user-attachments/assets/3315086c-b253-48c6-beec-0a4c7a5216db' width='600px' >
 </div>
